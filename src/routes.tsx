@@ -5,49 +5,42 @@ import DashBoard from "./pages/DashBoard";
 
 import Error from "./components/Error";
 import { getUser } from "./api/Category/user";
-export const routes=createBrowserRouter([
-    {
-         path:'/',
-         element:<App></App>,
-         errorElement:<Error error="404"></Error>,
-         loader:async()=>{
-              
-              const user=await JSON.parse(getUser())
-              console.log(user)
-          
-                if(!user)
-                    {
-                        
-                        return redirect("/login");
-                    }
-            return null;
-        
-         },
-         children:[{
-            index:true,
-            element:<DashBoard></DashBoard>,
+import { toast} from "react-toastify";
+export const routes = createBrowserRouter([
+  {
+    path: "/",
+    element: <App></App>,
+    errorElement: <Error error="404"></Error>,
+    loader: async () => {
+      const user = await JSON.parse(getUser());
+      console.log(user);
 
-         },   
-         
-        ]
+      if (!user) {
+        return redirect("/login");
+      }
+      return null;
     },
-    {
-        path:"/login",
-        element:<Login></Login>,
-        action:async({request})=>{
-
-             return action(request)
-        }
+    children: [
+      {
+        index: true,
+        element: <DashBoard></DashBoard>,
+      },
+    ],
+  },
+  {
+    path: "/login",
+    element: <Login></Login>,
+    action: async ({ request }) => {
+      return action(request);
     },
-    {
-        path:'/logout',
-        loader:()=>{
-            localStorage.removeItem('user')
-            return redirect('/')
-        }
+  },
+  {
+    path: "/logout",
+    loader: () => {
+      localStorage.removeItem("user");
+      toast.success(`You've successfully logged out.`);
+      return redirect("/");
     },
-    {
-         path:"error",
-         element:<Error error='404'></Error>
-    }
-])
+  },
+  
+]);

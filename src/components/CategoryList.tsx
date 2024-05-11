@@ -11,7 +11,7 @@ import { fetchCategory} from "../api/Category/CategoryThunk";
 import { AppDispatch, appSelector } from "../api/store";
 import { setCurrentId } from "../api/Category/CategorySlice";
 import Loading from "./Loading";
-import {useNavigate} from "react-router";
+
 import { toast } from "react-toastify";
 
 
@@ -38,7 +38,7 @@ const Detail = styled.div`
 
 
 function Details() {
-    const navigation=useNavigate()
+    
    const { categoryLoading,currentCategory,categoryData ,currentId} = appSelector((state) => {
      console.log(state.category.currentId);
      return state.category;
@@ -47,7 +47,8 @@ function Details() {
      console.log("asda");
      toast.dismiss()
      toast.warning("No data found please do further option");
-     navigation("/error");
+     throw Error('data not found')
+    
     
    }
  const dispatch: AppDispatch = useDispatch();   
