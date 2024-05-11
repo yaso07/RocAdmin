@@ -1,0 +1,53 @@
+import { createBrowserRouter, redirect } from "react-router-dom";
+import Login, { action } from "./pages/Login";
+import App from "./App";
+import DashBoard from "./pages/DashBoard";
+
+import Error from "./components/Error";
+import { getUser } from "./api/Category/user";
+export const routes=createBrowserRouter([
+    {
+         path:'/',
+         element:<App></App>,
+         errorElement:<Error error="404"></Error>,
+         loader:async()=>{
+              
+              const user=await JSON.parse(getUser())
+              console.log(user)
+          
+                if(!user)
+                    {
+                        
+                        return redirect("/login");
+                    }
+            return null;
+        
+         },
+         children:[{
+            index:true,
+            element:<DashBoard></DashBoard>,
+
+         },   
+         
+        ]
+    },
+    {
+        path:"/login",
+        element:<Login></Login>,
+        action:async({request})=>{
+
+             return action(request)
+        }
+    },
+    {
+        path:'/logout',
+        loader:()=>{
+            localStorage.removeItem('user')
+            return redirect('/')
+        }
+    },
+    {
+         path:"error",
+         element:<Error error='404'></Error>
+    }
+])
