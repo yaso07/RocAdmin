@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import Details from "../components/CategoryList";
 import SingleDetail from "../components/SingleCategory";
+import { useState } from "react";
 
 
 const MainContainer = styled.div`
@@ -14,13 +15,16 @@ const MainContainer = styled.div`
  
 const DashBoard = () => {
 
-      
+    const [empty,isEmpty]=useState(false);
+    const handleEmpty=()=>{
+        isEmpty(!empty)
+    }
   return (
     <>
-     
       <MainContainer>
-        <Details></Details>
-        <SingleDetail></SingleDetail>
+        { empty && <div className="text-2xl text-center w-full absolute mt-10">Empty List</div> ||<>
+        <Details isEmpty={handleEmpty}></Details>
+        <SingleDetail></SingleDetail></>}
       </MainContainer>
     </>
   );

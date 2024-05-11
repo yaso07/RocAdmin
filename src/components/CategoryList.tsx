@@ -12,7 +12,7 @@ import { AppDispatch, appSelector } from "../api/store";
 import { setCurrentId } from "../api/Category/CategorySlice";
 import Loading from "./Loading";
 
-import { toast } from "react-toastify";
+
 
 
 
@@ -36,9 +36,11 @@ const Detail = styled.div`
   }
 `;
 
+interface Props{
+   isEmpty:()=>void
+}
 
-
-function Details() {
+function Details({isEmpty}:Props) {
     
    const { categoryLoading,currentCategory,categoryData ,currentId} = appSelector((state) => {
      console.log(state.category.currentId);
@@ -46,9 +48,8 @@ function Details() {
    });
    if (categoryData && categoryData.length == 0) {
      console.log("asda");
-     toast.dismiss()
-     toast.warning("No data found please do further option");
-     throw Error('data not found')
+     isEmpty()
+     
     
     
    }
