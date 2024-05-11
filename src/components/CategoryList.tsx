@@ -30,6 +30,7 @@ const Detail = styled.div`
   box-sizing: border-box;
   border-bottom: 1px solid rgb(234, 231, 231);
   column-gap:5;
+  border-radius:5px;
   &:hover {
     background-color: rgb(250, 246, 246);
   }

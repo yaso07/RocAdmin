@@ -8,11 +8,18 @@ const Header = () => {
        navigate('/logout')
   }
   return (
-    <div className='w-full py-5 border border-gray '>
-       
-        <button onClick={handleLogout} className='bg-black text-white p-3 rounded-md float-right mr-10'>Logout</button>
+    <div className="flex w-full justify-between py-5 px-5 items-center border border-gray ">
+      <div className="text-3xl text-bold text-safs text-sky-600">
+        ROC <sup>Admin</sup>
+      </div>
+      <button
+        onClick={handleLogout}
+        className="bg-black text-white p-3 rounded-md float-right mr-10"
+      >
+        Logout
+      </button>
     </div>
-  )
+  );
 }
 
 export default Header
