@@ -95,7 +95,7 @@ const SingleDetail = () => {
             padding: "10px",
             boxSizing: "border-box",
             height: "100vh",
-        
+       
           }}
         >
           {data && data.categoryList?.length == 0 && (
