@@ -29,6 +29,8 @@ export const fetchCategory = createAsyncThunk(
 
 export const fetchCategoryById=createAsyncThunk('category/fetchById',async(id:string)=>{
     
+      if(id){
+
        const token = JSON.parse(getUser()).token;
 
          const response = await axios.get<CategoryList>(
@@ -41,6 +43,11 @@ export const fetchCategoryById=createAsyncThunk('category/fetchById',async(id:st
           )
          
     return response.data
+        }
+        else{
+            return {} as CategoryList
+        }
+         
         
 })
 

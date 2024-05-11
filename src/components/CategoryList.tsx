@@ -54,7 +54,7 @@ function Details() {
    }
  const dispatch: AppDispatch = useDispatch();   
   
-     if(!currentId && categoryData)
+     if(!currentId && categoryData && categoryData.length>0)
       {
            dispatch(setCurrentId(categoryData[0]._id));
       }
