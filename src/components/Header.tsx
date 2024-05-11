@@ -8,13 +8,13 @@ const Header = () => {
        navigate('/logout')
   }
   return (
-    <div className="flex w-full justify-between py-5 px-5 items-center border border-gray ">
+    <div className="w-full box-border flex justify-between py-5 px-5 items-center border border-gray">
       <div className="text-3xl text-bold text-safs text-sky-600">
         ROC <sup>Admin</sup>
       </div>
-      <button
+      <button 
         onClick={handleLogout}
-        className="bg-black text-white p-3 rounded-md float-right mr-10"
+        className="bg-black text-white p-2 h-max font-bold font-sans w-20 rounded-lg float-right mr-10"
       >
         Logout
       </button>

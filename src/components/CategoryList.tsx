@@ -20,6 +20,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   padding: 10px;
+  height:100vh;
+  width:100%;
   border-right: 1px solid rgb(234, 231, 231);
    
 `;
