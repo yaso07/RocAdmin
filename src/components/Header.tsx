@@ -14,7 +14,7 @@ const Header = () => {
       </div>
       <button 
         onClick={handleLogout}
-        className="bg-black text-white p-2 h-max font-bold font-sans w-20 rounded-lg float-right mr-10"
+        className="bg-black text-white p-2 text-18px] h-max w-24 rounded-lg float-right mr-10"
       >
         Logout
       </button>
