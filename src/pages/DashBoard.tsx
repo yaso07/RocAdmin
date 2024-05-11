@@ -8,6 +8,7 @@ import SingleDetail from "../components/SingleCategory";
 const MainContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 3fr;
+   
 `;
 
  
