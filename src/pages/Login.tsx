@@ -39,11 +39,7 @@ export async function action(request:Request){
     }
 }
 const Login = () => {
-
-  
   const [showPassword, setShowPassword] = useState(false);
-  
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };

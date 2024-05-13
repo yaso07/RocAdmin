@@ -48,7 +48,8 @@ function Details({isEmpty}:Props) {
      console.log(state.category.currentId);
      return state.category;
    });
-   if (categoryData && categoryData.length == 0) {
+   console.log(categoryData)
+   if (!categoryData || categoryData && categoryData.length==0) {
      console.log("asda");
      isEmpty()
      
