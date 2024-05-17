@@ -45,7 +45,7 @@ const { contactList, error, isLoading } = appSelector((state) => {
     <>
       {isLoading && <Loading></Loading>}
       {!isLoading && !error && (
-        <div className="col-span-1 p-2 flex flex-col gap-y-3 overflow-auto">
+        <div className="col-span-1 p-2 flex flex-col gap-y-3 overflow-auto border-r border-gray-300">
           <div className="text-2xl text-center p-1 text-sky-600  border-y border-sky-600">Contacts</div>
           {(contactList || []).map((contact: Contact, index) => {
             return (
