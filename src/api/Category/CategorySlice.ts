@@ -6,14 +6,14 @@ import { CategoryList } from "../../types/CategoryList";
 
 interface initialState {
   categoryLoading: boolean,
-  categoryError: boolean,
+  categoryError: boolean | string,
   categoryData: Category[],
-  categoryListLoading: boolean,
+  currentCategoryLoading: boolean,
   currentCategory: CategoryList,
-  currentCategoryError:boolean,
+  currentCategoryError:boolean | string,
   currentId: string,
   categoryStatus: boolean,
-  categoryStatusError:boolean
+  categoryStatusError:boolean | string
 }
 const CategorySlice=createSlice({
      
@@ -27,25 +27,29 @@ const CategorySlice=createSlice({
     extraReducers(builder){
        
            builder.addCase(fetchCategoryById.fulfilled, (state, action) => {
-
+                 
                 state.currentCategory = action.payload;
-                state.categoryListLoading=false
+                state.currentCategoryLoading=false
                  state.currentCategoryError = false;
            });
            builder.addCase(fetchCategoryById.pending, (state) => {
-             state.categoryListLoading = true;
+             state.currentCategoryLoading = true;
               state.currentCategoryError = false;
+              
            });
-           builder.addCase(fetchCategoryById.rejected, (state) => {
-             state.categoryListLoading =false;
+           builder.addCase(fetchCategoryById.rejected, (state,action) => {
+             state.currentCategoryLoading =false;
              console.log('error')
-            state.currentCategoryError = true;
+             state.currentCategoryError= action.error.message
+               ? action.error.message
+               : "";
            });
             builder.addCase(fetchCategory.fulfilled, (state, action) => {
+                  
               const categoryData=action.payload.filter((item)=>{
                     return item.status=='Pending'
               })
-              state.categoryData =categoryData
+              state.categoryData=categoryData
               state.categoryLoading = false;
                state.categoryError = false;
             });
@@ -53,15 +57,14 @@ const CategorySlice=createSlice({
               state.categoryLoading = true;
                 state.categoryError = false;
             });
-            builder.addCase(fetchCategory.rejected, (state) => {
+            builder.addCase(fetchCategory.rejected, (state,action) => {
+            
               state.categoryLoading = false;
-              state.categoryError = true;
+             
+              state.categoryError =action.error.message?action.error.message:'';
+             
             });
             builder.addCase(updateStatus.fulfilled, (state, action) => {
-               
-
-                   
-
                    const categoryData=state.categoryData.filter((item)=>{
                         return item._id!=action.payload
                    })

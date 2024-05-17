@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
 import { CategoryList } from "../../types/CategoryList";
 import { Category } from "../../types/Category";
@@ -7,9 +7,11 @@ import { getUser } from "./user";
 export const fetchCategory = createAsyncThunk(
   "category/fetch",
   async () => {
+
+     
     const token = JSON.parse(getUser()).token;
     
-     console.log(token)
+    
     const response = await axios.get<Category[]>(
       import.meta.env.VITE_REACT_APP_API + `category`,
       {
@@ -18,9 +20,9 @@ export const fetchCategory = createAsyncThunk(
                     },
       }
     );
+    
         return response.data;
-  }
- 
+}
 
 
   

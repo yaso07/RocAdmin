@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import CategorySlice from "./Category/CategorySlice";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
+import { contactSlice } from "./Contacts/ContactSlice";
 
 const store = configureStore({
   reducer: {
-    category:CategorySlice.reducer
+    category:CategorySlice.reducer,
+    contact:contactSlice.reducer
   },
 });
 

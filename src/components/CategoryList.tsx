@@ -1,5 +1,3 @@
-import styled from "styled-components"
-
 
 
 
@@ -16,46 +14,23 @@ import Loading from "./Loading";
 
 
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  height:100vh;
-  width:100%;
-  border-right: 1px solid rgb(234, 231, 231);
-   
-`;
-const Detail = styled.div`
-  display: flex;
-  padding: 10px;
-  gap: 5px;
-  box-sizing: border-box;
-  border-bottom: 1px solid rgb(234, 231, 231);
-  column-gap:5;
-  border-radius:5px;
-  &:hover {
-    background-color: rgb(250, 246, 246);
-  }
-`;
 
 interface Props{
-   isEmpty:()=>void
+   setEmpty:()=>void
 }
 
-function Details({isEmpty}:Props) {
+function Details({setEmpty}:Props) {
     
-   const { categoryLoading,currentCategory,categoryData ,currentId} = appSelector((state) => {
-     console.log(state.category.currentId);
+   const { categoryLoading,categoryError,categoryData ,currentId} = appSelector((state) => {
+     
      return state.category;
    });
-   console.log(categoryData)
-   if (!categoryData || categoryData && categoryData.length==0) {
-     console.log("asda");
-     isEmpty()
-     
-    
-    
+ 
+
+   if (categoryData && categoryData.length==0) {
+       setEmpty()
    }
+  
  const dispatch: AppDispatch = useDispatch();   
   
      if(!currentId && categoryData && categoryData.length>0)
@@ -78,33 +53,39 @@ function Details({isEmpty}:Props) {
  }  
 
  
-  return <>
-    
-    {(categoryLoading  || !currentCategory) && <Loading className="bg-white opacity-100"></Loading>}
-     <Container>{(categoryData || []).map((item:Category,index)=>{
-        return (
-          <>
-            {item.status=='Pending' &&
-            <Detail key={index}
-              onClick={() => {
-                setCurrentID(item._id);
-              }}
-              style={{
-                backgroundColor: `${
-                  item._id ==currentId ? "rgb(234, 231, 231)" : ""
-                }`,
-              }}
-            >
-              <div className="">
-
-                <p>{item.listName}</p>
-              </div>
-           
-            </Detail>}
-          </>
-        );
-    })}</Container>
- </>
+  return (
+    <>
+      {categoryLoading && <Loading className="bg-white opacity-100"></Loading>}
+      {!categoryLoading && !categoryError && (
+        <div className="p-2 flex flex-col gap-y-3 border-r border-gray-300">
+          <div className="text-2xl text-center p-1 text-sky-600  border-y border-sky-600">
+            Category
+          </div>
+          {(categoryData || []).map((item: Category, index) => {
+            return (
+              <>
+                {item.status == "Pending" && (
+                  <div
+                    className={`${
+                      item._id == currentId ? "bg-gray-300" : ""
+                    }  box-border rounded-md p-3 pl-5  border-b border-gray-200`}
+                    key={index}
+                    onClick={() => {
+                      setCurrentID(item._id);
+                    }}
+                  >
+                    <div className="">
+                      <p>{item.listName}</p>
+                    </div>
+                  </div>
+                )}
+              </>
+            );
+          })}
+        </div>
+      )}
+    </>
+  );
 }
 
 

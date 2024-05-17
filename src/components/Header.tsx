@@ -1,24 +1,25 @@
-import { useNavigate } from "react-router"
+ 
+import NavButton from "../ui/NavButton"
+
 
 
 const Header = () => {
 
-   const navigate=useNavigate()
-  const handleLogout=()=>{
-       navigate('/logout')
-  }
+  
+
   return (
-    <div className="w-full box-border flex justify-between py-5 px-5 items-center border border-gray">
+    <nav className="sticky top-0 w-full bg-white box-border flex justify-between py-5 px-5 items-center border border-gray">
       <div className="text-3xl text-bold text-safs text-sky-600">
         ROC <sup>Admin</sup>
       </div>
-      <button 
-        onClick={handleLogout}
-        className="bg-black text-white p-2 text-18px] h-max w-24 rounded-lg float-right mr-10"
-      >
-        Logout
-      </button>
-    </div>
+      <div className="">
+        <NavButton to={"/logout"}>
+          Logout
+        </NavButton>
+        <NavButton to={"contacts"}>Contacts</NavButton>
+        <NavButton to={""}>Category</NavButton>
+      </div>
+    </nav>
   );
 }
 
