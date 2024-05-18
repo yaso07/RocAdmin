@@ -18,8 +18,13 @@ export async function action(request:Request){
     try{   
     const formData = await request.formData();
     const data={email:formData.get('email')?.toString(),password:formData.get('password')?.toString()}
+<<<<<<< HEAD
       
     const response = await axios.post("https://beta-dot-roc-web-app.uc.r.appspot.com/admin/sign-in",data)
+=======
+   
+    const response = await axios.post(import.meta.env.VITE_REACT_APP_API+'sign-in', data);
+>>>>>>> yaso
   
     if(response.data=='user not found')
       {
@@ -34,7 +39,11 @@ export async function action(request:Request){
     }catch(error)
     {
          toast.error("Invalid credentials")
+<<<<<<< HEAD
   
+=======
+       
+>>>>>>> yaso
          return error
     }
 }

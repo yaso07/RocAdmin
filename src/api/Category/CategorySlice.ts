@@ -4,6 +4,7 @@ import { fetchCategory, fetchCategoryById, updateStatus } from "./CategoryThunk"
 import { Category } from "../../types/Category";
 import { CategoryList } from "../../types/CategoryList";
 
+
 interface initialState {
   categoryLoading: boolean,
   categoryError: boolean | string,
@@ -43,9 +44,10 @@ const CategorySlice=createSlice({
              state.currentCategoryError= action.error.message
                ? action.error.message
                : "";
+
            });
             builder.addCase(fetchCategory.fulfilled, (state, action) => {
-                  
+              
               const categoryData=action.payload.filter((item)=>{
                     return item.status=='Pending'
               })
@@ -60,7 +62,6 @@ const CategorySlice=createSlice({
             builder.addCase(fetchCategory.rejected, (state,action) => {
             
               state.categoryLoading = false;
-             
               state.categoryError =action.error.message?action.error.message:'';
              
             });
