@@ -38,11 +38,14 @@ const SingleDetail = () => {
         <Error error={currentCategoryError.toString()}></Error>
       )}
 
-      {!currentCategoryLoading && !currentCategoryError && (
+      
+      { !currentCategoryLoading && !currentCategoryError && (
         <div className="grid grid-cols-3">
           {currentCategory && (
             <div className="col-span-1 box-border p-5  flex flex-col gap-5">
-              {currentCategory.creatorId?.userName && <p>user name : {currentCategory?.creatorId?.userName}</p>}
+              {currentCategory.creatorId?.userName && (
+                <p>user name : {currentCategory?.creatorId?.userName}</p>
+              )}
               <p>email: {currentCategory.creatorId?.email}</p>
 
               <div className="flex gap-x-5 ">

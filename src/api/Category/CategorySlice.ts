@@ -40,7 +40,7 @@ const CategorySlice=createSlice({
            });
            builder.addCase(fetchCategoryById.rejected, (state,action) => {
              state.currentCategoryLoading =false;
-             console.log('error')
+            
              state.currentCategoryError= action.error.message
                ? action.error.message
                : "";

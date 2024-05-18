@@ -18,9 +18,12 @@ export async function action(request:Request){
     try{   
     const formData = await request.formData();
     const data={email:formData.get('email')?.toString(),password:formData.get('password')?.toString()}
+ 
    
     const response = await axios.post(import.meta.env.VITE_REACT_APP_API+'sign-in', data);
-  
+ 
+      
+ 
     if(response.data=='user not found')
       {
            toast.error("Invalid Credentails"); 
@@ -34,7 +37,6 @@ export async function action(request:Request){
     }catch(error)
     {
          toast.error("Invalid credentials")
-       
          return error
     }
 }
