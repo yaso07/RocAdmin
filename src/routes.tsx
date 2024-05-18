@@ -44,7 +44,7 @@ export const routes = createBrowserRouter([
     loader: () => {
       localStorage.removeItem("user");
       toast.success(`You've successfully logged out.`);
-      return redirect("/");
+      return redirect("/login");
     },
   },
   

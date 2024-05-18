@@ -18,9 +18,9 @@ export async function action(request:Request){
     try{   
     const formData = await request.formData();
     const data={email:formData.get('email')?.toString(),password:formData.get('password')?.toString()}
-     console.log(data)
+      
     const response = await axios.post("https://beta-dot-roc-web-app.uc.r.appspot.com/admin/sign-in",data)
-    console.log(response)
+  
     if(response.data=='user not found')
       {
            toast.error("Invalid Credentails"); 
@@ -34,7 +34,7 @@ export async function action(request:Request){
     }catch(error)
     {
          toast.error("Invalid credentials")
-        console.log(error)
+  
          return error
     }
 }
