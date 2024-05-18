@@ -19,6 +19,7 @@ const ContactsPage = () => {
   
   return (
     <>
+    
       {!isLoading && !error && isEmpty && (
         <div className="text-2xl text-center w-full absolute mt-10">
           Empty List
