@@ -8,7 +8,7 @@ export const fetchCategory = createAsyncThunk(
   "category/fetch",
   async () => {
 
-     
+ 
     const token = JSON.parse(getUser()).token;
     
     
@@ -20,12 +20,13 @@ export const fetchCategory = createAsyncThunk(
                     },
       }
     );
-    
-        return response.data;
-}
-
-
+      
+       return response.data;
+ 
   
+ 
+  }
+   
 );
 
 
@@ -43,7 +44,7 @@ export const fetchCategoryById=createAsyncThunk('category/fetchById',async(id:st
                              },
            }
           )
-         
+          
     return response.data
         }
         else{
