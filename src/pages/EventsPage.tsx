@@ -16,6 +16,7 @@ const EventsPage = () => {
     const [eventdata, setEventData] = useState({})
     const [dataImage, setDataImage] = useState('')
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [selectedList, setSelectedList] = useState(0)
 
     const [drawerType, setDrawerType] = useState<string>('')
 
@@ -25,7 +26,7 @@ const EventsPage = () => {
 
     useEffect(() => {
         if (eventDataValue !== undefined) {
-            const imageData = eventDataValue.length ? JSON.parse(eventDataValue[0]?.acf?.header_image_data) : [{url:""}]
+            const imageData = eventDataValue.length ? JSON.parse(eventDataValue[0]?.acf?.header_image_data) : [{ url: "" }]
             setEventData(eventDataValue[0])
             setDataImage(imageData[0].url)
         }
@@ -38,9 +39,9 @@ const EventsPage = () => {
         //     setEventData(ela[index])
         //     setDataImage(image)
         // } else {
-
-            setEventData(eventDataValue[index])
-            setDataImage(image)
+        setSelectedList(index)
+        setEventData(eventDataValue[index])
+        setDataImage(image)
         // }
     }
     // useEffect(() => {
@@ -65,7 +66,7 @@ const EventsPage = () => {
                 eventDataValue ?
                     <div className="h-lvh w-full gap-x-4 grid grid-cols-[400px_minmax(350px,_1fr)] fixed">
 
-                        <EventDetails {...{ handleEventData,  toggleDrawer, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType }} />
+                        <EventDetails {...{ handleEventData, toggleDrawer, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }} />
                         <div className="">
                             <SingleEventData data={eventdata} dataImage={dataImage} reservationModal={undefined} {...{ setIsDrawerOpen, setDrawerType }} />
                         </div>
