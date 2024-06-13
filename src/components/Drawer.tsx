@@ -228,7 +228,10 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                 bus_routes: busRouteArray,
                 seasonality: seasonalityArray,
                 from_price: values.from_price,
-                price_to: values.price_to
+                price_to: values.price_to,
+                event_dates_start: dateTimeArray.length ? dateTimeArray[0] : "" ,
+                event_dates_end:  dateTimeArray.length ? dateTimeArray[dateTimeArray.length - 1] : "" ,
+            
             },
             data_type: "jersey",
             type: "events",
