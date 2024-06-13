@@ -10,12 +10,12 @@ export const getContacts = createAsyncThunk(
   async () => {
     const token = JSON.parse(getUser()).token;
     const response = await axios.get<Contact[]>(
-      import.meta.env.VITE_REACT_APP_API +`contact-us`,
+      import.meta.env.VITE_REACT_APP_API + `contact-us`,
       {
         headers: {
-          "x-login-token":token
-                    },
+          "x-login-token": token
+        },
       }
     );
-        return response.data;
-})
+    return response.data;
+  })
