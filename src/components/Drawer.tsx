@@ -206,6 +206,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
         }));
        
         const finalObject = {
+           
             acf: {
                 title: values.title,
                 type: eventTypeArray,
@@ -229,8 +230,8 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                 seasonality: seasonalityArray,
                 from_price: values.from_price,
                 price_to: values.price_to,
-                event_dates_start: dateTimeArray.length ? dateTimeArray[0] : "" ,
-                event_dates_end:  dateTimeArray.length ? dateTimeArray[dateTimeArray.length - 1] : "" ,
+                event_dates_start: dateTimeArray.length ? moment(dateTimeArray[0].date).format("DD/MM/YYYY") : "" ,
+                event_dates_end:  dateTimeArray.length ? moment(dateTimeArray[dateTimeArray.length - 1].date).format("DD/MM/YYYY") : "" ,
             
             },
             data_type: "jersey",
