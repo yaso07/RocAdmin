@@ -267,6 +267,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
             setAccessibility([])
             setOpningTime([])
             setEventType([])
+            setSelectedImage("")
             // const data = {};
             // dispatch(fetchEventById(data) as any)
             dispatch(getEventList() as any)
@@ -355,6 +356,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
         setAccessibility([])
         setOpningTime([])
         setEventType([])
+        setSelectedImage("")
         resetForm()
     };
 
