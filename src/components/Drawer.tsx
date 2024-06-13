@@ -259,7 +259,6 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
         }
     }
     useEffect(() => {
-        console.log("one")
         if (!loading && error === '') {
             resetForm()
             console.log("two")

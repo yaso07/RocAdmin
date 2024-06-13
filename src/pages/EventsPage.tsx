@@ -25,35 +25,22 @@ const EventsPage = () => {
     }, [])
 
     useEffect(() => {
+        debugger
         if (eventDataValue !== undefined) {
-            const imageData = eventDataValue.length ? JSON.parse(eventDataValue[0]?.acf?.header_image_data) : [{ url: "" }]
+            const imageData = eventDataValue[0]?.acf?.header_image_data ? JSON.parse(eventDataValue[0]?.acf?.header_image_data) : [{ url: "" }]
             setEventData(eventDataValue[0])
             setDataImage(imageData[0].url)
         }
     }, [eventDataValue])
 
     const handleEventData = (index: any, image: string) => {
-        // const ela = elaString ? JSON.parse(elaString) : [];
-        // if (ela.length) {
 
-        //     setEventData(ela[index])
-        //     setDataImage(image)
-        // } else {
         setSelectedList(index)
         setEventData(eventDataValue[index])
         setDataImage(image)
-        // }
+      
     }
-    // useEffect(() => {
-    //     // const ela = elaString ? JSON.parse(elaString) : [];
-    //     const imageDataEla = ela.length ? JSON.parse(eventDataValue[0].acf?.header_image_data) : ""
-    //     if (ela.length) {
-    //         setEventData(ela[0])
-    //         setDataImage(imageDataEla[0].url)
 
-    //     }
-
-    // }, [elaString])
 
     const toggleDrawer = (name: string) => {
         setIsDrawerOpen(!isDrawerOpen);
