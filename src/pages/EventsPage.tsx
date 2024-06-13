@@ -25,7 +25,6 @@ const EventsPage = () => {
     }, [])
 
     useEffect(() => {
-        debugger
         if (eventDataValue !== undefined) {
             const imageData = eventDataValue[0]?.acf?.header_image_data ? JSON.parse(eventDataValue[0]?.acf?.header_image_data) : [{ url: "" }]
             setEventData(eventDataValue[0])
