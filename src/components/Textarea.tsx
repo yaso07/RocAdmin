@@ -6,13 +6,12 @@ interface TextareaProps {
     short_description: any,
     title: any,
     handleChange?: any,
-    handleBlur: any,
     error?: any,
     touch?: any,
     setFieldValue?: any,
 }
 
-const Textarea: React.FC<TextareaProps> = ({ short_description, title, handleChange, handleBlur, error, touch, setFieldValue}) => {
+const Textarea: React.FC<TextareaProps> = ({ short_description, title, handleChange, error, touch, setFieldValue}) => {
 
 
     // const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -41,7 +40,6 @@ const Textarea: React.FC<TextareaProps> = ({ short_description, title, handleCha
                 rows={5}
                 value={short_description}
                 onChange={handleChange}
-                onBlur={handleBlur}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 placeholder="Enter your message..."
             ></textarea>

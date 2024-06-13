@@ -574,8 +574,6 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                     <div className="flex gap-10 flex-wrap w-full">
                         <Textarea
                             handleChange={handleChange}
-                            handleBlur={handleBlur}
-
                             short_description={values.short_description}
                             error={errors.short_description}
                             touch={touched.short_description && errors.short_description}
