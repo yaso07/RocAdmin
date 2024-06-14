@@ -7,7 +7,7 @@ interface initialState {
     error: string,
     currentEvent: any,
     updateEvent: any,
-    eventList: string[] | null,
+    eventList: string[],
     singleEventData: {},
 }
 
@@ -18,8 +18,6 @@ export const eventSlice = createSlice({
         setEvent(state, action) {
             state.currentEvent = action.payload
         },
-
-
     },
     extraReducers(builder) {
         // CREATE EVENTL LIST DATA
@@ -54,6 +52,7 @@ export const eventSlice = createSlice({
 
         // GET EVENTL LIST DATA BY ID
         builder.addCase(fetchEventById.fulfilled, (state, action) => {
+           
             state.singleEventData = action.payload
             state.error = ''
             state.isLoading = false

@@ -11,7 +11,6 @@ import Loading from "../components/Loading";
 const EventsPage = () => {
     const dispatch = useDispatch()
     const eventDataValue = useSelector((state: any) => state.event.eventList)
-    console.log("evnt data", eventDataValue)
 
     const [eventdata, setEventData] = useState({})
     const [dataImage, setDataImage] = useState('')
@@ -26,25 +25,21 @@ const EventsPage = () => {
 
     useEffect(() => {
         if (eventDataValue !== undefined) {
-            const imageData = eventDataValue[0]?.acf?.header_image_data ? JSON.parse(eventDataValue[0]?.acf?.header_image_data) : [{ url: "" }]
-            setEventData(eventDataValue[0])
+            const imageData = eventDataValue[selectedList]?.acf?.header_image_data ? JSON.parse(eventDataValue[selectedList]?.acf?.header_image_data) : [{ url: "" }]
+            setEventData(eventDataValue[selectedList])
             setDataImage(imageData[0].url)
         }
     }, [eventDataValue])
 
     const handleEventData = (index: any, image: string) => {
-
         setSelectedList(index)
         setEventData(eventDataValue[index])
         setDataImage(image)
-      
+        setIsDrawerOpen(false)
     }
 
 
-    const toggleDrawer = (name: string) => {
-        setIsDrawerOpen(!isDrawerOpen);
-        setDrawerType(name)
-    };
+
 
     return (
         <>
@@ -52,7 +47,7 @@ const EventsPage = () => {
                 eventDataValue ?
                     <div className="h-lvh w-full gap-x-4 grid grid-cols-[400px_minmax(350px,_1fr)] fixed">
 
-                        <EventDetails {...{ handleEventData, toggleDrawer, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }} />
+                        <EventDetails {...{ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }} />
                         <div className="">
                             <SingleEventData data={eventdata} dataImage={dataImage} reservationModal={undefined} {...{ setIsDrawerOpen, setDrawerType }} />
                         </div>

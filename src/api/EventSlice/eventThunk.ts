@@ -45,7 +45,7 @@ export const getEventList = createAsyncThunk(
 
 // ======================================== GET EVENT BY ID ===========================================
 export const fetchEventById = createAsyncThunk('event/fetchById', async (data: any) => {
-
+console.log("jflkdsfksjlkjlfsjfksfs", data)
   // const token = JSON.parse(getUser()).token;
   // const response = await axios.get(
   //   import.meta.env.VITE_REACT_APP_API + `${id}`,

@@ -16,7 +16,7 @@ export const eventSchema = Yup.object().shape({
     address_line_2: Yup.string(),
     postcode: Yup.string(),
     phoneNumber: Yup.string().nullable().matches(/^\d*$/, 'Phone number must be a valid integer'),
-    price_to: Yup.string()
+    from_price: Yup.string()
     .test(
       'is-positive',
       'The price must be greater than or equal to 0!',
@@ -26,14 +26,30 @@ export const eventSchema = Yup.object().shape({
         return !isNaN(number) && number >= 0;
       }
     ),
-    from_price: Yup.string()
+    price_to: Yup.string()
     .test(
-        'is-positive',
-        'The price must be greater than or equal to 0!',
-        (value: any) => {
-          // Convert the string to a number for validation
-          const number = parseFloat(value);
-          return !isNaN(number) && number >= 0;
-        }
-      ),
+      'is-positive',
+      'The price must be greater than or equal to min price!',
+      (value: any, context: Yup.TestContext) => {
+        const { from_price } = context.parent as { from_price: string };
+        const number = parseFloat(value);
+        const fromPriceNumber = parseFloat(from_price);
+        return !isNaN(number) && number >= 0 && number >= fromPriceNumber;
+      }
+    )
+    .when(['from_price'], (from_price: string | any, schema: Yup.StringSchema) =>
+      from_price
+        ? schema.required('Price to is required when Price from is provided')
+        : schema
+    ),
+    // price_to: Yup.string()
+    // .test(
+    //   'is-positive',
+    //   'The price must be greater than or equal to 0!',
+    //   (value: any) => {
+    //     // Convert the string to a number for validation
+    //     const number = parseFloat(value);
+    //     return !isNaN(number) && number >= 0;
+    //   }
+    // ),
 });

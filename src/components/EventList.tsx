@@ -8,7 +8,7 @@ import { mappedArray } from "../utils/dataMapping";
 
 interface Props {
   handleEventData: any;
-  toggleDrawer: any;
+  setDrawerType: any;
   isDrawerOpen: boolean;
   setIsDrawerOpen: any;
   eventDataValue?: any;
@@ -16,7 +16,7 @@ interface Props {
   selectedList?: number;
 }
 
-function EventDetails({ handleEventData , toggleDrawer, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList}: Props) {
+function EventDetails({ handleEventData ,setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList}: Props) {
   // const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [eventList, setEventList] = useState([])
   // const elaString = localStorage.getItem('ela');
@@ -42,6 +42,12 @@ function EventDetails({ handleEventData , toggleDrawer, isDrawerOpen, setIsDrawe
   //   dispatch(getEventList() as any)
   // },[])
 
+  const toggleDrawer = (name: string) => {
+    setIsDrawerOpen(!isDrawerOpen);
+    setDrawerType(name)
+    
+};
+
 
   return (
     <>
@@ -49,11 +55,9 @@ function EventDetails({ handleEventData , toggleDrawer, isDrawerOpen, setIsDrawe
         <button
           onClick={()=>toggleDrawer("add")}
           className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md transform transition-transform duration-150 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 active:bg-blue-700 active:scale-95">
-          Add Event
+          {isDrawerOpen ? "Close" : "Add"} Event Drawer
         </button>
-        {
-          console.log("selectd", selectedList) as any
-        }
+
         <div className="overflow-y-auto max-h-[calc(100dvh-200px)] hide-scrollbar">
           {
             eventList.map((item: any, index: number) => {
@@ -82,7 +86,7 @@ function EventDetails({ handleEventData , toggleDrawer, isDrawerOpen, setIsDrawe
         </div>
       </div>
 
-      <Drawer isOpen={isDrawerOpen} {...{setIsDrawerOpen, drawerType}} toggleDrawer={toggleDrawer} />
+      <Drawer isOpen={isDrawerOpen} {...{setIsDrawerOpen, drawerType, setDrawerType}}/>
     </>
   );
 }

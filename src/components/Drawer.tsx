@@ -7,7 +7,7 @@ import fallback from '../assets/fallbackimage.png';
 
 
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import TagField from "./tagField";
 import Textarea from "./Textarea";
 import { createEvent, getEventList, updateEvent } from "../api/EventSlice/eventThunk";
@@ -17,9 +17,9 @@ import moment from "moment";
 import Dropdown from "./dropdown";
 
 interface Props {
-    toggleDrawer: () => void;
     isOpen: any;
     setIsDrawerOpen: any;
+    setDrawerType: any;
     drawerType: string;
 }
 
@@ -51,10 +51,10 @@ const initialFormValues: formDataType = {
     from_price: '0',
     price_to: '0',
     header_image_data: '',
-    phoneNumber:'',
+    phoneNumber: '',
 }
 
-const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
+const Drawer = ({ isOpen, setIsDrawerOpen, drawerType, setDrawerType }: Props) => {
     const dispatch = useDispatch();
     const SingleEventData = useSelector((state: any) => state.event.singleEventData)
     const currentEvent = useSelector((state: any) => state.event.currentEvent)
@@ -66,11 +66,11 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
     const [busRoute, setBusRoute] = useState<Array<any>>([]);
     const [opningTime, setOpningTime] = useState<Array<any>>([]);
     const [accessibility, setAccessibility] = useState<Array<any>>([]);
-    const [parishName, setParishName] = useState<{value:string, label:string}>({value:'', label:''});
+    const [parishName, setParishName] = useState<{ value: string, label: string }>({ value: '', label: '' });
     const [dateTimes, setDateTimes] = useState<DateTime[]>([]);
     const [showDateTime, setShowDateTime] = useState<DateTime[]>([]);
     const [loader, setLoder] = useState<boolean>(false)
-
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedImage, setSelectedImage] = useState<string | ArrayBuffer | null>(null);
 
 
@@ -83,66 +83,82 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
         onSubmit: () => submitFormikFunction(),
     });
 
-
     // ============================ GET DATA BY ID ==========================================================
     useEffect(() => {
+        if (drawerType !== "add") {
+            if (SingleEventData) {
+                console.log("bydkldskdlkslkd", drawerType);
 
-        if (SingleEventData) {
+                setFieldValue("title", SingleEventData?.acf?.title)
+                // setFieldValue("subTitle", acf?.)
+                setFieldValue("email_address", SingleEventData?.acf?.email_address)
+                setFieldValue("lat", SingleEventData?.acf?.map_location_lat)
+                setFieldValue("lng", SingleEventData?.acf?.map_location_lng)
+                setFieldValue("short_description", SingleEventData?.acf?.short_description)
+                setFieldValue("website", SingleEventData?.acf?.website)
+                setFieldValue("place_name", SingleEventData?.acf?.address?.place_name)
+                setFieldValue("address_line_1", SingleEventData?.acf?.address?.address_line_1)
+                setFieldValue("address_line_2", SingleEventData?.acf?.address?.address_line_2)
+                setFieldValue("postcode", SingleEventData?.acf?.address?.postcode)
+                setFieldValue("phoneNumber", SingleEventData?.acf?.telephone_number?.formatted)
+                setFieldValue("from_price", SingleEventData?.acf?.from_price)
+                setFieldValue("price_to", SingleEventData?.acf?.price_to)
+                const imgArray = JSON.parse(SingleEventData?.acf?.header_image_data);
+                setFieldValue("header_image_data", SingleEventData?.acf?.header_image_data)
+                setSelectedImage(imgArray[0].url)
+                setParishName({ ...SingleEventData?.acf?.parish })
+                const eventTypeArray: TransformedType[] = SingleEventData?.acf?.type.map((item: any) => ({
+                    id: item.value,
+                    text: item.label,
+                }));
+                setEventType([...eventTypeArray])
+                const accessibilityArray: TransformedType[] = SingleEventData?.acf?.accessibility.map((item: any) => ({
+                    id: item.value,
+                    text: item.label,
+                }));
+                setAccessibility([...accessibilityArray])
+                const featureArray: TransformedType[] = SingleEventData?.acf?.key_facilities.map((item: any) => ({
+                    id: item.value,
+                    text: item.label,
+                }));
+                setFeature([...featureArray])
+                const busRouteArray: TransformedType[] = SingleEventData?.acf?.bus_routes.map((item: any) => ({
+                    id: item.value,
+                    text: item.label,
+                }));
+                setBusRoute([...busRouteArray])
+                const opningTimeArray: TransformedType[] = SingleEventData?.acf?.seasonality.map((item: any) => ({
+                    id: item.value,
+                    text: item.label,
+                }));
+                setOpningTime([...opningTimeArray])
+                // event_dates
+                const newData = SingleEventData?.acf?.event_dates.map((item: any, index: number) => ({
+                    id: index + 1,
+                    date: moment(item.date).format('YYYY/MM/DD'),
+                    start_time: item.start_time,
+                    end_time: item.end_time,
+                }))
+                setDateTimes([...newData])
+                setShowDateTime([...newData])
+            }
 
-            setFieldValue("title", SingleEventData?.acf?.title)
-            // setFieldValue("subTitle", acf?.)
-            setFieldValue("email_address", SingleEventData?.acf?.email_address)
-            setFieldValue("lat", SingleEventData?.acf?.map_location_lat)
-            setFieldValue("lng", SingleEventData?.acf?.map_location_lng)
-            setFieldValue("short_description", SingleEventData?.acf?.short_description)
-            setFieldValue("website", SingleEventData?.acf?.website)
-            setFieldValue("place_name", SingleEventData?.acf?.address?.place_name)
-            setFieldValue("address_line_1", SingleEventData?.acf?.address?.address_line_1)
-            setFieldValue("address_line_2", SingleEventData?.acf?.address?.address_line_2)
-            setFieldValue("postcode", SingleEventData?.acf?.address?.postcode)
-            setFieldValue("phoneNumber", SingleEventData?.acf?.telephone_number?.formatted)
-            setFieldValue("from_price", SingleEventData?.acf?.from_price)
-            setFieldValue("price_to", SingleEventData?.acf?.price_to)
-            const imgArray = JSON.parse(SingleEventData?.acf?.header_image_data);
-            setFieldValue("header_image_data", SingleEventData?.acf?.header_image_data)
-            setSelectedImage(imgArray[0].url)
-            setParishName({...SingleEventData?.acf?.parish})
-            const eventTypeArray: TransformedType[] = SingleEventData?.acf?.type.map((item: any) => ({
-                id: item.value,
-                text: item.label,
-            }));
-            setEventType([...eventTypeArray])
-            const accessibilityArray: TransformedType[] = SingleEventData?.acf?.accessibility.map((item: any) => ({
-                id: item.value,
-                text: item.label,
-            }));
-            setAccessibility([...accessibilityArray])
-            const featureArray: TransformedType[] = SingleEventData?.acf?.key_facilities.map((item: any) => ({
-                id: item.value,
-                text: item.label,
-            }));
-            setFeature([...featureArray])
-            const busRouteArray: TransformedType[] = SingleEventData?.acf?.bus_routes.map((item: any) => ({
-                id: item.value,
-                text: item.label,
-            }));
-            setBusRoute([...busRouteArray])
-            const opningTimeArray: TransformedType[] = SingleEventData?.acf?.seasonality.map((item: any) => ({
-                id: item.value,
-                text: item.label,
-            }));
-            setOpningTime([...opningTimeArray])
-            // event_dates
-            const newData = SingleEventData?.acf?.event_dates.map((item: any, index: number) => ({
-                id: index + 1,
-                date: moment(item.date).format('YYYY/MM/DD'),
-                start_time: item.start_time,
-                end_time: item.end_time,
-            }))
-            setDateTimes([...newData])
-            setShowDateTime([...newData])
+        } else {
+            resetForm()
+            setFeature([])
+            setBusRoute([])
+            setDateTimes([])
+            setShowDateTime([])
+            setAccessibility([])
+            setOpningTime([])
+            setEventType([])
+            setSelectedImage(null)
+            // Reset the input field
+            if (fileInputRef.current) {
+                fileInputRef.current.value = ''; // Reset the input element
+            }
         }
-    }, [SingleEventData])
+    }, [SingleEventData, drawerType])
 
     // ====================================== Image upload URL =====================================================
     const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -174,17 +190,19 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
 
                     setLoder(false)
                 }
+
             } catch (error) {
                 setLoder(false)
 
             }
+
         }
     };
 
 
-    
+
     const handleSelect = (id: string) => {
-        setParishName({value:id, label:id})
+        setParishName({ value: id, label: id })
     };
 
 
@@ -258,28 +276,25 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
         }
         if (drawerType === "add") {
             dispatch(createEvent(finalObject) as any)
-            if (loading && error === '') {
-                resetForm()
-                setIsDrawerOpen(false);
-            }
+            // if (loading && error === '') {
+            //     resetForm()
+            //     setIsDrawerOpen(false);
+            // }
         } else {
-
-            console.log("five")
             const id: string = SingleEventData?._id
             const status = { id, finalObject }
             dispatch(updateEvent(status) as any)
-            if (loading && error === '') {
-                resetForm()
-                setIsDrawerOpen(false);
-                console.log("four")
+            // if (loading && error === '') {
+            //     resetForm()
+            //     setIsDrawerOpen(false);
+            //     console.log("four")
 
-            }
+            // }
         }
     }
     useEffect(() => {
         if (!loading && error === '') {
             resetForm()
-            console.log("two")
             setIsDrawerOpen(false);
             setFeature([])
             setBusRoute([])
@@ -288,11 +303,14 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
             setAccessibility([])
             setOpningTime([])
             setEventType([])
-            setSelectedImage("")
+            setSelectedImage(null)
+            // Reset the input field
+            if (fileInputRef.current) {
+                fileInputRef.current.value = ''; // Reset the input element
+            }
             // const data = {};
             // dispatch(fetchEventById(data) as any)
             dispatch(getEventList() as any)
-            console.log("three")
         }
     }, [currentEvent, updateEventValue])
 
@@ -368,17 +386,22 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
         // setShortDescription('')
     }
 
-    const toggleDrawer = () => {
+    const toggleDrawer = (name: string) => {
         setIsDrawerOpen(false);
-        setFeature([])
-        setBusRoute([])
-        setDateTimes([])
-        setShowDateTime([])
-        setAccessibility([])
-        setOpningTime([])
-        setEventType([])
-        setSelectedImage("")
-        resetForm()
+        setFeature([]);
+        setBusRoute([]);
+        setDateTimes([]);
+        setShowDateTime([]);
+        setAccessibility([]);
+        setOpningTime([]);
+        setEventType([]);
+        setDrawerType(name);
+        setSelectedImage(null);
+        // Reset the input field
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''; // Reset the input element
+        }
+        resetForm();
     };
 
 
@@ -391,7 +414,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
         <div className={`fixed inset-y-0 right-0 w-3/5 bg-white shadow-lg transform transition-transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} duration-1000 overflow-y-auto max-h-[100dvh] hide-scrollbar`}>
             <div className="p-4">
                 <div className="flex gap-10 flex-wrap w-full justify-between mb-2">
-                    <button onClick={toggleDrawer} className="text-black">Close</button>
+                    <button onClick={() => toggleDrawer("close")} className="text-black">Close</button>
                     <button
                         type="button"
                         onClick={submitData}
@@ -408,6 +431,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                             accept="image/*"
                             onChange={handleImageUpload}
                             className="mb-4"
+                            ref={fileInputRef}
                         />
 
                         {
@@ -440,7 +464,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                             error={errors.title}
                             touch={touched.title && errors.title}
                         />
-     
+
                         <EventField
                             className="border border-gray-200 mt-2"
                             label="Phone number"
@@ -598,7 +622,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                     </div>
                     <div className=" mb-4 w-full">
                         <h1 className="text-2xl font-bold mb-2">Parish</h1>
-                            <Dropdown onSelect={handleSelect} />
+                        <Dropdown onSelect={handleSelect} />
 
                     </div>
                     <div className=" mb-4 w-full">
