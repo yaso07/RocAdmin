@@ -4,6 +4,7 @@ import { formatCalenderTime, formatDate, formatDay, formatFullDate, formatMonth 
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEvent, fetchEventById, getEventList } from "../api/EventSlice/eventThunk";
+import ConfirmationComponent from "./confirmationUI";
 
 
 
@@ -151,10 +152,10 @@ const SingleEventData: React.FC<ModalProps> = ({
             .replace(/\)/, "");
     };
 
-    const handleDelete = (id: string) => {
-        dispatch(deleteEvent(id) as any)
-        dispatch(getEventList() as any)
-    }
+    // const handleDelete = (id: string) => {
+    //     dispatch(deleteEvent(id) as any)
+    //     dispatch(getEventList() as any)
+    // }
 
     useEffect(() => {
         if (!loading && error === '') {
@@ -166,158 +167,157 @@ const SingleEventData: React.FC<ModalProps> = ({
 
     return (
         <>
-        {
-            data ? 
-        
-        <Container className="overflow-y-auto max-h-[calc(100dvh-90px)] hide-scrollbar">
-            <Title className="">
-                <h1 className="font-semibold text-lg capitalize">{data?.acf?.title}</h1>
-                <div className="">
-                    <EditBtn className="font-semibold text-lg capitalize mr-4" onClick={() => toggleDrawer()}>Edit</EditBtn>
-                    <DeleteBtn className="font-semibold text-lg capitalize mr-4" onClick={() => handleDelete(data?._id)}>Delete</DeleteBtn>
+            {
+                data ?
 
-                </div>
-            </Title>
-
-            <ResturatContainer>
-                <ResturatWrapper>
-                    <p style={{ fontSize: "14px", textTransform: 'capitalize' }}>{formattedValues()}</p>
-                </ResturatWrapper>
-            </ResturatContainer>
-            <ItemImageContainer>
-                <img
-                    src={
-                        dataImage
-                            ? dataImage
-                            : "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FNo_Image_Available.jpg?alt=media&token=90cbe8cc-39f6-45f9-8c4b-59e9be631a07"
-                    }
-                    alt="Logo"
-                    width={200}
-                    height={80}
-                    style={{ borderRadius: 4, maxWidth: "100%", objectFit: "cover" }}
-                />
-            </ItemImageContainer>
-            <ResturantDetailsContainer>
-                {EventListData.map((item: any, index: number) => {
-
-                    return (
-                        item?.nameValue &&
-                        <ResturantDetailsWrapper key={index}>
-                            {" "}
-                            <div style={{ width: 20 }}>
-                                <img
-                                    style={{ cursor: "pointer", height: "auto" }}
-                                    src={item.image}
-                                    width={item.width}
-                                    height={item.height}
-                                    alt="Logo Outline"
-                                />{" "}
+                    <Container className="overflow-y-auto max-h-[calc(100dvh-90px)] hide-scrollbar">
+                        <Title className="">
+                            <h1 className="font-semibold text-lg capitalize">{data?.acf?.title}</h1>
+                            <div className="">
+                                <EditBtn className="font-semibold text-lg capitalize mr-4" onClick={() => toggleDrawer()}>Edit</EditBtn>
+                                <ConfirmationComponent data={data?._id} />
                             </div>
-                            {index == 4 ? (
-                                <RestDetailTitleWebsite href={item?.name} target="_blank">
-                                    {item?.name}
-                                </RestDetailTitleWebsite>
-                            ) : (
-                                <RestDetailTitle>{item?.name}</RestDetailTitle>
-                            )}
-                        </ResturantDetailsWrapper>
-                    );
-                })}
-                {/* <ViewDirection onClick={() => reservationModal("DirectionModal")}>
+                        </Title>
+
+                        <ResturatContainer>
+                            <ResturatWrapper>
+                                <p style={{ fontSize: "14px", textTransform: 'capitalize' }}>{formattedValues()}</p>
+                            </ResturatWrapper>
+                        </ResturatContainer>
+                        <ItemImageContainer>
+                            <img
+                                src={
+                                    dataImage
+                                        ? dataImage
+                                        : "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FNo_Image_Available.jpg?alt=media&token=90cbe8cc-39f6-45f9-8c4b-59e9be631a07"
+                                }
+                                alt="Logo"
+                                width={200}
+                                height={80}
+                                style={{ borderRadius: 4, maxWidth: "100%", objectFit: "cover" }}
+                            />
+                        </ItemImageContainer>
+                        <ResturantDetailsContainer>
+                            {EventListData.map((item: any, index: number) => {
+
+                                return (
+                                    item?.nameValue &&
+                                    <ResturantDetailsWrapper key={index}>
+                                        {" "}
+                                        <div style={{ width: 20 }}>
+                                            <img
+                                                style={{ cursor: "pointer", height: "auto" }}
+                                                src={item.image}
+                                                width={item.width}
+                                                height={item.height}
+                                                alt="Logo Outline"
+                                            />{" "}
+                                        </div>
+                                        {index == 4 ? (
+                                            <RestDetailTitleWebsite href={item?.name} target="_blank">
+                                                {item?.name}
+                                            </RestDetailTitleWebsite>
+                                        ) : (
+                                            <RestDetailTitle>{item?.name}</RestDetailTitle>
+                                        )}
+                                    </ResturantDetailsWrapper>
+                                );
+                            })}
+                            {/* <ViewDirection onClick={() => reservationModal("DirectionModal")}>
                     View Directions
                 </ViewDirection> */}
-            </ResturantDetailsContainer>
-            <RestDetailText>{strippedContent}</RestDetailText>
+                        </ResturantDetailsContainer>
+                        <RestDetailText>{strippedContent}</RestDetailText>
 
-            {data?.acf?.event_dates != "" && (
-                <>
-                    <AlsoSeeText>More dates</AlsoSeeText>
-                    {data?.acf?.event_dates?.map((item: any, index: any) => (
-                        <DatesContainer key={index}>
-                            <DatesWrapperText>
-                                <p>{formatCalenderTime(item?.date)}</p>
-                                <p>{formatDay(item?.date)}</p>
-                                <p>{item?.start_time}</p>
-                            </DatesWrapperText>
-                            <DateMonthWraaper>
-                                <p style={{ fontSize: 17 }}>{formatDate(item.date)}</p>
-                                <Monthstyle>{formatMonth(item?.date)}</Monthstyle>
-                            </DateMonthWraaper>
-                        </DatesContainer>
-                    ))}
-                </>
-            )}
+                        {data?.acf?.event_dates != "" && (
+                            <>
+                                <AlsoSeeText>More dates</AlsoSeeText>
+                                {data?.acf?.event_dates?.map((item: any, index: any) => (
+                                    <DatesContainer key={index}>
+                                        <DatesWrapperText>
+                                            <p>{formatCalenderTime(item?.date)}</p>
+                                            <p>{formatDay(item?.date)}</p>
+                                            <p>{item?.start_time}</p>
+                                        </DatesWrapperText>
+                                        <DateMonthWraaper>
+                                            <p style={{ fontSize: 17 }}>{formatDate(item.date)}</p>
+                                            <Monthstyle>{formatMonth(item?.date)}</Monthstyle>
+                                        </DateMonthWraaper>
+                                    </DatesContainer>
+                                ))}
+                            </>
+                        )}
 
-            {data?.acf?.key_facilities != "" && (
-                <>
-                    <AlsoSeeText>Key Features</AlsoSeeText>
-                    <BulletPointWrapper style={{ marginLeft: 40 }}>
-                        {data?.acf?.key_facilities.map((item: any, index: any) => (
-                            <li key={index}>{item.label}</li>
-                        ))}
-                    </BulletPointWrapper>
-                </>
-            )}
+                        {data?.acf?.key_facilities != "" && (
+                            <>
+                                <AlsoSeeText>Key Features</AlsoSeeText>
+                                <BulletPointWrapper style={{ marginLeft: 40 }}>
+                                    {data?.acf?.key_facilities.map((item: any, index: any) => (
+                                        <li key={index}>{item.label}</li>
+                                    ))}
+                                </BulletPointWrapper>
+                            </>
+                        )}
 
-            {data?.acf?.accessibility != "" && (
-                <>
-                    <AlsoSeeText>Accessibility</AlsoSeeText>
-                    <BulletPointWrapper style={{ marginLeft: 40 }}>
-                        {data?.acf?.accessibility.map((item: any, index: any) => (
-                            <li key={index}>{item?.label}</li>
-                        ))}
-                    </BulletPointWrapper>
-                </>
-            )}
+                        {data?.acf?.accessibility != "" && (
+                            <>
+                                <AlsoSeeText>Accessibility</AlsoSeeText>
+                                <BulletPointWrapper style={{ marginLeft: 40 }}>
+                                    {data?.acf?.accessibility.map((item: any, index: any) => (
+                                        <li key={index}>{item?.label}</li>
+                                    ))}
+                                </BulletPointWrapper>
+                            </>
+                        )}
 
-            {data?.acf?.bus_routes != "" && (
-                <>
-                    <AlsoSeeText>Bus Route</AlsoSeeText>
-                    <BulletPointWrapper style={{ marginLeft: 40 }}>
-                        {data?.acf?.bus_routes.map((item: any, index: any) => (
-                            <li key={index} style={{ textDecoration: "underline" }}>
-                                {formatRoute(item.label)}
-                            </li>
-                        ))}
-                    </BulletPointWrapper>
-                </>
-            )}
+                        {data?.acf?.bus_routes != "" && (
+                            <>
+                                <AlsoSeeText>Bus Route</AlsoSeeText>
+                                <BulletPointWrapper style={{ marginLeft: 40 }}>
+                                    {data?.acf?.bus_routes.map((item: any, index: any) => (
+                                        <li key={index} style={{ textDecoration: "underline" }}>
+                                            {formatRoute(item.label)}
+                                        </li>
+                                    ))}
+                                </BulletPointWrapper>
+                            </>
+                        )}
 
-            <AlsoSeeText>Opening</AlsoSeeText>
-            <BulletPointWrapper>
-                <OpningDatesContainer>
-
-
-                    <DatesWrapperText>
-                        {data?.acf?.seasonality &&
-                            data?.acf?.seasonality.map((item: any, index: any) => (
-                                <p key={index}>
-                                    {item?.label}
-                                    {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
-                                </p>
-                            ))}
-                    </DatesWrapperText>
+                        <AlsoSeeText>Opening</AlsoSeeText>
+                        <BulletPointWrapper>
+                            <OpningDatesContainer>
 
 
-                    {
-                        daysOfWeek.map((item, index) => (
-                            <WeekTimeArrange key={index}>
-                                <p>{item}:</p>
-                                <p>
-                                    {daysOfWeekTiming[index].opens} - {daysOfWeekTiming[index].closes}
-                                </p>
-                            </WeekTimeArrange>
-                        ))
-                    }
+                                <DatesWrapperText>
+                                    {data?.acf?.seasonality &&
+                                        data?.acf?.seasonality.map((item: any, index: any) => (
+                                            <p key={index}>
+                                                {item?.label}
+                                                {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
+                                            </p>
+                                        ))}
+                                </DatesWrapperText>
 
-                </OpningDatesContainer>
-            </BulletPointWrapper>
-        </Container>
-        :
-        ""
-        }
-        
-        
+
+                                {
+                                    daysOfWeek.map((item, index) => (
+                                        <WeekTimeArrange key={index}>
+                                            <p>{item}:</p>
+                                            <p>
+                                                {daysOfWeekTiming[index].opens} - {daysOfWeekTiming[index].closes}
+                                            </p>
+                                        </WeekTimeArrange>
+                                    ))
+                                }
+
+                            </OpningDatesContainer>
+                        </BulletPointWrapper>
+                    </Container>
+                    :
+                    ""
+            }
+
+
         </>
     );
 };
@@ -345,21 +345,7 @@ const EditBtn = styled.button`
     }
 
 `;
-const DeleteBtn = styled.button`
-    padding: 0px 12px;
-    border: 1px solid gray;
-    margin: 4px;
-    border-radius: 5px;
-    cursor: pointer;
-    background: rgb(127 29 29);
-    color: white;
-    &:hover{
-    
-    background: rgb(239 68 68);
-    transaction: .3s
-    }
 
-`;
 
 const Container = styled.div`
   display: flex;
