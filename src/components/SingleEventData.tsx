@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEventById, getEventList } from "../api/EventSlice/eventThunk";
 import ConfirmationComponent from "./confirmationUI";
+import Loading from "./Loading";
 
 
 
@@ -17,6 +18,7 @@ interface ModalProps {
     data?: any;
     setIsDrawerOpen?: any;
     setDrawerType?: any;
+    setSelectedList?: any;
 }
 
 
@@ -25,6 +27,7 @@ const SingleEventData: React.FC<ModalProps> = ({
     data,
     setIsDrawerOpen,
     setDrawerType,
+    setSelectedList,
 
 }) => {
     const dispatch = useDispatch();
@@ -168,153 +171,173 @@ const SingleEventData: React.FC<ModalProps> = ({
     return (
         <>
             {
-                data ?
+                loading ?
+                    <Loading />
+                    :
+                    data ?
 
-                    <Container className="overflow-y-auto max-h-[calc(100dvh-90px)] hide-scrollbar">
-                        <Title className="">
-                            <h1 className="font-semibold text-lg capitalize">{data?.acf?.title}</h1>
-                            <div className="">
-                                <EditBtn className="font-semibold text-lg capitalize mr-4" onClick={() => toggleDrawer()}>Edit</EditBtn>
-                                <ConfirmationComponent data={data?._id} />
-                            </div>
-                        </Title>
+                        <Container className="overflow-y-auto max-h-[calc(100dvh-90px)] hide-scrollbar">
+                            <Title className="">
+                                <h1 className="font-semibold text-lg capitalize">{data?.acf?.title}</h1>
+                                <div className="">
+                                    <EditBtn className="font-semibold text-lg capitalize mr-4" onClick={() => toggleDrawer()}>Edit</EditBtn>
+                                    <ConfirmationComponent data={data?._id} {...{ setSelectedList }} />
+                                </div>
+                            </Title>
 
-                        <ResturatContainer>
-                            <ResturatWrapper>
-                                <p style={{ fontSize: "14px", textTransform: 'capitalize' }}>{formattedValues()}</p>
-                            </ResturatWrapper>
-                        </ResturatContainer>
-                        <ItemImageContainer>
-                            <img
-                                src={
-                                    dataImage
-                                        ? dataImage
-                                        : "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FNo_Image_Available.jpg?alt=media&token=90cbe8cc-39f6-45f9-8c4b-59e9be631a07"
-                                }
-                                alt="Logo"
-                                width={200}
-                                height={80}
-                                style={{ borderRadius: 4, maxWidth: "100%", objectFit: "cover" }}
-                            />
-                        </ItemImageContainer>
-                        <ResturantDetailsContainer>
-                            {EventListData.map((item: any, index: number) => {
+                            <ResturatContainer>
+                                <ResturatWrapper>
+                                    <p style={{ fontSize: "14px", textTransform: 'capitalize' }}>{formattedValues()}</p>
+                                </ResturatWrapper>
+                            </ResturatContainer>
+                            <ItemImageContainer>
+                                <img
+                                    src={
+                                        dataImage
+                                            ? dataImage
+                                            : "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FNo_Image_Available.jpg?alt=media&token=90cbe8cc-39f6-45f9-8c4b-59e9be631a07"
+                                    }
+                                    alt="Logo"
+                                    width={200}
+                                    height={80}
+                                    style={{ borderRadius: 4, maxWidth: "100%", objectFit: "cover" }}
+                                />
+                            </ItemImageContainer>
+                            <ResturantDetailsContainer>
+                                {EventListData.map((item: any, index: number) => {
 
-                                return (
-                                    item?.nameValue &&
-                                    <ResturantDetailsWrapper key={index}>
-                                        {" "}
-                                        <div style={{ width: 20 }}>
-                                            <img
-                                                style={{ cursor: "pointer", height: "auto" }}
-                                                src={item.image}
-                                                width={item.width}
-                                                height={item.height}
-                                                alt="Logo Outline"
-                                            />{" "}
-                                        </div>
-                                        {index == 4 ? (
-                                            <RestDetailTitleWebsite href={item?.name} target="_blank">
-                                                {item?.name}
-                                            </RestDetailTitleWebsite>
-                                        ) : (
-                                            <RestDetailTitle>{item?.name}</RestDetailTitle>
-                                        )}
-                                    </ResturantDetailsWrapper>
-                                );
-                            })}
-                            {/* <ViewDirection onClick={() => reservationModal("DirectionModal")}>
+                                    return (
+                                        item?.nameValue &&
+                                        <ResturantDetailsWrapper key={index}>
+                                            {" "}
+                                            <div style={{ width: 20 }}>
+                                                <img
+                                                    style={{ cursor: "pointer", height: "auto" }}
+                                                    src={item.image}
+                                                    width={item.width}
+                                                    height={item.height}
+                                                    alt="Logo Outline"
+                                                />{" "}
+                                            </div>
+                                            {index == 4 ? (
+                                                <RestDetailTitleWebsite href={item?.name} target="_blank">
+                                                    {item?.name}
+                                                </RestDetailTitleWebsite>
+                                            ) : (
+                                                <RestDetailTitle>{item?.name}</RestDetailTitle>
+                                            )}
+                                        </ResturantDetailsWrapper>
+                                    );
+                                })}
+                                {/* <ViewDirection onClick={() => reservationModal("DirectionModal")}>
                     View Directions
                 </ViewDirection> */}
-                        </ResturantDetailsContainer>
-                        <RestDetailText>{strippedContent}</RestDetailText>
+                            </ResturantDetailsContainer>
+                            <RestDetailText>{strippedContent}</RestDetailText>
 
-                        {data?.acf?.event_dates != "" && (
-                            <>
-                                <AlsoSeeText>More dates</AlsoSeeText>
-                                {data?.acf?.event_dates?.map((item: any, index: any) => (
-                                    <DatesContainer key={index}>
-                                        <DatesWrapperText>
-                                            <p>{formatCalenderTime(item?.date)}</p>
-                                            <p>{formatDay(item?.date)}</p>
-                                            <p>{item?.start_time}</p>
-                                        </DatesWrapperText>
-                                        <DateMonthWraaper>
-                                            <p style={{ fontSize: 17 }}>{formatDate(item.date)}</p>
-                                            <Monthstyle>{formatMonth(item?.date)}</Monthstyle>
-                                        </DateMonthWraaper>
-                                    </DatesContainer>
-                                ))}
-                            </>
-                        )}
-
-                        {data?.acf?.key_facilities != "" && (
-                            <>
-                                <AlsoSeeText>Key Features</AlsoSeeText>
-                                <BulletPointWrapper style={{ marginLeft: 40 }}>
-                                    {data?.acf?.key_facilities.map((item: any, index: any) => (
-                                        <li key={index}>{item.label}</li>
+                            {data?.acf?.event_dates != "" && (
+                                <>
+                                    <AlsoSeeText>More dates</AlsoSeeText>
+                                    {data?.acf?.event_dates?.map((item: any, index: any) => (
+                                        <DatesContainer key={index}>
+                                            <DatesWrapperText>
+                                                <p>{formatCalenderTime(item?.date)}</p>
+                                                <p>{formatDay(item?.date)}</p>
+                                                <p>{item?.start_time}</p>
+                                            </DatesWrapperText>
+                                            <DateMonthWraaper>
+                                                <p style={{ fontSize: 17 }}>{formatDate(item.date)}</p>
+                                                <Monthstyle>{formatMonth(item?.date)}</Monthstyle>
+                                            </DateMonthWraaper>
+                                        </DatesContainer>
                                     ))}
-                                </BulletPointWrapper>
-                            </>
-                        )}
+                                </>
+                            )}
 
-                        {data?.acf?.accessibility != "" && (
-                            <>
-                                <AlsoSeeText>Accessibility</AlsoSeeText>
-                                <BulletPointWrapper style={{ marginLeft: 40 }}>
-                                    {data?.acf?.accessibility.map((item: any, index: any) => (
-                                        <li key={index}>{item?.label}</li>
-                                    ))}
-                                </BulletPointWrapper>
-                            </>
-                        )}
-
-                        {data?.acf?.bus_routes != "" && (
-                            <>
-                                <AlsoSeeText>Bus Route</AlsoSeeText>
-                                <BulletPointWrapper style={{ marginLeft: 40 }}>
-                                    {data?.acf?.bus_routes.map((item: any, index: any) => (
-                                        <li key={index} style={{ textDecoration: "underline" }}>
-                                            {formatRoute(item.label)}
-                                        </li>
-                                    ))}
-                                </BulletPointWrapper>
-                            </>
-                        )}
-
-                        <AlsoSeeText>Opening</AlsoSeeText>
-                        <BulletPointWrapper>
-                            <OpningDatesContainer>
-
-
-                                <DatesWrapperText>
-                                    {data?.acf?.seasonality &&
-                                        data?.acf?.seasonality.map((item: any, index: any) => (
-                                            <p key={index}>
-                                                {item?.label}
-                                                {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
-                                            </p>
+                            {data?.acf?.key_facilities != "" && (
+                                <>
+                                    <AlsoSeeText>Key Features</AlsoSeeText>
+                                    <BulletPointWrapper style={{ marginLeft: 40 }}>
+                                        {data?.acf?.key_facilities.map((item: any, index: any) => (
+                                            <li key={index}>{item.label}</li>
                                         ))}
-                                </DatesWrapperText>
+                                    </BulletPointWrapper>
+                                </>
+                            )}
+
+                            {data?.acf?.accessibility != "" && (
+                                <>
+                                    <AlsoSeeText>Accessibility</AlsoSeeText>
+                                    <BulletPointWrapper style={{ marginLeft: 40 }}>
+                                        {data?.acf?.accessibility.map((item: any, index: any) => (
+                                            <li key={index}>{item?.label}</li>
+                                        ))}
+                                    </BulletPointWrapper>
+                                </>
+                            )}
+
+                            {data?.acf?.bus_routes != "" && (
+                                <>
+                                    <AlsoSeeText>Bus Route</AlsoSeeText>
+                                    <BulletPointWrapper style={{ marginLeft: 40 }}>
+                                        {data?.acf?.bus_routes.map((item: any, index: any) => (
+                                            <li key={index} style={{ textDecoration: "underline" }}>
+                                                {formatRoute(item.label)}
+                                            </li>
+                                        ))}
+                                    </BulletPointWrapper>
+                                </>
+                            )}
+
+                            <AlsoSeeText>Opening</AlsoSeeText>
+                            <BulletPointWrapper>
+                                <OpningDatesContainer>
 
 
-                                {
-                                    daysOfWeek.map((item, index) => (
-                                        <WeekTimeArrange key={index}>
-                                            <p>{item}:</p>
-                                            <p>
-                                                {daysOfWeekTiming[index].opens} - {daysOfWeekTiming[index].closes}
-                                            </p>
-                                        </WeekTimeArrange>
-                                    ))
-                                }
+                                    <DatesWrapperText>
+                                        {data?.acf?.seasonality &&
+                                            data?.acf?.seasonality.map((item: any, index: any) => (
+                                                <p key={index}>
+                                                    {item?.label}
+                                                    {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
+                                                </p>
+                                            ))}
+                                    </DatesWrapperText>
 
-                            </OpningDatesContainer>
-                        </BulletPointWrapper>
-                    </Container>
-                    :
-                    ""
+
+                                    {
+                                        daysOfWeek.map((item, index) => (
+                                            <WeekTimeArrange key={index}>
+                                                <p>{item}:</p>
+                                                <p>
+                                                    {daysOfWeekTiming[index].opens} - {daysOfWeekTiming[index].closes}
+                                                </p>
+                                            </WeekTimeArrange>
+                                        ))
+                                    }
+
+                                </OpningDatesContainer>
+                            </BulletPointWrapper>
+                        </Container>
+                        :
+                        <div className="flex flex-col items-center justify-center h-full">
+                            <svg
+                                className="w-16 h-16 text-gray-400 mb-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M9 17v-6h6v6m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm6 0H9m3-16.5V9m0 0L15 6m-3 3L9 6"
+                                ></path>
+                            </svg>
+                            <p className="text-gray-500 text-lg">No data available</p>
+                        </div>
+
             }
 
 

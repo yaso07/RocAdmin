@@ -9,15 +9,17 @@ import { useDispatch } from 'react-redux';
 
 interface propsData {
     data?: any;
+    setSelectedList?: any;
 }
 
-const ConfirmationComponent: React.FC<propsData> = ({ data }) => {
+const ConfirmationComponent: React.FC<propsData> = ({ data, setSelectedList }) => {
     const dispatch = useDispatch()
 
     const confirm = (e: any, data: any) => {
             console.log(e)
         dispatch(deleteEvent(data) as any)
         dispatch(getEventList() as any)
+        setSelectedList(0)
         // message.success('Event deleted succefully');
     };
 
