@@ -11,5 +11,6 @@ export type formDataType = {
     short_description: string,
     from_price: string,
     price_to: string,
+    phoneNumber:string,
     header_image_data: string,
 };

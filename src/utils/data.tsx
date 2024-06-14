@@ -1,0 +1,16 @@
+export const parishList = [
+    { value: "100", label: "Any" },
+    { value: "1", label: "Saint Helier" },
+    { value: "2", label: "Saint Clement" },
+    { value: "3", label: "Saint Saviour" },
+    { value: "4", label: "Saint Lawrence" },
+    { value: "5", label: "Saint Ouen" },
+    { value: "6", label: "Saint Mary" },
+    { value: "7", label: "Saint John" },
+    { value: "8", label: "Trinity" },
+    { value: "9", label: "Saint Martin" },
+    { value: "10", label: "Saint Peter" },
+    { value: "11", label: "Saint Brélade" },
+    { value: "12", label: "Grouville" },
+    { value: "13", label: "Jersey" },
+]

@@ -15,6 +15,7 @@ export const eventSchema = Yup.object().shape({
     address_line_1: Yup.string(),
     address_line_2: Yup.string(),
     postcode: Yup.string(),
+    phoneNumber: Yup.string().nullable().matches(/^\d*$/, 'Phone number must be a valid integer'),
     price_to: Yup.string()
     .test(
       'is-positive',

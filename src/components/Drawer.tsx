@@ -14,6 +14,7 @@ import { createEvent, getEventList, updateEvent } from "../api/EventSlice/eventT
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
+import Dropdown from "./dropdown";
 
 interface Props {
     toggleDrawer: () => void;
@@ -50,6 +51,7 @@ const initialFormValues: formDataType = {
     from_price: '0',
     price_to: '0',
     header_image_data: '',
+    phoneNumber:'',
 }
 
 const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
@@ -64,6 +66,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
     const [busRoute, setBusRoute] = useState<Array<any>>([]);
     const [opningTime, setOpningTime] = useState<Array<any>>([]);
     const [accessibility, setAccessibility] = useState<Array<any>>([]);
+    const [parishName, setParishName] = useState<{value:string, label:string}>({value:'', label:''});
     const [dateTimes, setDateTimes] = useState<DateTime[]>([]);
     const [showDateTime, setShowDateTime] = useState<DateTime[]>([]);
     const [loader, setLoder] = useState<boolean>(false)
@@ -83,7 +86,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
 
     // ============================ GET DATA BY ID ==========================================================
     useEffect(() => {
-        
+
         if (SingleEventData) {
 
             setFieldValue("title", SingleEventData?.acf?.title)
@@ -97,11 +100,13 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
             setFieldValue("address_line_1", SingleEventData?.acf?.address?.address_line_1)
             setFieldValue("address_line_2", SingleEventData?.acf?.address?.address_line_2)
             setFieldValue("postcode", SingleEventData?.acf?.address?.postcode)
+            setFieldValue("phoneNumber", SingleEventData?.acf?.telephone_number?.formatted)
             setFieldValue("from_price", SingleEventData?.acf?.from_price)
             setFieldValue("price_to", SingleEventData?.acf?.price_to)
             const imgArray = JSON.parse(SingleEventData?.acf?.header_image_data);
             setFieldValue("header_image_data", SingleEventData?.acf?.header_image_data)
             setSelectedImage(imgArray[0].url)
+            setParishName({...SingleEventData?.acf?.parish})
             const eventTypeArray: TransformedType[] = SingleEventData?.acf?.type.map((item: any) => ({
                 id: item.value,
                 text: item.label,
@@ -177,6 +182,12 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
     };
 
 
+    
+    const handleSelect = (id: string) => {
+        setParishName({value:id, label:id})
+    };
+
+
     // ==================================== POST FINAL EVENT DATA ====================================================
     const submitFormikFunction = () => {
         const keyFeature: TransformedType[] = feature.map(item => ({
@@ -204,9 +215,9 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
             start_time: item.start_time,
             end_time: item.end_time,
         }));
-       
+
         const finalObject = {
-           
+
             acf: {
                 title: values.title,
                 type: eventTypeArray,
@@ -221,6 +232,13 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                     address_line_2: values.address_line_2,
                     postcode: values.postcode
                 },
+                telephone_number: {
+                    area_code: "",
+                    prefix: "0",
+                    number: "",
+                    formatted: values.phoneNumber
+                },
+                parish: parishName,
                 map_location_lat: values.lat,
                 map_location_lng: values.lng,
                 short_description: values.short_description,
@@ -230,9 +248,9 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                 seasonality: seasonalityArray,
                 from_price: values.from_price,
                 price_to: values.price_to,
-                event_dates_start: dateTimeArray.length ? moment(dateTimeArray[0].date).format("DD/MM/YYYY") : "" ,
-                event_dates_end:  dateTimeArray.length ? moment(dateTimeArray[dateTimeArray.length - 1].date).format("DD/MM/YYYY") : "" ,
-            
+                event_dates_start: dateTimeArray.length ? moment(dateTimeArray[0].date).format("DD/MM/YYYY") : "",
+                event_dates_end: dateTimeArray.length ? moment(dateTimeArray[dateTimeArray.length - 1].date).format("DD/MM/YYYY") : "",
+
             },
             data_type: "jersey",
             type: "events",
@@ -245,7 +263,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                 setIsDrawerOpen(false);
             }
         } else {
-            
+
             console.log("five")
             const id: string = SingleEventData?._id
             const status = { id, finalObject }
@@ -369,8 +387,6 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
 
 
 
-
-
     return (
         <div className={`fixed inset-y-0 right-0 w-3/5 bg-white shadow-lg transform transition-transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} duration-1000 overflow-y-auto max-h-[100dvh] hide-scrollbar`}>
             <div className="p-4">
@@ -380,13 +396,12 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                         type="button"
                         onClick={submitData}
                         className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md transform transition-transform duration-150 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 active:bg-blue-700 active:scale-95">
-                        {loading ? "loading..."  : (drawerType === "add" ? "Save" : "Update")}
+                        {loading ? "loading..." : (drawerType === "add" ? "Save" : "Update")}
                     </button>
                 </div>
                 <hr />
                 <form className="mt-2">
                     <div className="container mx-auto p-4">
-
                         <h1 className="text-2xl font-bold mb-4">Image Upload</h1>
                         <input
                             type="file"
@@ -408,11 +423,6 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                                                 <img src={(selectedImage ? selectedImage : fallback) as string} alt="Uploaded" className="w-[150px] max-w-sm h-[150px]" />
                                             </div>
                                         )
-                                        // : (
-                                        //     <div>
-                                        //         <img src={(values.header_image_data ? values.header_image_data : fallback) as string} alt="Uploaded" className="w-[150px] max-w-sm h-[150px]" />
-                                        //     </div>
-                                        // )
                                     }
                                 </>
                         }
@@ -430,17 +440,18 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                             error={errors.title}
                             touch={touched.title && errors.title}
                         />
-                        {/* <EventField
+     
+                        <EventField
                             className="border border-gray-200 mt-2"
-                            label="Type"
-                            name="subTitle"
+                            label="Phone number"
+                            name="phoneNumber"
                             type="text"
-                            value={values.subTitle}
+                            value={values.phoneNumber}
                             handleChange={handleChange}
                             handleBlur={handleBlur}
-                            error={errors.subTitle}
-                            touch={touched.subTitle && errors.subTitle}
-                        /> */}
+                            error={errors.phoneNumber}
+                            touch={touched.phoneNumber && errors.phoneNumber}
+                        />
                     </div>
                     <div className="flex gap-10 flex-wrap w-full">
                         <EventField
@@ -584,6 +595,11 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType }: Props) => {
                             touch={touched.short_description && errors.short_description}
                             setFieldValue={setFieldValue}
                             title={"Description"} />
+                    </div>
+                    <div className=" mb-4 w-full">
+                        <h1 className="text-2xl font-bold mb-2">Parish</h1>
+                            <Dropdown onSelect={handleSelect} />
+
                     </div>
                     <div className=" mb-4 w-full">
                         <h1 className="text-2xl font-bold mb-2">Type</h1>

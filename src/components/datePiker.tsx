@@ -61,7 +61,8 @@ const DateTimePicker: React.FC<DateTimeProps> = ({ dateTimes, setDateTimes, show
     setShowDateTime(updatedDateTimes);
   };
 
-  const removeDateTime = (id: number) => {
+  const removeDateTime = (e: any, id: number) => {
+    e.preventDefault();
     const filteredDateTimes = dateTimes.filter((dt: any) => dt.id !== id);
     setDateTimes(filteredDateTimes);
     setShowDateTime(filteredDateTimes);
@@ -105,7 +106,7 @@ const DateTimePicker: React.FC<DateTimeProps> = ({ dateTimes, setDateTimes, show
             />
           </div>
           <button
-            onClick={() => removeDateTime(dt.id)}
+            onClick={(e) => removeDateTime(e, dt.id)}
             className="bg-red-500 text-white p-2 rounded ml-4 w-1/6"
           >
             Remove
