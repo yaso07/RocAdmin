@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { formatCalenderTime, formatDate, formatDay, formatFullDate, formatMonth } from "../utils/commanFun";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteEvent, fetchEventById, getEventList } from "../api/EventSlice/eventThunk";
+import { fetchEventById, getEventList } from "../api/EventSlice/eventThunk";
 import ConfirmationComponent from "./confirmationUI";
 
 

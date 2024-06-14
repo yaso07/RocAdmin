@@ -1,6 +1,6 @@
 import React from 'react';
 import type { PopconfirmProps } from 'antd';
-import { message, Popconfirm } from 'antd';
+import {  Popconfirm } from 'antd';
 import styled from 'styled-components';
 import { deleteEvent, getEventList } from '../api/EventSlice/eventThunk';
 import { useDispatch } from 'react-redux';
@@ -15,7 +15,7 @@ const ConfirmationComponent: React.FC<propsData> = ({ data }) => {
     const dispatch = useDispatch()
 
     const confirm = (e: any, data: any) => {
-
+            console.log(e)
         dispatch(deleteEvent(data) as any)
         dispatch(getEventList() as any)
         // message.success('Event deleted succefully');
