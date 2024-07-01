@@ -21,13 +21,13 @@ const Error = ({error}:{error:string}) => {
         </div>
       </main>
     );
-  
+       
   return (
     <main className="grid min-h-[100vh] place-items-center px-8">
       <h4 className="text-center font-bold text-4xl">{error}...</h4>
     </main>
   );
-}
+       }
 }
 
 export default Error
