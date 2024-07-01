@@ -12,22 +12,28 @@ export const createEvent = createAsyncThunk(
   "event/create",
   async (bodyParameter: any) => {
     const token = JSON.parse(getUser()).token;
-    const response = await axios.post<any>(
-      import.meta.env.VITE_REACT_APP_API_BASE_URL + CREATE_EVENT, bodyParameter,
-      {
-        headers: {
-          "x-login-token": token
-        },
-      }
-    );
-    console.log("event data kya hhhh", response)
-    if(response?.data != 200){
-        toast.success(response?.data?.message)
-      } else {
+    try {
+      const response = await axios.post<any>(
+        import.meta.env.VITE_REACT_APP_API_BASE_URL + CREATE_EVENT, bodyParameter,
+        {
+          headers: {
+            "x-login-token": token
+          },
+        }
+      );
+      console.log("event data kya hhhh", response)
+      if(response?.data == 200){
+          toast.success(response?.data?.message)
+        } else {
+          toast.error(response?.data?.message)
+        }
+        return response.data;
         
-        toast.error(response?.data?.message)
+      } catch (error: any) {
+        toast.error(error?.response?.data?.message)
+        console.log(error?.response?.data?.message, "erroroooror");
+      
     }
-    return response.data;
   })
 
 
