@@ -5,7 +5,7 @@ import DashBoard from "./pages/DashBoard";
 
 import Error from "./components/Error";
 import { getUser } from "./api/Category/user";
-import { toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 import ContactsPage from "./pages/ContactsPage";
 import EventsPage from "./pages/EventsPage";
@@ -16,7 +16,6 @@ export const routes = createBrowserRouter([
     errorElement: <Error error="404"></Error>,
     loader: async () => {
       const user = await JSON.parse(getUser());
-      
       if (!user) {
         return redirect("/login");
       }
@@ -28,12 +27,12 @@ export const routes = createBrowserRouter([
         element: <DashBoard></DashBoard>,
       },
       {
-        path:'contacts',
-        element:<ContactsPage></ContactsPage>
+        path: 'contacts',
+        element: <ContactsPage></ContactsPage>
       },
       {
-        path:'events',
-        element:<EventsPage />
+        path: 'events',
+        element: <EventsPage />
       }
     ],
   },
@@ -52,5 +51,4 @@ export const routes = createBrowserRouter([
       return redirect("/login");
     },
   },
-  
 ]);

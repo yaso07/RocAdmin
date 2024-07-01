@@ -91,6 +91,8 @@ export function convertTo12HourTime(time24Hour: any) {
     return "Close";
   }
 
+
+  // WE NOT USE THIS IN CODE 
   export const convertToDate = (dateStr: any) => {
       const year = dateStr.toString().substring(0, 4);
       const month = dateStr.toString().substring(4, 6);
@@ -101,9 +103,6 @@ export function convertTo12HourTime(time24Hour: any) {
       return date;
 };
 
-export const convertDate = ()=>{
-  
-}
 
 
   
