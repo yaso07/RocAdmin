@@ -34,6 +34,7 @@ export const eventSlice = createSlice({
             state.isLoading = false
             state.error = action.error.message ? action.error.message : ''
         });
+        
 
         // GET EVENTL LIST DATA
         builder.addCase(getEventList.fulfilled, (state, action) => {

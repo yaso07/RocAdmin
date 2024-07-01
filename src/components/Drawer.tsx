@@ -105,7 +105,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType, setDrawerType }: Props) =
                 setFieldValue("phoneNumber", SingleEventData?.acf?.telephone_number?.formatted)
                 setFieldValue("from_price", SingleEventData?.acf?.from_price)
                 setFieldValue("price_to", SingleEventData?.acf?.price_to)
-                if(SingleEventData?.acf?.header_image_data){
+                if (SingleEventData?.acf?.header_image_data) {
                     const imgArray = JSON.parse(SingleEventData?.acf?.header_image_data);
                     setSelectedImage(imgArray[0].url)
                 } else {
@@ -196,12 +196,9 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType, setDrawerType }: Props) =
 
                     setLoder(false)
                 }
-
             } catch (error) {
                 setLoder(false)
-
             }
-
         }
     };
 
@@ -282,22 +279,17 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType, setDrawerType }: Props) =
         }
         if (drawerType === "add") {
             dispatch(createEvent(finalObject) as any)
-            // if (loading && error === '') {
-            //     resetForm()
-            //     setIsDrawerOpen(false);
-            // }
+
         } else {
             const id: string = SingleEventData?._id
             const status = { id, finalObject }
             dispatch(updateEvent(status) as any)
-            // if (loading && error === '') {
-            //     resetForm()
-            //     setIsDrawerOpen(false);
-            //     console.log("four")
-
-            // }
         }
     }
+
+
+
+    
     useEffect(() => {
         if (!loading && error === '') {
             resetForm()
