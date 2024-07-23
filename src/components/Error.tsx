@@ -25,8 +25,7 @@ const Error = ({error}:{error:string}) => {
       <h4 className="text-center font-bold text-4xl">{error}...</h4>
     </main>
   );
-
-}
+       }
 }
 
 export default Error
