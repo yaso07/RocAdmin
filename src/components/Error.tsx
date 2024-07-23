@@ -1,9 +1,14 @@
 
 import { Link } from "react-router-dom";
+import { getUser } from "../api/Category/user";
 
 const Error = ({error}:{error:string}) => {
-  
+       const user = JSON.parse(getUser());
+       if (user && error.includes('400')) {
+          window.location.reload();
+       }
        if (error=='404' || error.includes('400')) {
+             
        return (
       <main className="grid min-h-[100vh] place-items-center px-8">
         <div className="text-center">
