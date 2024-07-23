@@ -22,9 +22,9 @@ const EventsPage = () => {
     useEffect(() => {
         dispatch(getEventList() as any)
     }, [])
-
+ 
     useEffect(() => {
-        if (eventDataValue !== undefined) {
+        if(eventDataValue !== undefined) {
             const imageData = eventDataValue[selectedList]?.acf?.header_image_data ? JSON.parse(eventDataValue[selectedList]?.acf?.header_image_data) : [{ url: "" }]
             setEventData(eventDataValue[selectedList])
             setDataImage(imageData[0].url)
