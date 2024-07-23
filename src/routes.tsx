@@ -8,6 +8,7 @@ import { getUser } from "./api/Category/user";
 import { toast} from "react-toastify";
 
 import ContactsPage from "./pages/ContactsPage";
+import EventsPage from "./pages/EventsPage";
 export const routes = createBrowserRouter([
   {
     path: "/",
@@ -29,6 +30,10 @@ export const routes = createBrowserRouter([
       {
         path:'contacts',
         element:<ContactsPage></ContactsPage>
+      },
+      {
+        path:'events',
+        element:<EventsPage />
       }
     ],
   },
