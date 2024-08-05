@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getUser } from "../Category/user";
 import axios from "axios";
-import { CREATE_EVENT, GET_EVENT_LIST } from "../constant";
+import { CREATE_EVENT, GET_EVENT_LIST,CREATE_ACTIVITY } from "../constant";
 import { toast } from "react-toastify";
 
 
@@ -36,6 +36,35 @@ export const createEvent = createAsyncThunk(
     }
   })
 
+// ==================== CREATE Activity ===========================================================
+
+  export const createActivity = createAsyncThunk(
+    "activity/create",
+    async (bodyParameter: any) => {
+      const token = JSON.parse(getUser()).token;
+      try {
+        const response = await axios.post<any>(
+          import.meta.env.VITE_REACT_APP_API_BASE_URL + CREATE_ACTIVITY, bodyParameter,
+          {
+            headers: {
+              "x-login-token": token
+            },
+          }
+        );
+        console.log("activity data kya hhhh", response)
+        if(response?.data == 200){
+            toast.success(response?.data?.message)
+          } else {
+            toast.error(response?.data?.message)
+          }
+          return response.data;
+          
+        } catch (error: any) {
+          toast.error(error?.response?.data?.message)
+          console.log(error?.response?.data?.message, "erroroooror");
+        
+      }
+    })
 
 // ============================== GET EVENT LIST ====================================================
 export const getEventList = createAsyncThunk(

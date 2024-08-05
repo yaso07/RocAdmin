@@ -1,0 +1,143 @@
+/* App.css */
+.textarea-container {
+    position: relative;
+    width: 100%;
+    margin-top: 50px;
+  }
+  
+  .custom-textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+  
+  .custom-textarea:focus {
+    border-color: #000;
+    border-width: 2px;
+  }
+
+.input-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .custom-input {
+    border: 1px solid #ccc;
+    padding: 10px;
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 20px;
+  }
+  
+  .custom-input:focus {
+    border-color: #4965a7;
+  }
+
+  .custom-inputPrice {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .custom-inputPrice:focus {
+    border-color: #4965a7;
+  }
+
+  .custom-inputInfo {
+    border: 1px solid #ccc;
+    padding: 10px;
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .custom-inputInfo:focus {
+    border-color: #4965a7;
+  }
+  
+  .char-counter {
+    position: absolute;
+    right: 0px;
+    /* bottom: 5px; */
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 5px;
+    color: #666;
+    pointer-events: none; /* Makes the counter non-interactive */
+  }
+
+  .char-counterTextarea {
+    position: absolute;
+    right: 0px;
+    /* bottom: 5px; */
+    font-size: 15px;
+    font-weight: 600;
+    /* margin-top: 5px; */
+    color: #666;
+    pointer-events: none; /* Makes the counter non-interactive */
+  }
+
+  /* Checkbox css */
+  /* CustomCheckbox.css */
+  .custom-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .custom-checkbox .checkmark {
+    height: 16px;
+    width: 16px;
+    border: 1px solid #afacac ;
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 8px;
+    position: relative;
+    transition: background-color 0.3s;
+  }
+  
+  .custom-checkbox input:checked + .checkmark {
+    background-color: #4965a7;
+    border: none ;
+  }
+  
+  .custom-checkbox .checkmark:after {
+    content: '';
+    position: absolute;
+    display: none;
+  }
+  
+  .custom-checkbox input:checked + .checkmark:after {
+    display: block;
+  }
+  
+  .custom-checkbox .checkmark:after {
+    left: 5px;
+    top: 1px;
+    width: 6px;
+    height: 11px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(37deg);
+  }
+  
+  
+  

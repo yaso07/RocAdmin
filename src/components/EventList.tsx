@@ -2,7 +2,8 @@
 
 
 import { useEffect, useState } from "react";
-import Drawer from "./Drawer";
+// import Drawer from "./Drawer";
+import EventDataList from "./EventDataList";
 import { mappedArray } from "../utils/dataMapping";
 
 
@@ -86,7 +87,8 @@ function EventDetails({ handleEventData ,setDrawerType, isDrawerOpen, setIsDrawe
         </div>
       </div>
 
-      <Drawer isOpen={isDrawerOpen} {...{setIsDrawerOpen, drawerType, setDrawerType}}/>
+      {/* <Drawer isOpen={isDrawerOpen} {...{setIsDrawerOpen, drawerType, setDrawerType}}/> */}
+      <EventDataList isOpen={isDrawerOpen} {...{setIsDrawerOpen, drawerType, setDrawerType}}/>
     </>
   );
 }

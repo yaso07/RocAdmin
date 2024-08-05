@@ -1,7 +1,60 @@
 #root {
- 
   margin: 0 auto;
-   background-color: rgb(250, 246, 246);
- 
+  background-color: rgb(250, 246, 246);
 }
- 
+
+.checkboxContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ParenthesesInput.css */
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.parentheses-input {
+  padding: 0.625rem;
+  box-sizing: border-box;
+  text-align: center;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: border-color 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.parentheses-input:focus {
+  border-color: #4965a7;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.input-wrapper::before,
+.input-wrapper::after {
+  content: "(";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #ccc;
+}
+
+.input-wrapper::after {
+  content: ")";
+  right: 10px; /* Adjust based on your preference */
+}
+
+.input-wrapper::before {
+  left: 10px; /* Adjust based on your preference */
+}
