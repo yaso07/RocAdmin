@@ -1,23 +1,18 @@
-import { formDataType } from "../types/event";
+
 import Accordion from "../components/Accordion/Accordion";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
-  createEvent,
-  getEventList,
-  updateEvent,
   createActivity
 } from "../api/EventSlice/eventThunk";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import moment from "moment";
+import { useDispatch } from "react-redux";
+
 import ReusableInput from "./InputBox/ReusableInput";
 import TextField from "./InputBox/TextField";
 import Checkbox from "./InputBox/Checkbox";
 import "../App.css";
 import InputBoxWithImage from "./InputBox/InputBoxWithImage";
 import styled from "styled-components";
-import MenuSelect from "./DropdownList/MenuSelect";
-import { formatDate } from "../types/date";
+
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -686,7 +681,6 @@ const EventDataShow = () => {
     value: string;
   } | null>(null);
 
-  console.log(selectedOpt, "aasas");
 
   const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedValue = event.target.value;

@@ -57,7 +57,8 @@ export const createEvent = createAsyncThunk(
           } else {
             toast.error(response?.data?.message)
           }
-          return response.data;
+          return [];
+          // return response.data;
           
         } catch (error: any) {
           toast.error(error?.response?.data?.message)
@@ -72,7 +73,7 @@ export const getEventList = createAsyncThunk(
   async () => {
 
     const token = JSON.parse(getUser()).token;
-    const response = await axios.get<any[]>(
+    const response = await axios.get<any>(
       import.meta.env.VITE_REACT_APP_API_BASE_URL + GET_EVENT_LIST,
       {
         headers: {
@@ -80,9 +81,8 @@ export const getEventList = createAsyncThunk(
         },
       }
     );
-    
-   
-    return response.data;
+     
+    return response?.data;
   })
 
 

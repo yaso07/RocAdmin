@@ -40,7 +40,6 @@ const EventsPage = () => {
 
 
 
-
     return (
         <>
             {

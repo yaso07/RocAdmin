@@ -707,11 +707,51 @@ const EventDataShow = () => {
   //   };
 
   const [file, setFile] = useState();
-  console.log(file, "dsdsds");
-  function handleChange(e: any) {
-    console.log(e.target.files);
-    setFile(URL.createObjectURL(e.target.files[0]) as any);
+ async function handleChange(e: any) {
+   
+   const file = e.target.files?.[0];
+   const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
+   if (file) {
+     const formData = new FormData();
+     formData.append("image", file);
+     const res = await axios.post(url, formData);
+     
+     setFile(res?.data);    
+    //  setFile(URL.createObjectURL(e.target.files[0]) as any);    
+      console.log("dresponse", res)
+    }
   }
+
+
+    
+    
+      // try {
+      //   setLoder(true);
+      //   const formData = new FormData();
+      //   formData.append("image", file);
+        
+      //   if (res.status == 200) {
+      //     const imageArray = [
+      //       {
+      //         alt_text: "",
+      //         original_filename: file.name,
+      //         public_id: "",
+      //         url: res?.data,
+      //       },
+      //     ];
+      //     setFieldValue("header_image_data", JSON.stringify(imageArray));
+      //     const reader = new FileReader();
+      //     reader.onloadend = () => {
+      //       setSelectedImage(reader.result);
+      //     };
+      //     reader.readAsDataURL(file);
+      //     setLoder(false);
+      //   } else {
+      //     setLoder(false);
+      //   }
+      // } catch (error) {
+      //   setLoder(false);
+      // }
 
   return (
     <div>
