@@ -20,6 +20,7 @@ import { formatDate } from "../types/date";
 // import Modal from "@mui/material/Modal";
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { createSelector } from 'reselect';
 
 interface Acf {
   title: string;
@@ -28,7 +29,6 @@ interface Acf {
   type: { label: any; value: any }[];
   location: { label: any; value: any }[];
   key_facilities: { label: any; value: any }[];
-  eventType: string;
   from_price: string;
   price_to: string;
   url:any;
@@ -63,6 +63,7 @@ interface Acf {
   event_dates_end?: string;
   startTime?: string;
   endTime?: string;
+  eventType?: string;
 }
 
 interface FinalObject {
@@ -114,6 +115,11 @@ type Category =
   | "BusRoutes"
   | "Accessibility";
 
+  const selectSingleEventData = createSelector(
+    (state: any) => state.event.singleEventData,
+    (singleEventData) => singleEventData || { acf: {} }
+  );
+
 const EventDataShow = () => {
   const dispatch = useDispatch();
 
@@ -147,14 +153,6 @@ const EventDataShow = () => {
       value: item.value,
     }));
 
-    const eventType = () => {
-      if (selectedOptionEvent == "option4") {
-        return "custom";
-      } else {
-        return "weekly";
-      }
-    };
-
     const finalObject: FinalObject = {
       acf: {
         title: formData.DescriptionTitle,
@@ -163,7 +161,6 @@ const EventDataShow = () => {
         type: eventTypeArray,
         location: eventLocationArray,
         key_facilities: keyFeature,
-        eventType: eventType(),
         url:file,
         from_price: formData.priceFrom,
         price_to: formData.priceTo,
@@ -200,47 +197,59 @@ const EventDataShow = () => {
     };
     if (selectedOptionEvent === "option4") {
       finalObject.acf.customDates = dateTimeComponents;
+      finalObject.acf.eventType = "custom" ;
     } else if (selectedOptionEvent === "option3") {
       finalObject.acf.event_dates_start = dateState.startDateMonth;
       finalObject.acf.event_dates_end = dateState.endDateMonth;
       finalObject.acf.startTime = timeState.startTimeMonth;
       finalObject.acf.endTime = timeState.endTimeMonth;
+      finalObject.acf.eventType = "month"
     } else if (selectedOptionEvent === "option2") {
       finalObject.acf.event_dates_start = dateState.startDateWeekly;
       finalObject.acf.event_dates_end = dateState.endDateWeekly;
       finalObject.acf.startTime = timeState.startTimeWeekly;
       finalObject.acf.endTime = timeState.endTimeWeekly;
+      finalObject.acf.eventType = "weekly"
     } else if (selectedOptionEvent === "option1") {
       finalObject.acf.event_dates_start = dateState.startDateDaily;
       finalObject.acf.event_dates_end = dateState.endDateDaily;
       finalObject.acf.startTime = timeState.startTimeDaily;
       finalObject.acf.endTime = timeState.endTimeDaily;
+      finalObject.acf.eventType = "daily"
     }
     console.log(finalObject, "finalObject");
     dispatch(createEvent(finalObject) as any);
   };
+  
+  const SingleEventData = useSelector(selectSingleEventData);
+
+  console.log(SingleEventData,"sdsdsd")
 
   const [formData, setFormData] = useState({
-    DescriptionTitle: "",
-    introDescription: "",
-    moreInformation: "",
-    priceFrom: "",
-    priceTo: "",
-    DisplayName: "",
-    EmailAddress: "",
-    Prefix: "",
-    Telephone: "",
-    Website: "",
-    PlaceName: "",
-    AddressLine: "",
-    AddressLineOptional: "",
-    Postcode: "",
-    Facebook: "",
-    Instagram: "",
-    Twitter: "",
-    AdditionalInfo: "",
-    AccessibilityURL: "",
+    DescriptionTitle: SingleEventData?.acf?.title || '',
+    introDescription: SingleEventData?.acf?.short_description || '',
+    moreInformation: SingleEventData?.acf?.long_description || '',
+    priceFrom: SingleEventData?.acf?.from_price || '',
+    priceTo: SingleEventData?.acf?.price_to || '',
+    DisplayName: SingleEventData?.acf?.display_name || '',
+    EmailAddress: SingleEventData?.acf?.email_address || '',
+    Prefix: SingleEventData?.acf?.telephone_number?.prefix || '',
+    Telephone: SingleEventData?.acf?.telephone_number?.number || '',
+    Website: SingleEventData?.acf?.website || '',
+    PlaceName: SingleEventData?.acf?.address?.place_name || '',
+    AddressLine: SingleEventData?.acf?.address?.address_line_1 || '',
+    AddressLineOptional: SingleEventData?.acf?.address?.address_line_2 || '',
+    Postcode: SingleEventData?.acf?.address?.postcode || '',
+    Facebook: SingleEventData?.acf?.social_media?.facebook || '',
+    Instagram: SingleEventData?.acf?.social_media?.instagram || '',
+    Twitter: SingleEventData?.acf?.social_media?.twitter || '',
+    AdditionalInfo: SingleEventData?.acf?.accessibility_additional_info || '',
+    AccessibilityURL: SingleEventData?.acf?.accessibility_url || '',
   });
+
+
+
+
 
   const [selectedOptionEvent, setSelectedOptionEvent] = useState("");
 

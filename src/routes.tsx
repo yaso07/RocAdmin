@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 
 import ContactsPage from "./pages/ContactsPage";
 import EventsPage from "./pages/EventsPage";
+import ActivityPage from "./pages/ActivityPage";
 export const routes = createBrowserRouter([
   {
     path: "/",
@@ -33,6 +34,10 @@ export const routes = createBrowserRouter([
       {
         path: 'events',
         element: <EventsPage />
+      },
+      {
+        path: 'activity',
+        element: <ActivityPage />
       }
     ],
   },

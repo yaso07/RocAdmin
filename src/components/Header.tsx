@@ -17,6 +17,7 @@ const Header = () => {
           Logout
         </NavButton>
         <NavButton to={"contacts"}>Contacts</NavButton>
+        <NavButton to={"activity"}>Activity</NavButton>
         <NavButton to={"events"}>Events</NavButton>
         <NavButton to={""}>Category</NavButton>
       </div>

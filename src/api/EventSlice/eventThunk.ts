@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getUser } from "../Category/user";
 import axios from "axios";
-import { CREATE_EVENT, GET_EVENT_LIST,CREATE_ACTIVITY } from "../constant";
+import { CREATE_EVENT, GET_EVENT_LIST,CREATE_ACTIVITY,GET_ACTIVITY_LIST } from "../constant";
 import { toast } from "react-toastify";
 
 
@@ -75,6 +75,24 @@ export const getEventList = createAsyncThunk(
     const token = JSON.parse(getUser()).token;
     const response = await axios.get<any>(
       import.meta.env.VITE_REACT_APP_API_BASE_URL + GET_EVENT_LIST,
+      {
+        headers: {
+          "x-login-token": token
+        },
+      }
+    );
+     
+    return response?.data;
+  })
+
+  // ============================== GET Activity LIST ====================================================
+export const getActivityList = createAsyncThunk(
+  "event/fetch",
+  async () => {
+
+    const token = JSON.parse(getUser()).token;
+    const response = await axios.get<any>(
+      import.meta.env.VITE_REACT_APP_API_BASE_URL + GET_ACTIVITY_LIST,
       {
         headers: {
           "x-login-token": token

@@ -5,7 +5,7 @@ import {
   createActivity
 } from "../api/EventSlice/eventThunk";
 import { useDispatch } from "react-redux";
-
+import axios from "axios";
 import ReusableInput from "./InputBox/ReusableInput";
 import TextField from "./InputBox/TextField";
 import Checkbox from "./InputBox/Checkbox";
@@ -15,6 +15,57 @@ import styled from "styled-components";
 
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
+
+interface Acf {
+    title: string;
+    short_description: string;
+    long_description: string;
+    type: { label: any; value: any }[];
+    location: { label: any; value: any }[];
+    key_facilities: { label: any; value: any }[];
+    from_price: string;
+    price_to: string;
+    url:any;
+    booking_information: { label: any; value: any }[];
+    display_name: string;
+    email_address: string;
+    telephone_number: {
+      area_code: string;
+      prefix: string;
+      number: string;
+    };
+    website: string;
+    address: {
+      place_name: string;
+      address_line_1: string;
+      address_line_2?: string;
+      postcode: string;
+    };
+    parish: any;
+    seasonality: { label: any; value: any }[];
+    bus_routes: { label: any; value: any }[];
+    social_media: {
+      facebook: string;
+      instagram: string;
+      twitter: string;
+    };
+    accessibility: { label: any; value: any }[];
+    accessibility_additional_info: string;
+    accessibility_url: string;
+    customDates?: any; // Optional property
+    event_dates_start?: string;
+    event_dates_end?: string;
+    startTime?: string;
+    endTime?: string;
+    eventType?: string;
+  }
+  
+  interface FinalObject {
+    acf: Acf;
+    data_type: string;
+    type: string;
+    manual: boolean;
+  }
 
 interface Props {
   isOpen: any;
@@ -95,15 +146,7 @@ const EventDataShow = () => {
       value: item.value,
     }));
 
-    const eventType = () => {
-      if (selectedOptionEvent == "option4") {
-        return "custom";
-      } else {
-        return "weekly";
-      }
-    };
-
-    const finalObject = {
+    const finalObject: FinalObject = {
       acf: {
         title: formData.DescriptionTitle,
         short_description: formData.introDescription,
@@ -111,13 +154,7 @@ const EventDataShow = () => {
         type: eventTypeArray,
         location: eventLocationArray,
         key_facilities: keyFeature,
-        eventType: eventType(),
-        customDates: dateTimeComponents,
-        event_dates_start: "",
-        event_dates_end: "",
-        daysOfWeek: "",
-        startTime: "",
-        endTime: "",
+        url:file,
         from_price: formData.priceFrom,
         price_to: formData.priceTo,
         booking_information: BookingEvent,
@@ -151,6 +188,28 @@ const EventDataShow = () => {
       type: "events",
       manual: true,
     };
+    if (selectedOptionEvent === "option4") {
+        finalObject.acf.customDates = dateTimeComponents;
+        finalObject.acf.eventType = "custom" ;
+      } else if (selectedOptionEvent === "option3") {
+        finalObject.acf.event_dates_start = dateState.startDateMonth;
+        finalObject.acf.event_dates_end = dateState.endDateMonth;
+        finalObject.acf.startTime = timeState.startTimeMonth;
+        finalObject.acf.endTime = timeState.endTimeMonth;
+        finalObject.acf.eventType = "month"
+      } else if (selectedOptionEvent === "option2") {
+        finalObject.acf.event_dates_start = dateState.startDateWeekly;
+        finalObject.acf.event_dates_end = dateState.endDateWeekly;
+        finalObject.acf.startTime = timeState.startTimeWeekly;
+        finalObject.acf.endTime = timeState.endTimeWeekly;
+        finalObject.acf.eventType = "weekly"
+      } else if (selectedOptionEvent === "option1") {
+        finalObject.acf.event_dates_start = dateState.startDateDaily;
+        finalObject.acf.event_dates_end = dateState.endDateDaily;
+        finalObject.acf.startTime = timeState.startTimeDaily;
+        finalObject.acf.endTime = timeState.endTimeDaily;
+        finalObject.acf.eventType = "daily"
+      }
     dispatch(createActivity(finalObject) as any);
   };
 
@@ -655,11 +714,20 @@ const EventDataShow = () => {
   const subTypeAct =  (selectedActivity?.label == 'Outdoor activities') ? "subTypeOutdoor" : "subTypeIutdoor"
 
   const [file, setFile] = useState();
-  console.log(file, "dsdsds");
-  function handleChange(e: any) {
-    console.log(e.target.files);
-    setFile(URL.createObjectURL(e.target.files[0]) as any);
-  }
+  async function handleChange(e: any) {
+    
+    const file = e.target.files?.[0];
+    const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
+    if (file) {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await axios.post(url, formData);
+      
+      setFile(res?.data);    
+     //  setFile(URL.createObjectURL(e.target.files[0]) as any);    
+       console.log("dresponse", res)
+     }
+   }
 
   const ParishData = [
     { label: "Grouville", value: "Grouville" },
