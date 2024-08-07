@@ -9,31 +9,34 @@ import Loading from "../components/Loading";
 
 
 const EventsPage = () => {
-    const dispatch = useDispatch()
-    const activityDataValue = useSelector((state: any) => state.event.eventList)
-
+    const eventDataValue = useSelector((state: any) => state.event.activitiesList)
+    
     const [eventdata, setEventData] = useState({})
     const [dataImage, setDataImage] = useState('')
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedList, setSelectedList] = useState(0)
-
+    
     const [drawerType, setDrawerType] = useState<string>('')
+    const dispatch = useDispatch()
 
     useEffect(() => {
         dispatch(getActivityList() as any)
     }, [])
  
-    // useEffect(() => {
-    //     if(activityDataValue !== undefined) {
-    //         const imageData = activityDataValue[selectedList]?.acf?.header_image_data ? JSON.parse(activityDataValue[selectedList]?.acf?.header_image_data) : [{ url: "" }]
-    //         setEventData(activityDataValue[selectedList])
-    //         setDataImage(imageData[0].url)
-    //     }
-    // }, [activityDataValue])
+    useEffect(() => {
+
+        if(eventDataValue !== undefined) {
+            if(eventDataValue[selectedList]?.acf?.header_image_data !== undefined){
+                const imageData = eventDataValue[selectedList]?.acf?.header_image_data ? JSON.parse(eventDataValue[selectedList]?.acf?.header_image_data) : [{ url: "" }]
+                setEventData(eventDataValue[selectedList])
+                setDataImage(imageData[0].url)
+            }
+        }
+    }, [eventDataValue])
 
     const handleEventData = (index: any, image: string) => {
         setSelectedList(index)
-        setEventData(activityDataValue[index])
+        setEventData(eventDataValue[index])
         setDataImage(image)
         setIsDrawerOpen(false)
     }
@@ -42,11 +45,13 @@ const EventsPage = () => {
 
     return (
         <>
+
+
             {
-                activityDataValue ?
+                eventDataValue ?
                     <div className="h-lvh w-full gap-x-4 grid grid-cols-[400px_minmax(350px,_1fr)] fixed">
 
-                        <EventDetails {...{ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, activityDataValue, drawerType, selectedList }} />
+                        <EventDetails {...{ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }} />
                         <div className="">
                             <SingleEventData data={eventdata} dataImage={dataImage} reservationModal={undefined} {...{ setIsDrawerOpen, setDrawerType, setSelectedList }} />
                         </div>

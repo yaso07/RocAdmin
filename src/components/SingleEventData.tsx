@@ -61,13 +61,9 @@ const SingleEventData: React.FC<ModalProps> = ({
         },
         {
             name: data?.acf?.event_dates
-                ? (
-
-                    <span >
-                        {data.acf?.event_dates[0]?.start_time}
-                    </span>
-
-                )
+                ? (<span >
+                    {data.acf?.event_dates[0]?.start_time}
+                </span>)
                 : "No events",
             // name: "sdsd",
             image:
@@ -77,12 +73,9 @@ const SingleEventData: React.FC<ModalProps> = ({
             nameValue: data?.acf?.event_dates?.length && data?.acf?.event_dates[0].start_time ? true : false,
         },
         {
-            name:
-
-                <span >
-                    {`£ ${data?.acf?.price_to}`}
-                </span>
-            ,
+            name: <span >
+                {`£ ${data?.acf?.price_to}`}
+            </span>,
             image:
                 "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fgbp.png?alt=media&token=30f60889-d511-46d9-a8ce-30ef112929e8",
             width: 10,
@@ -116,7 +109,7 @@ const SingleEventData: React.FC<ModalProps> = ({
             name:
 
                 <span >
-                    {data?.acf?.address.place_name}, {data?.acf?.address.address_line_1}, {data?.acf?.address?.address_line_2},
+                    {data?.acf?.address?.place_name}, {data?.acf?.address?.address_line_1}, {data?.acf?.address?.address_line_2},
                 </span>,
             image:
                 "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Flocation-dot.png?alt=media&token=d6ea3348-daab-4b8e-acb6-977148c16e1f",
@@ -142,17 +135,17 @@ const SingleEventData: React.FC<ModalProps> = ({
         }
     };
 
-    const strippedContent = data?.acf?.short_description
+    const strippedContent = data?.acf?.short_description ? data?.acf?.short_description
         .replace(/<p[^>]*>/g, "")
-        .replace(/<\/p>/g, "");
+        .replace(/<\/p>/g, "") : ""
 
     const formatRoute = (routeText: any) => {
-        return routeText
+        return routeText ? routeText
             .replace("<br>", ": ")
             .replace("<i>", "")
             .replace("</i>", "")
             .replace(/(\()/, "")
-            .replace(/\)/, "");
+            .replace(/\)/, "") : ""
     };
 
     // const handleDelete = (id: string) => {
@@ -168,6 +161,7 @@ const SingleEventData: React.FC<ModalProps> = ({
         }
     }, [currentEvent])
 
+    console.log("datatatat", data)
     return (
         <>
             {
@@ -254,7 +248,7 @@ const SingleEventData: React.FC<ModalProps> = ({
                                 </>
                             )}
 
-                            {data?.acf?.key_facilities != "" && (
+                            {data?.type !== "activities" && data?.acf?.key_facilities != "" && (
                                 <>
                                     <AlsoSeeText>Key Features</AlsoSeeText>
                                     <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -265,7 +259,7 @@ const SingleEventData: React.FC<ModalProps> = ({
                                 </>
                             )}
 
-                            {data?.acf?.accessibility != "" && (
+                            {data?.type !== "activities" && data?.acf?.accessibility != "" && (
                                 <>
                                     <AlsoSeeText>Accessibility</AlsoSeeText>
                                     <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -276,7 +270,7 @@ const SingleEventData: React.FC<ModalProps> = ({
                                 </>
                             )}
 
-                            {data?.acf?.bus_routes != "" && (
+                            {data?.type !== "activities" && data?.acf?.bus_routes != "" && (
                                 <>
                                     <AlsoSeeText>Bus Route</AlsoSeeText>
                                     <BulletPointWrapper style={{ marginLeft: 40 }}>

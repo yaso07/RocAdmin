@@ -45,16 +45,16 @@ interface SelectedItems {
   Accessibility: { label: string; value: string }[];
 }
 
-type Category =
-  | "Type"
-  | "Location"
-  | "KeyFacilities"
-  | "Booking"
-  | "WeekDays"
-  | "MonthDays"
-  | "Seasonality"
-  | "BusRoutes"
-  | "Accessibility";
+// type Category =
+//   | "Type"
+//   | "Location"
+//   | "KeyFacilities"
+//   | "Booking"
+//   | "WeekDays"
+//   | "MonthDays"
+//   | "Seasonality"
+//   | "BusRoutes"
+//   | "Accessibility";
 
 const initialFormValues: formDataType = {
   title: "",
