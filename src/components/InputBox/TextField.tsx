@@ -47,6 +47,7 @@ const TextField: FC<InputProps> = ({
           onChange={onchange}
           maxLength={maxLength}
           name={name}
+          style={{marginTop:20}}
         />
         {letterValueShow && (
           <div className="char-counterTextarea">

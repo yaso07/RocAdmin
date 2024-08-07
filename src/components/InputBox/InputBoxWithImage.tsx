@@ -18,7 +18,9 @@ const SearchInput: FC<InputProps>  = ({value,onchange,name}) => {
     <div
       style={{
         ...styles.container,
-        borderColor: isFocused ? '#4965a7' : '#ccc', // Change border color on focus
+        borderColor: isFocused ? '#4965a7' : '#ccc', 
+        marginTop:20
+        // Change border color on focus
       }}
     >
         <img src={fallbackimage} style={styles.icon} alt="" />

@@ -99,11 +99,11 @@ const MenuField: FC<InputProps> = ({
                     <Checkbox
                       title={item.title}
                       value={item.value}
-                      isChecked={selectedItems.MonthDays.some(
+                      isChecked={selectedItems.WeekDays.some(
                         (items: any) => items.value === item.value
                       )}
                       onCheckboxChange={(value, checked) =>
-                        handleCheckboxChange("MonthDays", value, checked)
+                        handleCheckboxChange("WeekDays", value, checked)
                       }
                     />
                   </div>
@@ -162,11 +162,11 @@ const MenuField: FC<InputProps> = ({
                     <Checkbox
                       title={item.title}
                       value={item.value}
-                      isChecked={selectedItems.WeekDays.some(
+                      isChecked={selectedItems.MonthDays.some(
                         (items: any) => items.value === item.value
                       )}
                       onCheckboxChange={(value, checked) =>
-                        handleCheckboxChange("WeekDays", value, checked)
+                        handleCheckboxChange("MonthDays", value, checked)
                       }
                     />
                   </div>
@@ -267,6 +267,7 @@ const Select = styled.select`
   width: 100%;
   padding: 0.625rem;
   margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
   border-width: 1px;
   color: var(--grey-dark);
   border-color: #ccc;

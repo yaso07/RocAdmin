@@ -88,8 +88,8 @@ interface DateTime {
 
 interface TimeState {
   [key: string]: {
-    open?: string;
-    close?: string;
+    opens?: string;
+    closes?: string;
     is_open?: string;
   };
 }
@@ -257,45 +257,36 @@ const EventDataShow = () => {
 
   //   const [timeState, setTimeState] = useState({});
 
-  const handleCheckboxChange = (
-    category: string,
-    value: string,
-    checked: boolean
-  ) => {
-    setSelectedItems((prevState: any) => {
+
+  const handleCheckboxChange = (category: string, value: string, checked: boolean) => {
+    setSelectedItems((prevState:any) => {
       const newWeekDays = checked
         ? [...prevState.WeekDays, { value }]
-        : prevState.WeekDays.filter((item: any) => item.value !== value);
+        : prevState.WeekDays.filter((item:any) => item.value !== value);
       return { ...prevState, WeekDays: newWeekDays };
     });
 
     setTimeState((prevState) => {
-      if (checked) {
-        return {
-          ...prevState,
-          [value]: {
-            ...prevState[value],
-            is_open: "1",
-          },
-        };
-      } else {
-        const newState = { ...prevState };
-        delete newState[value];
-        return newState;
-      }
+      return {
+        ...prevState,
+        [value]: {
+          open: checked ? prevState[value]?.opens || '' : '',
+          close: checked ? prevState[value]?.closes || '' : '',
+          is_open: checked ? '1' : '0',
+        },
+      };
     });
   };
 
-  const handleTimeChangehour =
-    (day: string, type: "open" | "close") => (time: string) => {
-      setTimeState((prevState) => ({
-        ...prevState,
-        [day]: {
-          ...prevState[day],
-          [type]: time,
-        },
-      }));
-    };
+  const handleTimeChangehour = (day: string, type: 'opens' | 'closes') => (time: string) => {
+    setTimeState((prevState) => ({
+      ...prevState,
+      [day]: {
+        ...prevState[day],
+        [type]: time,
+      },
+    }));
+  };
 
   const handleDateChange = (field: any) => (date: any) => {
     setDateState((prevState) => ({
@@ -724,12 +715,20 @@ const EventDataShow = () => {
 
   console.log(location, "latitude");
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(({ coords }) => {
-      const { latitude, longitude } = coords;
-      setLocation({ latitude: latitude, longitude: longitude });
-    });
-  }, []);
+  // useEffect(() => {
+  //   navigator.geolocation.getCurrentPosition(({ coords }) => {
+  //     const { latitude, longitude } = coords;
+  //     setLocation({ latitude: latitude, longitude: longitude });
+  //   });
+  // }, []);
+
+  const onchangelocation = (e:any)=>{
+    const { name, value } = e.target;
+    setLocation((prevData:any) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  }
 
   const [selectedCode, setSelectedCode] = useState("");
 
@@ -1008,7 +1007,7 @@ const EventDataShow = () => {
                   >
                     <PriceInputText>£</PriceInputText>
                     <input
-                      type="text"
+                      type="number"
                       className="custom-inputPrice"
                       value={formData.priceFrom}
                       onChange={handleTextFieldChange}
@@ -1027,7 +1026,7 @@ const EventDataShow = () => {
                   >
                     <PriceInputText>£</PriceInputText>
                     <input
-                      type="text"
+                      type="number"
                       className="custom-inputPrice"
                       value={formData.priceTo}
                       onChange={handleTextFieldChange}
@@ -1095,7 +1094,7 @@ const EventDataShow = () => {
               </TitleTextMain>
               <div style={{ display: "flex", gap: 24 }}>
                 <div style={{ width: 140 }}>
-                  <p>Area Code</p>
+                  <h6 style={{fontWeight:"normal",marginBottom:20}}>Area Code</h6>
                   <Select
                     id="country-code"
                     name="country-code"
@@ -1110,7 +1109,7 @@ const EventDataShow = () => {
                   </Select>
                 </div>
                 <div style={{ width: 120 }}>
-                  <p>Prefix</p>
+                  <h6 style={{fontWeight:"normal",marginBottom:20}}>Prefix</h6>
                   <div className="input-wrapper">
                     <input
                       type="number"
@@ -1122,7 +1121,7 @@ const EventDataShow = () => {
                   </div>
                 </div>
                 <div style={{ width: "100%" }}>
-                  <p>Telephone</p>
+                  <h6 style={{fontWeight:"normal",marginBottom:20}}>Telephone</h6>
                   <input
                     type="text"
                     className="custom-inputInfo"
@@ -1249,20 +1248,20 @@ const EventDataShow = () => {
                 </TitleTextMain>
                 <div style={{ display: "flex", gap: 20, marginBottom: 20 }}>
                   <input
-                    type="text"
+                    type="number"
                     className="custom-inputInfo"
                     placeholder="Latitude"
                     value={location?.latitude}
-                    name="Postcode"
-                    onChange={handleTextFieldChange}
+                    name="latitude"
+                    onChange={onchangelocation}
                   />
                   <input
-                    type="text"
+                    type="number"
                     className="custom-inputInfo"
                     placeholder="Longitude"
                     value={location.longitude}
-                    name="Postcode"
-                    onChange={handleTextFieldChange}
+                    name="longitude"
+                    onChange={onchangelocation}
                   />
                 </div>
               </div>
@@ -1354,13 +1353,13 @@ const EventDataShow = () => {
                         }}
                       >
                         <TimePicker
-                          value={timeState[item.value]?.open || ""}
-                          onChange={handleTimeChangehour(item.value, "open")}
+                          value={timeState[item.value]?.opens || ""}
+                          onChange={handleTimeChangehour(item.value, "opens")}
                         />
                         -
                         <TimePicker
-                          value={timeState[item.value]?.close || ""}
-                          onChange={handleTimeChangehour(item.value, "close")}
+                          value={timeState[item.value]?.closes || ""}
+                          onChange={handleTimeChangehour(item.value, "closes")}
                         />
                       </div>
                     )}
@@ -1451,7 +1450,7 @@ const EventDataShow = () => {
                 style={{
                   fontSize: ".875em",
                   color: "#757575",
-                  marginBottom: 20,
+                  marginTop: 20,
                 }}
               >
                 To help users of jersey.com find the information they need,
@@ -1462,6 +1461,7 @@ const EventDataShow = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: 20,
+                  marginTop:20
                 }}
               >
                 {AccessibilityData.map((item, index) => {
@@ -1502,7 +1502,7 @@ const EventDataShow = () => {
                 style={{
                   fontSize: ".875em",
                   color: "#757575",
-                  marginBottom: 20,
+                  marginTop: 20,
                 }}
               >
                 It is recommended that you have an accessibility page on your
@@ -1570,6 +1570,7 @@ const EventDataShow = () => {
                     borderLeft: "1px solid #ccc",
                     borderRight: "1px solid #ccc",
                     height: 300,
+                    marginTop:20
                   }}
                 >
                   {" "}
@@ -1678,7 +1679,7 @@ const MaximumImageValue = styled.p`
   color: #807b7b;
 `;
 
-const TitleText = styled.p`
+const TitleText = styled.h6`
   display: block;
   line-height: 1;
   margin-bottom: 0.625rem;
@@ -1687,7 +1688,7 @@ const TitleText = styled.p`
   color: #333;
 `;
 
-const TitleTextMain = styled.p`
+const TitleTextMain = styled.h6`
   font-size: 0.875rem;
   color: #757575;
   margin-bottom: 20px;

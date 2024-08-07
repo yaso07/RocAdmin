@@ -155,6 +155,15 @@ const EventDataShow = () => {
       value: item.value,
     }));
 
+    const MonthDays = selectedItems.MonthDays?.map(day => day.value);
+    const WeekDays = selectedItems.WeekDays?.map(day => day.value);
+
+    const formatDateData = dateTimeComponents.map((item:any)=>({
+      selectedDate:formatDate(item.selectedDate),
+      customStartTime:item.customStartTime,
+      customEndTime:item.customEndTime
+    }))
+
     const finalObject: FinalObject = {
       acf: {
         title: formData.DescriptionTitle,
@@ -199,21 +208,21 @@ const EventDataShow = () => {
       manual: true,
     };
     if (selectedOptionEvent === "option4") {
-      finalObject.acf.customDates = dateTimeComponents;
+      finalObject.acf.customDates = formatDateData;
       finalObject.acf.eventType = "custom" ;
     } else if (selectedOptionEvent === "option3") {
       finalObject.acf.event_dates_start = dateState.startDateMonth;
       finalObject.acf.event_dates_end = dateState.endDateMonth;
       finalObject.acf.startTime = timeState.startTimeMonth;
       finalObject.acf.endTime = timeState.endTimeMonth;
-      finalObject.acf.daysOfWeek = selectedItems.MonthDays;
+      finalObject.acf.daysOfWeek = MonthDays;
       finalObject.acf.eventType = "monthly"
     } else if (selectedOptionEvent === "option2") {
       finalObject.acf.event_dates_start = dateState.startDateWeekly;
       finalObject.acf.event_dates_end = dateState.endDateWeekly;
       finalObject.acf.startTime = timeState.startTimeWeekly;
       finalObject.acf.endTime = timeState.endTimeWeekly;
-      finalObject.acf.daysOfWeek = selectedItems.WeekDays;
+      finalObject.acf.daysOfWeek = WeekDays;
       finalObject.acf.eventType = "weekly"
     } else if (selectedOptionEvent === "option1") {
       finalObject.acf.event_dates_start = dateState.startDateDaily;
@@ -227,8 +236,6 @@ const EventDataShow = () => {
   };
   
   const SingleEventData = useSelector(selectSingleEventData);
-
-  console.log(SingleEventData,"sdsdsd")
 
   const [formData, setFormData] = useState({
     DescriptionTitle: SingleEventData?.acf?.title || '',
@@ -267,12 +274,21 @@ const EventDataShow = () => {
     longitude: 0,
   });
 
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(({ coords }) => {
-      const { latitude, longitude } = coords;
-      setLocation({ latitude: latitude, longitude: longitude });
-    });
-  }, []);
+  // useEffect(() => {
+  //   navigator.geolocation.getCurrentPosition(({ coords }) => {
+  //     const { latitude, longitude } = coords;
+  //     setLocation({ latitude: latitude, longitude: longitude });
+  //   });
+  // }, []);
+  const onchangelocation = (e:any)=>{
+    const { name, value } = e.target;
+    setLocation((prevData:any) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  }
+
+
 
   //   const { isOpen, toggle } = useModal();
 
@@ -315,6 +331,8 @@ const EventDataShow = () => {
       customEndTime: undefined,
     },
   ]);
+  
+  console.log(dateTimeComponents,"Latitude")
 
   const addDateTimeComponent = () => {
     setDateTimeComponents([
@@ -362,6 +380,8 @@ const EventDataShow = () => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  
 
   const typesData = [
     { title: "Arts & cultural", value: "arts-cultural" },
@@ -675,6 +695,33 @@ const EventDataShow = () => {
     Accessibility: [],
   });
 
+  const [DatesDays, setDateDays] = useState<{
+    WeekDays: string[];
+    MonthDays: string[];
+  }>({
+    WeekDays: [],
+    MonthDays: [],
+  });
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = e.target;
+
+    setDateDays((prevState) => {
+      const key = name as keyof typeof prevState;
+      const newDays = checked
+        ? [...prevState[key], value]
+        : prevState[key].filter((day) => day !== value);
+
+      return {
+        ...prevState,
+        [key]: newDays,
+      };
+    });
+  };
+
+
+  console.log(selectedItems,"selectedItems")
+
   const handleCheckboxChange2 = (
     category: Category,
     value: string,
@@ -778,6 +825,8 @@ const EventDataShow = () => {
       // } catch (error) {
       //   setLoder(false);
       // }
+      const MonthDays = selectedItems.MonthDays.map(day => day.value);
+      console.log(MonthDays,"selectedItems.MonthDays")
 
   return (
     <div>
@@ -876,11 +925,11 @@ const EventDataShow = () => {
                 </div>
               </div>
               <div>
-                <TitleText style={{ marginBottom: 30 }}>
+                <TitleText>
                   Event dates *
                 </TitleText>
-                <TitleText>How often does this occur?</TitleText>
-                <TitleTextMain style={{ marginBottom: 20 }}>
+                <TitleText style={{ marginTop: 20 }}>How often does this occur?</TitleText>
+                <TitleTextMain style={{ marginTop: 20 }}>
                   You can manually add, remove and amend dates once they've been
                   generated via the below.
                 </TitleTextMain>
@@ -920,7 +969,7 @@ const EventDataShow = () => {
                 <TitleText style={{ margin: "20px 0px" }}>
                   Price from / to
                 </TitleText>
-                <p style={{ fontSize: 15, fontWeight: "400" }}>
+                <p style={{ fontSize: 15, fontWeight: "400",marginTop:20 }}>
                   When entering costs, please don’t use any decimal places
                   unless the cost includes pence.
                 </p>
@@ -937,7 +986,7 @@ const EventDataShow = () => {
                   >
                     <PriceInputText>£</PriceInputText>
                     <input
-                      type="text"
+                      type="number"
                       className="custom-inputPrice"
                       value={formData.priceFrom}
                       onChange={handleTextFieldChange}
@@ -956,7 +1005,7 @@ const EventDataShow = () => {
                   >
                     <PriceInputText>£</PriceInputText>
                     <input
-                      type="text"
+                      type="number"
                       className="custom-inputPrice"
                       value={formData.priceTo}
                       onChange={handleTextFieldChange}
@@ -972,6 +1021,7 @@ const EventDataShow = () => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr 1fr",
+                  marginTop:20
                 }}
               >
                 {BookingData.map((item, index) => {
@@ -1018,13 +1068,13 @@ const EventDataShow = () => {
                 />
               </div>
               <TitleText>Telephone number</TitleText>
-              <TitleTextMain>
+              <TitleTextMain style={{ marginTop: 20 }}>
                 Please provide your full telephone number, including area code.
                 For example: +44 (0) 1534 859000.
               </TitleTextMain>
-              <div style={{ display: "flex", gap: 24 }}>
+              <div style={{ display: "flex", gap: 24,marginTop:20 }}>
                 <div style={{ width: 140 }}>
-                  <p>Area Code</p>
+                  <h6 style={{marginBottom:20,fontWeight:"normal"}}>Area Code</h6>
                   <Select
                     id="country-code"
                     name="country-code"
@@ -1039,7 +1089,7 @@ const EventDataShow = () => {
                   </Select>
                 </div>
                 <div style={{ width: 120 }}>
-                  <p>Prefix</p>
+                  <h6 style={{marginBottom:20,fontWeight:"normal"}}>Prefix</h6>
                   <div className="input-wrapper">
                     <input
                       type="number"
@@ -1051,7 +1101,7 @@ const EventDataShow = () => {
                   </div>
                 </div>
                 <div style={{ width: "100%" }}>
-                  <p>Telephone</p>
+                  <h6 style={{marginBottom:20,fontWeight:"normal"}}>Telephone</h6>
                   <input
                     type="text"
                     className="custom-inputInfo"
@@ -1063,7 +1113,7 @@ const EventDataShow = () => {
                 </div>
               </div>
               <TitleText>Website *</TitleText>
-              <TitleTextMain>
+              <TitleTextMain style={{ marginTop: 20 }}>
                 Please provide the full URL to your website. For example
                 https://jersey.test.
               </TitleTextMain>
@@ -1079,6 +1129,7 @@ const EventDataShow = () => {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
+                  marginTop:20
                 }}
               >
                 <AddressInfo>Place name</AddressInfo>
@@ -1152,6 +1203,7 @@ const EventDataShow = () => {
                   gridTemplateColumns: "1fr 1fr",
                   gridGap: 10,
                   marginBottom: 20,
+                  marginTop:20
                 }}
               >
                 {ParishData.map((item, index) => {
@@ -1172,26 +1224,26 @@ const EventDataShow = () => {
               </div>
               <div>
                 <TitleText>Map location</TitleText>
-                <TitleTextMain>
+                <TitleTextMain style={{marginTop:20}}>
                   Search for your address or click on the map to manually place
                   a marker.
                 </TitleTextMain>
-                <div style={{ display: "flex", gap: 20, marginBottom: 20 }}>
+                <div style={{ display: "flex", gap: 20, marginBottom: 20,marginTop:20 }}>
                   <input
                     type="text"
                     className="custom-inputInfo"
                     placeholder="Latitude"
                     value={location?.latitude}
-                    name="Postcode"
-                    onChange={handleTextFieldChange}
+                    name="latitude"
+                    onChange={onchangelocation}
                   />
                   <input
                     type="text"
                     className="custom-inputInfo"
                     placeholder="Longitude"
                     value={location.longitude}
-                    name="Postcode"
-                    onChange={handleTextFieldChange}
+                    name="longitude"
+                    onChange={onchangelocation}
                   />
                 </div>
               </div>
@@ -1200,6 +1252,7 @@ const EventDataShow = () => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
+                  marginTop:20
                 }}
               >
                 {SeasonalityData.map((item, index) => {
@@ -1224,6 +1277,7 @@ const EventDataShow = () => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
+                  marginTop:20
                 }}
               >
                 {BusRoutesData.map((item, index) => {
@@ -1248,7 +1302,7 @@ const EventDataShow = () => {
                 })}
               </div>
               <TitleText style={{ marginTop: 20 }}>Social media</TitleText>
-              <TitleTextMain>
+              <TitleTextMain style={{ marginTop: 20 }}>
                 Please provide the full URL for your social media platforms. For
                 example: https://www.facebook.com/VisitJersey.
               </TitleTextMain>
@@ -1331,7 +1385,7 @@ const EventDataShow = () => {
                 style={{
                   fontSize: ".875em",
                   color: "#757575",
-                  marginBottom: 20,
+                  marginTop: 20,
                 }}
               >
                 To help users of jersey.com find the information they need,
@@ -1342,6 +1396,7 @@ const EventDataShow = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: 20,
+                  marginTop:20
                 }}
               >
                 {AccessibilityData.map((item, index) => {
@@ -1382,7 +1437,7 @@ const EventDataShow = () => {
                 style={{
                   fontSize: ".875em",
                   color: "#757575",
-                  marginBottom: 20,
+                  marginTop: 20,
                 }}
               >
                 It is recommended that you have an accessibility page on your
@@ -1450,6 +1505,7 @@ const EventDataShow = () => {
                     borderLeft: "1px solid #ccc",
                     borderRight: "1px solid #ccc",
                     height: 300,
+                    marginTop:20
                   }}
                 >   <img src={file} style={{ width: 100, marginTop: 20,marginLeft:20 }} /></div>
                 <div

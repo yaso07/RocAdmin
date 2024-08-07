@@ -6,6 +6,7 @@
 .checkboxContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  margin-top: 20px;
 }
 
 /* ParenthesesInput.css */
@@ -57,4 +58,8 @@ input[type="number"] {
 
 .input-wrapper::before {
   left: 10px; /* Adjust based on your preference */
+}
+
+p{
+  margin-bottom: 0px !important;
 }
