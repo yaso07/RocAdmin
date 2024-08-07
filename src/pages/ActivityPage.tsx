@@ -1,8 +1,8 @@
 
 
 import { useEffect, useState } from "react";
-import EventDetails from "../components/EventList";
-import SingleEventData from "../components/SingleEventData";
+import ActivityList from "../components/ActivityList";
+import SingleActivityData from "../components/SingleActivityData";
 import { useDispatch, useSelector } from "react-redux";
 import { getActivityList } from "../api/EventSlice/eventThunk";
 import Loading from "../components/Loading";
@@ -10,6 +10,8 @@ import Loading from "../components/Loading";
 
 const EventsPage = () => {
     const eventDataValue = useSelector((state: any) => state.event.activitiesList)
+
+    console.log(eventDataValue,"sdsdsd")
     
     const [eventdata, setEventData] = useState({})
     const [dataImage, setDataImage] = useState('')
@@ -51,9 +53,9 @@ const EventsPage = () => {
                 eventDataValue ?
                     <div className="h-lvh w-full gap-x-4 grid grid-cols-[400px_minmax(350px,_1fr)] fixed">
 
-                        <EventDetails {...{ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }} />
+                        <ActivityList {...{ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }} />
                         <div className="">
-                            <SingleEventData data={eventdata} dataImage={dataImage} reservationModal={undefined} {...{ setIsDrawerOpen, setDrawerType, setSelectedList }} />
+                            <SingleActivityData data={eventdata} dataImage={dataImage} reservationModal={undefined} {...{ setIsDrawerOpen, setDrawerType, setSelectedList }} />
                         </div>
                     </div>
                     :

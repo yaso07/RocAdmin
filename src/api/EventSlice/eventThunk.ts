@@ -154,3 +154,22 @@ export const deleteEvent = createAsyncThunk('event/delete',
     console.log("Delete event", res)
     return id
   })
+
+
+  // ================================ DELETE EVENT DATA ====================================================
+export const deleteActivity = createAsyncThunk('activity/delete',
+  async (id: any) => {
+    const token = JSON.parse(getUser()).token;
+    const res = await axios.delete(
+      import.meta.env.VITE_REACT_APP_API_BASE_URL + CREATE_ACTIVITY + id,
+      {
+        headers: {
+          "x-login-token": token
+        },
+      }
+    )
+
+    console.log("Delete event", res)
+    return id
+  })
+

@@ -1,9 +1,6 @@
-
 import Accordion from "../components/Accordion/Accordion";
-import { useState } from "react";
-import {
-  createActivity
-} from "../api/EventSlice/eventThunk";
+import { useState, useEffect } from "react";
+import { createActivity } from "../api/EventSlice/eventThunk";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import ReusableInput from "./InputBox/ReusableInput";
@@ -12,60 +9,63 @@ import Checkbox from "./InputBox/Checkbox";
 import "../App.css";
 import InputBoxWithImage from "./InputBox/InputBoxWithImage";
 import styled from "styled-components";
-
+import TimePicker from "./DateAndTimePicker/TimePicker";
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 interface Acf {
-    title: string;
-    short_description: string;
-    long_description: string;
-    type: { label: any; value: any }[];
-    location: { label: any; value: any }[];
-    key_facilities: { label: any; value: any }[];
-    from_price: string;
-    price_to: string;
-    url:any;
-    booking_information: { label: any; value: any }[];
-    display_name: string;
-    email_address: string;
-    telephone_number: {
-      area_code: string;
-      prefix: string;
-      number: string;
-    };
-    website: string;
-    address: {
-      place_name: string;
-      address_line_1: string;
-      address_line_2?: string;
-      postcode: string;
-    };
-    parish: any;
-    seasonality: { label: any; value: any }[];
-    bus_routes: { label: any; value: any }[];
-    social_media: {
-      facebook: string;
-      instagram: string;
-      twitter: string;
-    };
-    accessibility: { label: any; value: any }[];
-    accessibility_additional_info: string;
-    accessibility_url: string;
-    customDates?: any; // Optional property
-    event_dates_start?: string;
-    event_dates_end?: string;
-    startTime?: string;
-    endTime?: string;
-    eventType?: string;
-  }
-  
-  interface FinalObject {
-    acf: Acf;
-    data_type: string;
-    type: string;
-    manual: boolean;
-  }
+  title: string;
+  short_description: string;
+  long_description: string;
+  type: any;
+  location: { label: any; value: any }[];
+  key_facilities: { label: any; value: any }[];
+  sub_type: any;
+  from_price: string;
+  price_to: string;
+  url: any;
+  map_location: any;
+  booking_information: { label: any; value: any }[];
+  display_name: string;
+  email_address: string;
+  telephone_number: {
+    area_code: string;
+    prefix: string;
+    number: string;
+  };
+  website: string;
+  address: {
+    place_name: string;
+    address_line_1: string;
+    address_line_2?: string;
+    postcode: string;
+  };
+  parish: any;
+  seasonality: { label: any; value: any }[];
+  bus_routes: { label: any; value: any }[];
+  opening_hours: any;
+  social_media: {
+    facebook: string;
+    instagram: string;
+    twitter: string;
+  };
+  accessibility: { label: any; value: any }[];
+  accessibility_additional_info: string;
+  accessibility_url: string;
+  customDates?: any; // Optional property
+  event_dates_start?: string;
+  event_dates_end?: string;
+  startTime?: string;
+  endTime?: string;
+  eventType?: string;
+}
+
+interface FinalObject {
+  acf: Acf;
+  data_type: string;
+  type: string;
+  manual: boolean;
+}
 
 interface Props {
   isOpen: any;
@@ -86,10 +86,18 @@ interface DateTime {
   end_time: string;
 }
 
+interface TimeState {
+  [key: string]: {
+    open?: string;
+    close?: string;
+    is_open?: string;
+  };
+}
+
 interface SelectedItems {
   Type: { label: string; value: string }[];
   subTypeOutdoor: { label: string; value: string }[];
-  subTypeIutdoor:{ label: string; value: string }[];
+  subTypeIutdoor: { label: string; value: string }[];
   Location: { label: string; value: string }[];
   KeyFacilities: { label: string; value: string }[];
   Booking: { label: string; value: string }[];
@@ -151,15 +159,17 @@ const EventDataShow = () => {
         title: formData.DescriptionTitle,
         short_description: formData.introDescription,
         long_description: formData.moreInformation,
-        type: eventTypeArray,
+        sub_type: subTypeValue,
+        type: selectedActivity,
         location: eventLocationArray,
         key_facilities: keyFeature,
-        url:file,
+        url: file,
         from_price: formData.priceFrom,
         price_to: formData.priceTo,
         booking_information: BookingEvent,
         display_name: formData.DisplayName,
         email_address: formData.DisplayName,
+        map_location: { lat: location.latitude, lng: location.longitude },
         telephone_number: {
           area_code: selectedCode,
           prefix: formData.Prefix,
@@ -175,6 +185,7 @@ const EventDataShow = () => {
         parish: selectedOpt,
         seasonality: seasonalityArray,
         bus_routes: busRouteArray,
+        opening_hours: timeState,
         social_media: {
           facebook: formData.Facebook,
           instagram: formData.Instagram,
@@ -189,27 +200,21 @@ const EventDataShow = () => {
       manual: true,
     };
     if (selectedOptionEvent === "option4") {
-        finalObject.acf.customDates = dateTimeComponents;
-        finalObject.acf.eventType = "custom" ;
-      } else if (selectedOptionEvent === "option3") {
-        finalObject.acf.event_dates_start = dateState.startDateMonth;
-        finalObject.acf.event_dates_end = dateState.endDateMonth;
-        finalObject.acf.startTime = timeState.startTimeMonth;
-        finalObject.acf.endTime = timeState.endTimeMonth;
-        finalObject.acf.eventType = "month"
-      } else if (selectedOptionEvent === "option2") {
-        finalObject.acf.event_dates_start = dateState.startDateWeekly;
-        finalObject.acf.event_dates_end = dateState.endDateWeekly;
-        finalObject.acf.startTime = timeState.startTimeWeekly;
-        finalObject.acf.endTime = timeState.endTimeWeekly;
-        finalObject.acf.eventType = "weekly"
-      } else if (selectedOptionEvent === "option1") {
-        finalObject.acf.event_dates_start = dateState.startDateDaily;
-        finalObject.acf.event_dates_end = dateState.endDateDaily;
-        finalObject.acf.startTime = timeState.startTimeDaily;
-        finalObject.acf.endTime = timeState.endTimeDaily;
-        finalObject.acf.eventType = "daily"
-      }
+      finalObject.acf.customDates = dateTimeComponents;
+      finalObject.acf.eventType = "custom";
+    } else if (selectedOptionEvent === "option3") {
+      finalObject.acf.event_dates_start = dateState.startDateMonth;
+      finalObject.acf.event_dates_end = dateState.endDateMonth;
+      finalObject.acf.eventType = "month";
+    } else if (selectedOptionEvent === "option2") {
+      finalObject.acf.event_dates_start = dateState.startDateWeekly;
+      finalObject.acf.event_dates_end = dateState.endDateWeekly;
+      finalObject.acf.eventType = "weekly";
+    } else if (selectedOptionEvent === "option1") {
+      finalObject.acf.event_dates_start = dateState.startDateDaily;
+      finalObject.acf.event_dates_end = dateState.endDateDaily;
+      finalObject.acf.eventType = "daily";
+    }
     dispatch(createActivity(finalObject) as any);
   };
 
@@ -250,21 +255,57 @@ const EventDataShow = () => {
     endDateDaily: "",
   });
 
+  //   const [timeState, setTimeState] = useState({});
+
+  const handleCheckboxChange = (
+    category: string,
+    value: string,
+    checked: boolean
+  ) => {
+    setSelectedItems((prevState: any) => {
+      const newWeekDays = checked
+        ? [...prevState.WeekDays, { value }]
+        : prevState.WeekDays.filter((item: any) => item.value !== value);
+      return { ...prevState, WeekDays: newWeekDays };
+    });
+
+    setTimeState((prevState) => {
+      if (checked) {
+        return {
+          ...prevState,
+          [value]: {
+            ...prevState[value],
+            is_open: "1",
+          },
+        };
+      } else {
+        const newState = { ...prevState };
+        delete newState[value];
+        return newState;
+      }
+    });
+  };
+
+  const handleTimeChangehour =
+    (day: string, type: "open" | "close") => (time: string) => {
+      setTimeState((prevState) => ({
+        ...prevState,
+        [day]: {
+          ...prevState[day],
+          [type]: time,
+        },
+      }));
+    };
+
   const handleDateChange = (field: any) => (date: any) => {
     setDateState((prevState) => ({
       ...prevState,
       [field]: date,
     }));
   };
+  const [timeState, setTimeState] = useState<TimeState>({});
 
-  const [timeState, setTimeState] = useState({
-    startTimeMonth: "",
-    endTimeMonth: "",
-    startTimeWeekly: "",
-    endTimeWeekly: "",
-    startTimeDaily: "",
-    endTimeDaily: "",
-  });
+  console.log(timeState, "sdsdsd");
 
   const handleTimeChange = (field: any) => (date: any) => {
     setTimeState((prevState) => ({
@@ -419,69 +460,69 @@ const EventDataShow = () => {
     },
   ];
 
-//   const SubTypeDeatils = 
+  //   const SubTypeDeatils =
 
   const locationData = [
     {
-    value: "island-wide",
-    label: "Island wide"
+      value: "island-wide",
+      label: "Island wide",
     },
     {
-    value: "coastal",
-    label: "Coastal"
+      value: "coastal",
+      label: "Coastal",
     },
     {
-    value: "town",
-    label: "Town"
+      value: "town",
+      label: "Town",
     },
     {
-    value: "countryside",
-    label: "Countryside"
-    }
-    ]
+      value: "countryside",
+      label: "Countryside",
+    },
+  ];
 
-    const keyfacilityData = [
-        { title: "Indoor", value: "indoor" },
-        { title: "Catering", value: "catering" },
-        { title: "Outdoor", value: "outdoor" },
-        { title: "Wheelchair access", value: "wheelchair-access" },
-        { title: "Family friendly", value: "family-friendly" },
-        { title: "Parking", value: "parking" },
-        { title: "Couples", value: "couples" },
-        { title: "Hearing loop", value: "hearing-loop" },
-        { title: "Pet friendly", value: "pet-friendly" },
-      ];
+  const keyfacilityData = [
+    { title: "Indoor", value: "indoor" },
+    { title: "Catering", value: "catering" },
+    { title: "Outdoor", value: "outdoor" },
+    { title: "Wheelchair access", value: "wheelchair-access" },
+    { title: "Family friendly", value: "family-friendly" },
+    { title: "Parking", value: "parking" },
+    { title: "Couples", value: "couples" },
+    { title: "Hearing loop", value: "hearing-loop" },
+    { title: "Pet friendly", value: "pet-friendly" },
+  ];
 
-      const BookingData = [
-        { title: "Free entry", value: "free-entry" },
-        { title: "Free for children", value: "free-for-children" },
-        { title: "Booking needed", value: "booking-needed" },
-      ];
+  const BookingData = [
+    { title: "Free entry", value: "free-entry" },
+    { title: "Free for children", value: "free-for-children" },
+    { title: "Booking needed", value: "booking-needed" },
+  ];
 
-      const SeasonalityData = [
-        { title: "January", value: "january" },
-        { title: "July", value: "july" },
-        { title: "February", value: "february" },
-        { title: "August", value: "august" },
-        { title: "March", value: "march" },
-        { title: "September", value: "september" },
-        { title: "April", value: "april" },
-        { title: "October", value: "october" },
-        { title: "May", value: "may" },
-        { title: "November", value: "november" },
-        { title: "June", value: "june" },
-        { title: "December", value: "december" },
-      ];
-    
-      const WeeklyDaysData = [
-        { title: "Monday", value: "monday" },
-        { title: "Tuesday", value: "tuesday" },
-        { title: "Wednesday", value: "wednesday" },
-        { title: "Thursday", value: "thursday" },
-        { title: "Friday", value: "friday" },
-        { title: "Saturday", value: "saturday" },
-        { title: "Sunday", value: "sunday" },
-      ];
+  const SeasonalityData = [
+    { title: "January", value: "january" },
+    { title: "July", value: "july" },
+    { title: "February", value: "february" },
+    { title: "August", value: "august" },
+    { title: "March", value: "march" },
+    { title: "September", value: "september" },
+    { title: "April", value: "april" },
+    { title: "October", value: "october" },
+    { title: "May", value: "may" },
+    { title: "November", value: "november" },
+    { title: "June", value: "june" },
+    { title: "December", value: "december" },
+  ];
+
+  const WeeklyDaysData = [
+    { title: "Monday", value: "monday" },
+    { title: "Tuesday", value: "tuesday" },
+    { title: "Wednesday", value: "wednesday" },
+    { title: "Thursday", value: "thursday" },
+    { title: "Friday", value: "friday" },
+    { title: "Saturday", value: "saturday" },
+    { title: "Sunday", value: "sunday" },
+  ];
 
   const BusRoutesData = [
     {
@@ -676,10 +717,31 @@ const EventDataShow = () => {
     },
   ];
 
+  const [location, setLocation] = useState<any>({
+    latitude: 0,
+    longitude: 0,
+  });
+
+  console.log(location, "latitude");
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(({ coords }) => {
+      const { latitude, longitude } = coords;
+      setLocation({ latitude: latitude, longitude: longitude });
+    });
+  }, []);
+
   const [selectedCode, setSelectedCode] = useState("");
 
   const handleChangeCode = (event: any) => {
     setSelectedCode(event.target.value);
+  };
+
+  const handleTimeChangeStart = (field: any) => (date: any) => {
+    setTimeState((prevState) => ({
+      ...prevState,
+      [field]: date,
+    }));
   };
 
   const countryCodes = [
@@ -702,7 +764,9 @@ const EventDataShow = () => {
 
   console.log(selectedActivity, "aasas");
 
-  const handleChangeRadioActivity = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRadioActivity = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const selectedValue = event.target.value;
     const selected = TypeActivityData.find(
       (option) => option.value === selectedValue
@@ -710,24 +774,29 @@ const EventDataShow = () => {
     setSelectedActivity(selected || null);
   };
 
-  const subTypeActivity =  (selectedActivity?.label == 'Outdoor activities') ? typesData : IndoretypesData
-  const subTypeAct =  (selectedActivity?.label == 'Outdoor activities') ? "subTypeOutdoor" : "subTypeIutdoor"
+  const subTypeActivity =
+    selectedActivity?.label == "Outdoor activities"
+      ? typesData
+      : IndoretypesData;
+  const subTypeAct =
+    selectedActivity?.label == "Outdoor activities"
+      ? "subTypeOutdoor"
+      : "subTypeIutdoor";
 
   const [file, setFile] = useState();
   async function handleChange(e: any) {
-    
     const file = e.target.files?.[0];
     const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
     if (file) {
       const formData = new FormData();
       formData.append("image", file);
       const res = await axios.post(url, formData);
-      
-      setFile(res?.data);    
-     //  setFile(URL.createObjectURL(e.target.files[0]) as any);    
-       console.log("dresponse", res)
-     }
-   }
+
+      setFile(res?.data);
+      //  setFile(URL.createObjectURL(e.target.files[0]) as any);
+      console.log("dresponse", res);
+    }
+  }
 
   const ParishData = [
     { label: "Grouville", value: "Grouville" },
@@ -749,7 +818,6 @@ const EventDataShow = () => {
     value: string;
   } | null>(null);
 
-
   const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedValue = event.target.value;
     const selected = ParishData.find(
@@ -760,8 +828,8 @@ const EventDataShow = () => {
 
   const [selectedItems, setSelectedItems] = useState<SelectedItems>({
     Type: [],
-    subTypeOutdoor:[],
-    subTypeIutdoor:[],
+    subTypeOutdoor: [],
+    subTypeIutdoor: [],
     Location: [],
     KeyFacilities: [],
     Booking: [],
@@ -774,7 +842,10 @@ const EventDataShow = () => {
 
   console.log(selectedItems, "sdssdsdsd");
 
-    const subTypeValue =  (selectedActivity?.label == 'Outdoor activities') ? selectedItems?.subTypeOutdoor : selectedItems?.subTypeIutdoor
+  const subTypeValue =
+    selectedActivity?.label == "Outdoor activities"
+      ? selectedItems?.subTypeOutdoor
+      : selectedItems?.subTypeIutdoor;
 
   const handleCheckboxChange2 = (
     category: Category,
@@ -825,7 +896,7 @@ const EventDataShow = () => {
                 name="moreInformation"
                 onchange={handleTextFieldChange}
               />
-              <TitleText>Type *</TitleText>
+              <TitleText style={{ marginTop: 20 }}>Type *</TitleText>
               <div
                 style={{
                   display: "grid",
@@ -870,26 +941,6 @@ const EventDataShow = () => {
                   })}
                 </div>
               </div>
-              <TitleText style={{marginTop:10}}>Opening hours</TitleText>
-              <TitleTextMain>
-                If you are open all day,please leave the startend date blank
-              </TitleTextMain>
-              {WeeklyDaysData.map((item, index) => {
-                  return (
-                    <div style={{ marginBottom: 10 }} key={index}>
-                      <Checkbox
-                        title={item.title}
-                        value={item.value}
-                        isChecked={selectedItems.WeekDays.some(
-                          (items) => items.value === item.value
-                        )}
-                        onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("WeekDays", value, checked)
-                        }
-                      />
-                    </div>
-                  );
-                })}
               <div style={{ marginTop: 20 }}>
                 <TitleText>Location *</TitleText>
                 <div className="checkboxContainer">
@@ -1196,6 +1247,24 @@ const EventDataShow = () => {
                   Search for your address or click on the map to manually place
                   a marker.
                 </TitleTextMain>
+                <div style={{ display: "flex", gap: 20, marginBottom: 20 }}>
+                  <input
+                    type="text"
+                    className="custom-inputInfo"
+                    placeholder="Latitude"
+                    value={location?.latitude}
+                    name="Postcode"
+                    onChange={handleTextFieldChange}
+                  />
+                  <input
+                    type="text"
+                    className="custom-inputInfo"
+                    placeholder="Longitude"
+                    value={location.longitude}
+                    name="Postcode"
+                    onChange={handleTextFieldChange}
+                  />
+                </div>
               </div>
               <TitleText>Seasonality *</TitleText>
               <div
@@ -1249,6 +1318,55 @@ const EventDataShow = () => {
                   );
                 })}
               </div>
+              <TitleText style={{ marginTop: 10 }}>Opening hours</TitleText>
+              <TitleTextMain>
+                If you are open all day,please leave the startend date blank
+              </TitleTextMain>
+              {WeeklyDaysData.map((item, index) => {
+                const isChecked = selectedItems.WeekDays.some(
+                  (weekday) => weekday.value === item.value
+                );
+                return (
+                  <div
+                    style={{
+                      marginBottom: 10,
+                      display: "grid",
+                      alignItems: "center",
+                      gap: 20,
+                      gridTemplateColumns: "1fr 3fr",
+                    }}
+                    key={index}
+                  >
+                    <Checkbox
+                      title={item.title}
+                      value={item.value}
+                      isChecked={isChecked}
+                      onCheckboxChange={(value, checked) =>
+                        handleCheckboxChange("WeekDays", value, checked)
+                      }
+                    />
+                    {isChecked && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                        }}
+                      >
+                        <TimePicker
+                          value={timeState[item.value]?.open || ""}
+                          onChange={handleTimeChangehour(item.value, "open")}
+                        />
+                        -
+                        <TimePicker
+                          value={timeState[item.value]?.close || ""}
+                          onChange={handleTimeChangehour(item.value, "close")}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
               <TitleText style={{ marginTop: 20 }}>Social media</TitleText>
               <TitleTextMain>
                 Please provide the full URL for your social media platforms. For
@@ -1399,7 +1517,7 @@ const EventDataShow = () => {
           </>
         }
       />
-    <Accordion
+      <Accordion
         title="Media"
         content={
           <>
@@ -1453,7 +1571,13 @@ const EventDataShow = () => {
                     borderRight: "1px solid #ccc",
                     height: 300,
                   }}
-                >   <img src={file} style={{ width: 100, marginTop: 20,marginLeft:20 }} /></div>
+                >
+                  {" "}
+                  <img
+                    src={file}
+                    style={{ width: 100, marginTop: 20, marginLeft: 20 }}
+                  />
+                </div>
                 <div
                   style={{
                     border: "1px solid #ccc",
@@ -1494,9 +1618,9 @@ const EventDataShow = () => {
                 <div
                   style={{
                     display: "flex",
-                    flexDirection:"column",
-                    justifyContent:"center",
-                    alignItems:"center"
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
                   <div style={{ textAlign: "center" }}>
@@ -1580,6 +1704,7 @@ const PriceInputText = styled.p`
   padding: 5px 10px;
   border-width: 1px;
   background: #eee;
+  margin: 0px;
 `;
 
 const AddressInfo = styled.p`
@@ -1630,12 +1755,12 @@ const ButtonImage = styled.label`
 `;
 
 const SelectImage = styled.button`
-    color: #a7aaad ;
-    background: #f6f7f7 ;
-    border-color: #dcdcde ;
-    box-shadow: none ;
-    text-shadow: none ;
-    cursor: default;
-    padding: 6px 12px;
-    font-size: 12px;
-`
+  color: #a7aaad;
+  background: #f6f7f7;
+  border-color: #dcdcde;
+  box-shadow: none;
+  text-shadow: none;
+  cursor: default;
+  padding: 6px 12px;
+  font-size: 12px;
+`;

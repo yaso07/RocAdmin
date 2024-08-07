@@ -32,6 +32,8 @@ interface Acf {
   from_price: string;
   price_to: string;
   url:any;
+  daysOfWeek?:any;
+  map_location:any;
   booking_information: { label: any; value: any }[];
   display_name: string;
   email_address: string;
@@ -167,6 +169,7 @@ const EventDataShow = () => {
         booking_information: BookingEvent,
         display_name: formData.DisplayName,
         email_address: formData.EmailAddress,
+        map_location: { lat: location.latitude, lng: location.longitude },
         telephone_number: {
           area_code: selectedCode,
           prefix: formData.Prefix,
@@ -203,12 +206,14 @@ const EventDataShow = () => {
       finalObject.acf.event_dates_end = dateState.endDateMonth;
       finalObject.acf.startTime = timeState.startTimeMonth;
       finalObject.acf.endTime = timeState.endTimeMonth;
-      finalObject.acf.eventType = "month"
+      finalObject.acf.daysOfWeek = selectedItems.MonthDays;
+      finalObject.acf.eventType = "monthly"
     } else if (selectedOptionEvent === "option2") {
       finalObject.acf.event_dates_start = dateState.startDateWeekly;
       finalObject.acf.event_dates_end = dateState.endDateWeekly;
       finalObject.acf.startTime = timeState.startTimeWeekly;
       finalObject.acf.endTime = timeState.endTimeWeekly;
+      finalObject.acf.daysOfWeek = selectedItems.WeekDays;
       finalObject.acf.eventType = "weekly"
     } else if (selectedOptionEvent === "option1") {
       finalObject.acf.event_dates_start = dateState.startDateDaily;
@@ -256,6 +261,18 @@ const EventDataShow = () => {
   const handleChangeEvent = (event: any) => {
     setSelectedOptionEvent(event.target.value);
   };
+
+  const [location, setLocation] = useState<any>({
+    latitude: 0,
+    longitude: 0,
+  });
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(({ coords }) => {
+      const { latitude, longitude } = coords;
+      setLocation({ latitude: latitude, longitude: longitude });
+    });
+  }, []);
 
   //   const { isOpen, toggle } = useModal();
 
@@ -1159,6 +1176,24 @@ const EventDataShow = () => {
                   Search for your address or click on the map to manually place
                   a marker.
                 </TitleTextMain>
+                <div style={{ display: "flex", gap: 20, marginBottom: 20 }}>
+                  <input
+                    type="text"
+                    className="custom-inputInfo"
+                    placeholder="Latitude"
+                    value={location?.latitude}
+                    name="Postcode"
+                    onChange={handleTextFieldChange}
+                  />
+                  <input
+                    type="text"
+                    className="custom-inputInfo"
+                    placeholder="Longitude"
+                    value={location.longitude}
+                    name="Postcode"
+                    onChange={handleTextFieldChange}
+                  />
+                </div>
               </div>
               <TitleText>Seasonality *</TitleText>
               <div
@@ -1543,6 +1578,7 @@ const PriceInputText = styled.p`
   padding: 5px 10px;
   border-width: 1px;
   background: #eee;
+  margin: 0px;
 `;
 
 const AddressInfo = styled.p`

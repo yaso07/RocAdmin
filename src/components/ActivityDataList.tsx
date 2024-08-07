@@ -452,33 +452,7 @@ const Drawer = ({
           </button>
         </div>
         <hr />
-        {/* <div style={{ display: "flex",alignItems:"center",gap:10,marginTop:10,marginBottom:20 }}>
-          <div>
-            <label style={{display:"flex",gap:5}}>
-              <input
-                type="radio"
-                value="option1"
-                checked={selectedOption === "option1"}
-                onChange={handleChange2}
-              />
-              Event
-            </label>
-          </div>
-          <div>
-            <label style={{display:"flex",gap:5}}>
-              <input
-                type="radio"
-                value="option2"
-                checked={selectedOption === "option2"}
-                onChange={handleChange2}
-              />
-              Activity
-            </label>
-          </div>
-        </div> */}
-        {/* {selectedOption === "option1" && <EventDataShow />}
-        {selectedOption === "option2" && <ActivityDataShow />} */}
-        <EventDataShow />
+        <ActivityDataShow />
       </div>
     </div>
   );
