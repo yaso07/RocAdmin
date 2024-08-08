@@ -368,35 +368,35 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
   const IndoretypesData = [
     {
       value: "spa-health",
-      label: "Spa & health",
+      title: "Spa & health",
     },
     {
       value: "fitness-leisure",
-      label: "Fitness & leisure",
+      title: "Fitness & leisure",
     },
     {
       value: "food-drink",
-      label: "Food & drink",
+      title: "Food & drink",
     },
     {
       value: "history-culture",
-      label: "History & culture",
+      title: "History & culture",
     },
     {
       value: "family",
-      label: "Family",
+      title: "Family",
     },
     {
       value: "indoor-sports",
-      label: "indoor-sports",
+      title: "indoor-sports",
     },
     {
       value: "swimming",
-      label: "Swimming",
+      title: "Swimming",
     },
     {
       value: "outdoor-sports",
-      label: "Outdoor sports",
+      title: "Outdoor sports",
     },
   ];
 
@@ -485,7 +485,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
 
       setFile(res?.data);
       //  setFile(URL.createObjectURL(e.target.files[0]) as any);
-      console.log("dresponse", res);
     }
   }
 
@@ -526,15 +525,15 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
   const handleCheckboxChange2 = (
     category: Category,
     value: string,
-    checked: boolean
+    checked: boolean,
+    title?:any
   ) => {
-console.log("lkflkdskflsfs", )
 
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
         ? [
           ...prevSelectedItems[category],
-          { label: value.split("-")[0], value },
+          { label: title, value },
         ]
         : prevSelectedItems[category].filter((item) => item.value !== value);
 
@@ -544,6 +543,15 @@ console.log("lkflkdskflsfs", )
       };
     });
   };
+
+  function parseTitle(title: string) {
+    const [mainTitle, italicPart] = title.split('<br>');
+    const italicText = italicPart?.match(/<i>(.*?)<\/i>/)?.[1];
+    return {
+        mainTitle,
+        italicText
+    };
+  }
 
   return (
     <div>
@@ -591,6 +599,7 @@ console.log("lkflkdskflsfs", )
                         name="location"
                         value={item.value}
                         onChange={handleChangeRadioActivity}
+                        defaultChecked={index === 1}
                         style={{ marginRight: 10 }}
                       />
                       <label>{item.label}</label>
@@ -602,7 +611,6 @@ console.log("lkflkdskflsfs", )
                 <TitleText>SubType *</TitleText>
                 <div className="checkboxContainer">
                   {subTypeActivity?.map((item: any, index) => {
-                    console.log("lkfdkfs", item)
                     return (
                       <div style={{ marginBottom: 10 }} key={index}>
                         <Checkbox
@@ -612,7 +620,7 @@ console.log("lkflkdskflsfs", )
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2(subTypeAct, value, checked)
+                            handleCheckboxChange2(subTypeAct, value, checked,item.title)
                           }
                         />
                       </div>
@@ -633,7 +641,7 @@ console.log("lkflkdskflsfs", )
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("Location", value, checked)
+                            handleCheckboxChange2("Location", value, checked,item.title)
                           }
                         />
                       </div>
@@ -657,7 +665,8 @@ console.log("lkflkdskflsfs", )
                             handleCheckboxChange2(
                               "KeyFacilities",
                               value,
-                              checked
+                              checked,
+                              item.title
                             )
                           }
                         />
@@ -734,7 +743,7 @@ console.log("lkflkdskflsfs", )
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Booking", value, checked)
+                          handleCheckboxChange2("Booking", value, checked,item.title)
                         }
                       />
                     </div>
@@ -962,7 +971,7 @@ console.log("lkflkdskflsfs", )
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Seasonality", value, checked)
+                          handleCheckboxChange2("Seasonality", value, checked,item.title)
                         }
                       />
                     </div>
@@ -976,23 +985,24 @@ console.log("lkflkdskflsfs", )
                   gridTemplateColumns: "1fr 1fr",
                 }}
               >
-                {BusRoutesData.map((item, index) => {
+               {BusRoutesData.map((item, index) => {
+                  const { mainTitle, italicText } = parseTitle(item.title);
                   return (
                     <div style={{ marginBottom: 10 }} key={index}>
                       {item.title != "" && (
                         <Checkbox
-                          title={item.title}
+                          title={mainTitle}
                           value={item.value}
                           isChecked={selectedItems.BusRoutes.some(
                             (items) => items.value === item.value
                           )}
-                          onCheckboxChange={(item, checked) =>
-                            handleCheckboxChange2("BusRoutes", item, checked)
+                          onCheckboxChange={(value, checked) =>
+                            handleCheckboxChange2("BusRoutes", value, checked,item.title)
                           }
                         />
                       )}
 
-                      <p style={{ marginLeft: 20 }}>{item.RouteInfo}</p>
+                      <p style={{ marginLeft: 20 }}>{italicText}</p>
                     </div>
                   );
                 })}
@@ -1154,7 +1164,7 @@ console.log("lkflkdskflsfs", )
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Accessibility", value, checked)
+                          handleCheckboxChange2("Accessibility", value, checked,item.title)
                         }
                       />
                     </div>

@@ -30,7 +30,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
   useEffect(() => {
     const mappedData: any = mappedArray(eventDataValue)
     setEventList(mappedData)
-  }, [isDrawerOpen, eventList, eventDataValue])
+  }, [isDrawerOpen,eventDataValue])
 
 
   const toggleDrawer = (name: string) => {

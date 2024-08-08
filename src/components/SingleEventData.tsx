@@ -368,6 +368,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 20px;
 `;
 
 const ResturatContainer = styled.div`
