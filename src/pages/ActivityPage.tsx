@@ -9,8 +9,8 @@ import SingleActivitytData from "../components/SingleActivityData";
 
 
 const EventsPage = () => {
-    const eventDataValue = useSelector((state: any) => state.event.activitiesList)
-
+    const data= useSelector((state: any) => {return state.event})
+    const eventDataValue=data.activitiesList
     const [eventdata, setEventData] = useState({})
     const [dataImage, setDataImage] = useState('')
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -21,7 +21,7 @@ const EventsPage = () => {
 
     useEffect(() => {
         dispatch(getActivityList() as any)
-    }, [])
+    }, [data.currentActivity])
 
     useEffect(() => {
         if (eventDataValue !== undefined) {
