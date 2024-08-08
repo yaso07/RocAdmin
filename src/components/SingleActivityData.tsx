@@ -41,7 +41,6 @@ const SingleEventData: React.FC<ModalProps> = ({
         setDrawerType("Edit")
     };
 
-    console.log("kdkdkdkdkdkdkdkdkdkd", data)
     const EventListData = [
         {
             name: data?.acf?.event_dates

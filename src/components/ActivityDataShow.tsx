@@ -1,6 +1,6 @@
 import Accordion from "../components/Accordion/Accordion";
 import { useState, useEffect } from "react";
-import { createActivity } from "../api/EventSlice/eventThunk";
+import { createActivity, getActivityList } from "../api/EventSlice/eventThunk";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import ReusableInput from "./InputBox/ReusableInput";
@@ -12,6 +12,8 @@ import styled from "styled-components";
 import TimePicker from "./DateAndTimePicker/TimePicker";
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { AccessibilityData, BookingData, BusRoutesData, keyfacilityData, locationData, opnintHoursData, ParishData, SeasonalityData, typesData, WeeklyDaysData } from "../utils/data";
+import { updateOpenHours } from "../utils/commanFun";
 
 interface Acf {
   title: string;
@@ -68,10 +70,10 @@ interface FinalObject {
 }
 
 interface Props {
-  isOpen: any;
-  setIsDrawerOpen: any;
-  setDrawerType: any;
-  drawerType: string;
+  isOpen?: any;
+  setIsDrawerOpen?: any;
+  setDrawerType?: any;
+  drawerType?: string;
 }
 
 type TransformedType = {
@@ -90,7 +92,7 @@ interface TimeState {
   [key: string]: {
     opens?: string;
     closes?: string;
-    is_open?: string;
+    is_open?: number;
   };
 }
 
@@ -121,7 +123,7 @@ type Category =
   | "BusRoutes"
   | "Accessibility";
 
-const EventDataShow = () => {
+const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
   const dispatch = useDispatch();
 
   const submitFormikFunction = () => {
@@ -185,7 +187,7 @@ const EventDataShow = () => {
         parish: selectedOpt,
         seasonality: seasonalityArray,
         bus_routes: busRouteArray,
-        opening_hours: timeState,
+        opening_hours: updateOpenHours(timeState),
         social_media: {
           facebook: formData.Facebook,
           instagram: formData.Instagram,
@@ -215,7 +217,9 @@ const EventDataShow = () => {
       finalObject.acf.event_dates_end = dateState.endDateDaily;
       finalObject.acf.eventType = "daily";
     }
-    dispatch(createActivity(finalObject) as any);
+    const obj = {finalObject, setIsDrawerOpen}
+    dispatch(createActivity(obj) as any);
+    dispatch(getActivityList() as any)
   };
 
   const [formData, setFormData] = useState({
@@ -259,10 +263,10 @@ const EventDataShow = () => {
 
 
   const handleCheckboxChange = (category: string, value: string, checked: boolean) => {
-    setSelectedItems((prevState:any) => {
+    setSelectedItems((prevState: any) => {
       const newWeekDays = checked
         ? [...prevState.WeekDays, { value }]
-        : prevState.WeekDays.filter((item:any) => item.value !== value);
+        : prevState.WeekDays.filter((item: any) => item.value !== value);
       return { ...prevState, WeekDays: newWeekDays };
     });
 
@@ -270,9 +274,9 @@ const EventDataShow = () => {
       return {
         ...prevState,
         [value]: {
-          open: checked ? prevState[value]?.opens || '' : '',
-          close: checked ? prevState[value]?.closes || '' : '',
-          is_open: checked ? '1' : '0',
+          // opens: checked ? prevState[value]?.opens || '' : '',
+          // closes: checked ? prevState[value]?.closes || '' : '',
+          is_open: checked ? 1 : 0,
         },
       };
     });
@@ -360,60 +364,6 @@ const EventDataShow = () => {
     setSelectedOption(event.target.value);
   };
 
-  const typesData = [
-    {
-      value: "beaches",
-      label: "beaches",
-    },
-    {
-      value: "nature-wildlife",
-      label: "nature-wildlife",
-    },
-    {
-      value: "water-sports",
-      label: "water-sports",
-    },
-    {
-      value: "equipment-hire",
-      label: "equipment-hire",
-    },
-    {
-      value: "active-adrenaline",
-      label: "active-adrenaline",
-    },
-    {
-      value: "indoor-sports",
-      label: "indoor-sports",
-    },
-    {
-      value: "boat",
-      label: "boat",
-    },
-    {
-      value: "fishing-charters",
-      label: "fishing-charters",
-    },
-    {
-      value: "cycling",
-      label: "cycling",
-    },
-    {
-      value: "walking",
-      label: "walking",
-    },
-    {
-      value: "car-hire-driving",
-      label: "car-hire-driving",
-    },
-    {
-      value: "golf",
-      label: "golf",
-    },
-    {
-      value: "outdoor-sports",
-      label: "Outdoor sports",
-    },
-  ];
 
   const IndoretypesData = [
     {
@@ -450,262 +400,7 @@ const EventDataShow = () => {
     },
   ];
 
-  //   const SubTypeDeatils =
 
-  const locationData = [
-    {
-      value: "island-wide",
-      label: "Island wide",
-    },
-    {
-      value: "coastal",
-      label: "Coastal",
-    },
-    {
-      value: "town",
-      label: "Town",
-    },
-    {
-      value: "countryside",
-      label: "Countryside",
-    },
-  ];
-
-  const keyfacilityData = [
-    { title: "Indoor", value: "indoor" },
-    { title: "Catering", value: "catering" },
-    { title: "Outdoor", value: "outdoor" },
-    { title: "Wheelchair access", value: "wheelchair-access" },
-    { title: "Family friendly", value: "family-friendly" },
-    { title: "Parking", value: "parking" },
-    { title: "Couples", value: "couples" },
-    { title: "Hearing loop", value: "hearing-loop" },
-    { title: "Pet friendly", value: "pet-friendly" },
-  ];
-
-  const BookingData = [
-    { title: "Free entry", value: "free-entry" },
-    { title: "Free for children", value: "free-for-children" },
-    { title: "Booking needed", value: "booking-needed" },
-  ];
-
-  const SeasonalityData = [
-    { title: "January", value: "january" },
-    { title: "July", value: "july" },
-    { title: "February", value: "february" },
-    { title: "August", value: "august" },
-    { title: "March", value: "march" },
-    { title: "September", value: "september" },
-    { title: "April", value: "april" },
-    { title: "October", value: "october" },
-    { title: "May", value: "may" },
-    { title: "November", value: "november" },
-    { title: "June", value: "june" },
-    { title: "December", value: "december" },
-  ];
-
-  const WeeklyDaysData = [
-    { title: "Monday", value: "monday" },
-    { title: "Tuesday", value: "tuesday" },
-    { title: "Wednesday", value: "wednesday" },
-    { title: "Thursday", value: "thursday" },
-    { title: "Friday", value: "friday" },
-    { title: "Saturday", value: "saturday" },
-    { title: "Sunday", value: "sunday" },
-  ];
-
-  const BusRoutesData = [
-    {
-      title: "Route 1",
-      value: "Route 1",
-      RouteInfo: "Liberation Station - Gorey Pier)",
-    },
-    {
-      title: "Route 14",
-      value: "July",
-      RouteInfo: "(Liberation Station - St. Brelade's Bay)",
-    },
-    {
-      title: "Route 1A",
-      value: "Route 1A",
-      RouteInfo: "(Liberation Station - Gorey Pier)",
-    },
-    {
-      title: "Route 15",
-      value: "Route 15",
-      RouteInfo: "(Liberation Station - Jersey Airport)",
-    },
-    {
-      title: "Route 2",
-      value: "Route 2",
-      RouteInfo: "(Liberation Station - St. Catherine)",
-    },
-    {
-      title: "Route 16",
-      value: "Route 16",
-      RouteInfo: "(Liberation Station - Liberation Station)",
-    },
-    {
-      title: "Route 2A",
-      value: "Route 2A",
-      RouteInfo: "(Liberation Station - St. Catherine)",
-    },
-    {
-      title: "Route 19",
-      value: "Route 19",
-      RouteInfo: "(Liberation Station - La Pouquelaye)",
-    },
-    {
-      title: "Route 3",
-      value: "Route 3",
-      RouteInfo: "(Liberation Station - Jersey Zoo)",
-    },
-    {
-      title: "Route 20",
-      value: "Route 20",
-      RouteInfo: "Town Link (Liberation Station - Halkett Place)",
-    },
-    {
-      title: "Route 4",
-      value: "Route 4",
-      RouteInfo: "(Liberation Station - Bonne Nuit Bay)",
-    },
-    {
-      title: "Route 21",
-      value: "Route 21",
-      RouteInfo: "(Liberation Station - Liberation Station)",
-    },
-    {
-      title: "Route 5",
-      value: "Route 5",
-      RouteInfo: "(Liberation Station - St. John's Church)",
-    },
-    {
-      title: "Route 22",
-      value: "Route 22",
-      RouteInfo: "(Liberation Station - L'Etacq)",
-    },
-    {
-      title: "Route 7",
-      value: "Route 7",
-      RouteInfo: "(Liberation Station - St. John's Church)",
-    },
-    {
-      title: "Route X22",
-      value: "Route X22",
-      RouteInfo: "(Liberation Station - L'Etacq)",
-    },
-    {
-      title: "Route 8",
-      value: "Route 8",
-      RouteInfo: "(Liberation Station - Plémont)",
-    },
-    {
-      title: "Route 23",
-      value: "Route 23",
-      RouteInfo: "(Liberation Station - Jersey Zoo)",
-    },
-    {
-      title: "Route 9",
-      value: "Route 9",
-      RouteInfo: "(Liberation Station - Grève De Lecq)",
-    },
-    {
-      title: "Route 23A",
-      value: "Route 23A",
-      RouteInfo: "(Liberation Station - St Martin's Hall)",
-    },
-    {
-      title: "Route 12A",
-      value: "Route 12A",
-      RouteInfo: "(Liberation Station - Corbière)",
-    },
-    {
-      title: "Route 24",
-      value: "Route 24",
-      RouteInfo: "Town Link (Liberation Station - Halkett Place)",
-    },
-    {
-      title: "Route 13",
-      value: "Route 13",
-      RouteInfo: "(Liberation Station - Jersey Zoo)",
-    },
-    {
-      title: "Route 28",
-      value: "Route 28",
-      RouteInfo: "(Liberation Station - La Mare Wine Estate)",
-    },
-    { title: "", value: "", RouteInfo: "" },
-    { title: "Not applicable", value: "Not applicable", RouteInfo: "" },
-  ];
-
-  const AccessibilityData = [
-    { title: "Access guide", value: "Access guide" },
-    {
-      title: "Accessible parking or drop-off point",
-      value: "Accessible parking or drop-off point",
-    },
-    { title: "Accessible toilets", value: "Accessible toilets" },
-    { title: "American sign language", value: "American sign language" },
-    { title: "British sign language", value: "British sign language" },
-    { title: "Hearing loop", value: "Hearing loop" },
-    {
-      title: "Large print, braille or audio",
-      value: "Large print, braille or audio",
-    },
-    { title: "Level access", value: "Level access" },
-    {
-      title: "Level access from entrance to reception",
-      value: "Level access from entrance to reception",
-    },
-    {
-      title: "Level access to all public areas",
-      value: "Level access to all public areas",
-    },
-    { title: "Level access to bar", value: "Level access to bar" },
-    {
-      title: "Level access to dining room, cafe or restaurant",
-      value: "Level access to dining room, cafe or restaurant",
-    },
-    {
-      title: "Level access to leisure facilities",
-      value: "Level access to leisure facilities",
-    },
-    {
-      title: "Level access to main entrance",
-      value: "Level access to main entrance",
-    },
-    {
-      title: "Level access to one or more bedrooms",
-      value: "Level access to one or more bedrooms",
-    },
-    { title: "Lift or stairlift", value: "Lift or stairlift" },
-    {
-      title: "Partial wheelchair access",
-      value: "Partially suitable for visitors with limited mobility",
-    },
-    { title: "Ramp to main entrance", value: "Ramp to main entrance" },
-    {
-      title: "Suitable for visitors with limited mobility",
-      value: "Suitable for visitors with limited mobility",
-    },
-    {
-      title: "Tactile route for visitors with visual impairments",
-      value: "Tactile route for visitors with visual impairments",
-    },
-    {
-      title: "Wet room or level entry shower",
-      value: "Wet room or level entry shower",
-    },
-    {
-      title: "Wheelchair access throughout",
-      value: "Wheelchair access throughout",
-    },
-    {
-      title: "Wheelchairs or mobility aids provided",
-      value: "Wheelchairs or mobility aids provided",
-    },
-  ];
 
   const [location, setLocation] = useState<any>({
     latitude: 0,
@@ -720,9 +415,9 @@ const EventDataShow = () => {
   //   });
   // }, []);
 
-  const onchangelocation = (e:any)=>{
+  const onchangelocation = (e: any) => {
     const { name, value } = e.target;
-    setLocation((prevData:any) => ({
+    setLocation((prevData: any) => ({
       ...prevData,
       [name]: value,
     }));
@@ -794,20 +489,6 @@ const EventDataShow = () => {
     }
   }
 
-  const ParishData = [
-    { label: "Grouville", value: "Grouville" },
-    { label: "St. Mary", value: "St. Mary" },
-    { label: "St. Clement", value: "St. Clement" },
-    { label: "St. Ouen", value: "St. Ouen" },
-    { label: "St. Helier", value: "St. Helier" },
-    { label: "St. Peter", value: "St. Peter" },
-    { label: "St. John", value: "St. John" },
-    { label: "St. Saviour", value: "St. Saviour" },
-    { label: "St. Lawrence", value: "St. Lawrence" },
-    { label: "St. Brelade", value: "St. Brelade" },
-    { label: "St. Martin", value: "St. Martin" },
-    { label: "Trinity", value: "Trinity" },
-  ];
 
   const [selectedOpt, setSelectedOpt] = useState<{
     label: string;
@@ -847,12 +528,14 @@ const EventDataShow = () => {
     value: string,
     checked: boolean
   ) => {
+console.log("lkflkdskflsfs", )
+
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
         ? [
-            ...prevSelectedItems[category],
-            { label: value.split("-")[0], value },
-          ]
+          ...prevSelectedItems[category],
+          { label: value.split("-")[0], value },
+        ]
         : prevSelectedItems[category].filter((item) => item.value !== value);
 
       return {
@@ -918,11 +601,12 @@ const EventDataShow = () => {
               <div style={{ marginTop: 20 }}>
                 <TitleText>SubType *</TitleText>
                 <div className="checkboxContainer">
-                  {subTypeActivity?.map((item, index) => {
+                  {subTypeActivity?.map((item: any, index) => {
+                    console.log("lkfdkfs", item)
                     return (
                       <div style={{ marginBottom: 10 }} key={index}>
                         <Checkbox
-                          title={item.label}
+                          title={item.title}
                           value={item.value}
                           isChecked={subTypeValue.some(
                             (items) => items.value === item.value
@@ -943,7 +627,7 @@ const EventDataShow = () => {
                     return (
                       <div style={{ marginBottom: 10 }} key={index}>
                         <Checkbox
-                          title={item.label}
+                          title={item.title}
                           value={item.value}
                           isChecked={selectedItems.Location.some(
                             (items) => items.value === item.value
@@ -1090,7 +774,7 @@ const EventDataShow = () => {
               </TitleTextMain>
               <div style={{ display: "flex", gap: 24 }}>
                 <div style={{ width: 140 }}>
-                  <h6 style={{fontWeight:"normal",marginBottom:20}}>Area Code</h6>
+                  <h6 style={{ fontWeight: "normal", marginBottom: 20 }}>Area Code</h6>
                   <Select
                     id="country-code"
                     name="country-code"
@@ -1105,7 +789,7 @@ const EventDataShow = () => {
                   </Select>
                 </div>
                 <div style={{ width: 120 }}>
-                  <h6 style={{fontWeight:"normal",marginBottom:20}}>Prefix</h6>
+                  <h6 style={{ fontWeight: "normal", marginBottom: 20 }}>Prefix</h6>
                   <div className="input-wrapper">
                     <input
                       type="number"
@@ -1117,7 +801,7 @@ const EventDataShow = () => {
                   </div>
                 </div>
                 <div style={{ width: "100%" }}>
-                  <h6 style={{fontWeight:"normal",marginBottom:20}}>Telephone</h6>
+                  <h6 style={{ fontWeight: "normal", marginBottom: 20 }}>Telephone</h6>
                   <input
                     type="text"
                     className="custom-inputInfo"
@@ -1302,8 +986,8 @@ const EventDataShow = () => {
                           isChecked={selectedItems.BusRoutes.some(
                             (items) => items.value === item.value
                           )}
-                          onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("BusRoutes", value, checked)
+                          onCheckboxChange={(item, checked) =>
+                            handleCheckboxChange2("BusRoutes", item, checked)
                           }
                         />
                       )}
@@ -1457,7 +1141,7 @@ const EventDataShow = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: 20,
-                  marginTop:20
+                  marginTop: 20
                 }}
               >
                 {AccessibilityData.map((item, index) => {
@@ -1566,7 +1250,7 @@ const EventDataShow = () => {
                     borderLeft: "1px solid #ccc",
                     borderRight: "1px solid #ccc",
                     height: 300,
-                    marginTop:20
+                    marginTop: 20
                   }}
                 >
                   {" "}
@@ -1653,7 +1337,7 @@ const EventDataShow = () => {
   );
 };
 
-export default EventDataShow;
+export default ActivityDataCreate;
 
 const ImageInfoText = styled.div`
   font-size: 14px;

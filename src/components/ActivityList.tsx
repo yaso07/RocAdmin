@@ -2,8 +2,10 @@
 
 
 // import Drawer from "./Drawer";
+import { useEffect, useState } from "react";
 import { fallbackImage, getImgeUrl } from "../utils/commanFun";
 import ActivityDataList from "./ActivityDataList";
+import { mappedArray } from "../utils/dataMapping";
 
 
 interface Props {
@@ -18,13 +20,23 @@ interface Props {
 
 function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }: Props) {
 
+  const [eventList, setEventList] = useState([])
+  // const elaString = localStorage.getItem('ela');
 
+
+
+
+
+  useEffect(() => {
+
+    const mappedData: any = mappedArray(eventDataValue)
+    setEventList(mappedData)
+  }, [eventList.length, isDrawerOpen, eventDataValue])
 
 
   const toggleDrawer = (name: string) => {
     setIsDrawerOpen(!isDrawerOpen);
     setDrawerType(name)
-
   };
   
 
@@ -39,11 +51,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
 
         <div className="overflow-y-auto max-h-[calc(100dvh-200px)] hide-scrollbar">
           {
-            eventDataValue.map((item: any, index: number) => {
-              if(item?.acf?.header_image_data === undefined){
-                return ""
-              }
-            
+            eventList.map((item: any, index: number) => {
               return (
                 <div
                   className={`flex items-center gap-x-5 border-b border-gray-300 p-2 cursor-pointer ${selectedList === index && "bg-indigo-300"}`}
@@ -53,12 +61,12 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
                   <div style={{ width: "90px", height: "90px" }}>
                     <img
                       className="w-full h-full rounded-md object-fit-cover" 
-                      src={getImgeUrl(item?.acf?.header_image_data) ? getImgeUrl(item?.acf?.header_image_data) : fallbackImage}
+                      src={item?.image?.url}
                       loading="lazy"
                     />
                   </div>
                   <div className="flex flex-col gap-y-1">
-                    <p>{item?.acf?.title}</p>
+                    <p>{item?.title}</p>
                     <p className="text-orange-500">{item?.date}</p>
                   </div>
                 </div>

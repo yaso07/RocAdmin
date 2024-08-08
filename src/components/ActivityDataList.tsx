@@ -13,6 +13,7 @@ import moment from "moment";
 import "../App.css";
 import EventDataShow from "./EventDataShow";
 import ActivityDataShow from "./ActivityDataShow";
+import ActivityDataCreate from "./ActivityDataShow";
 
 interface Props {
   isOpen: any;
@@ -452,7 +453,7 @@ const Drawer = ({
           </button>
         </div>
         <hr />
-        <ActivityDataShow />
+        <ActivityDataCreate {...{setIsDrawerOpen}} />
       </div>
     </div>
   );

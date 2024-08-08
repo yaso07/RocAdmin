@@ -44,26 +44,25 @@ export const createActivity = createAsyncThunk(
     const token = JSON.parse(getUser()).token;
     try {
       const response = await axios.post<any>(
-        import.meta.env.VITE_REACT_APP_API_BASE_URL + CREATE_ACTIVITY, bodyParameter,
+        import.meta.env.VITE_REACT_APP_API_BASE_URL + CREATE_ACTIVITY, bodyParameter?.finalObject,
         {
           headers: {
             "x-login-token": token
           },
         }
       );
-      console.log("activity data kya hhhh", response)
-      if (response?.data == 200) {
+      if (response?.status == 200) {
+        bodyParameter?.setIsDrawerOpen(false)
         toast.success(response?.data?.message)
       } else {
         toast.error(response?.data?.message)
       }
-      return [];
-      // return response.data;
+      // return [];
+      return response.data;
 
     } catch (error: any) {
       toast.error(error?.response?.data?.message)
       console.log(error?.response?.data?.message, "erroroooror");
-
     }
   })
 
@@ -111,15 +110,6 @@ export const getActivityList = createAsyncThunk(
 // ======================================== GET EVENT BY ID ===========================================
 export const fetchEventById = createAsyncThunk('event/fetchById', async (data: any) => {
   console.log("jflkdsfksjlkjlfsjfksfs", data)
-  // const token = JSON.parse(getUser()).token;
-  // const response = await axios.get(
-  //   import.meta.env.VITE_REACT_APP_API + `${id}`,
-  //   {
-  //     headers: {
-  //       "x-login-token": token
-  //     },
-  //   }
-  // )
   return data
 })
 
@@ -156,7 +146,7 @@ export const deleteEvent = createAsyncThunk('event/delete',
   })
 
 
-  // ================================ DELETE EVENT DATA ====================================================
+// ================================ DELETE EVENT DATA ====================================================
 export const deleteActivity = createAsyncThunk('activity/delete',
   async (id: any) => {
     const token = JSON.parse(getUser()).token;

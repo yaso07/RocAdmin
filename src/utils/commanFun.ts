@@ -1,6 +1,7 @@
 import moment from "moment";
 
 import fallback from '../assets/fallbackimage.png'
+import { opnintHoursData } from "./data";
 
 export const fallbackImage = fallback
 
@@ -117,5 +118,17 @@ else {
 
 }
 
+
+export function updateOpenHours( newObj: any) {
+  for (const day in newObj) {
+    if (opnintHoursData.hasOwnProperty(day)) {
+      opnintHoursData[day] = {
+        ...opnintHoursData[day],
+        ...newObj[day]
+      };
+    }
+  }
+  return opnintHoursData;
+}
 
   
