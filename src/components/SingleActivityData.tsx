@@ -161,13 +161,15 @@ const SingleActivitytData: React.FC<ModalProps> = ({
         }
     }, [currentEvent])
 
+    const isEmptyObject = Object.keys(data).length === 0;
+
     return (
         <>
             {
                 loading ?
                     <Loading />
                     :
-                    data ?
+                    !isEmptyObject ?
 
                         <Container className="overflow-y-auto max-h-[calc(100dvh-90px)] hide-scrollbar">
                             <Title className="">

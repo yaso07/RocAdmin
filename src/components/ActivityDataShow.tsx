@@ -170,7 +170,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
         price_to: formData.priceTo,
         booking_information: BookingEvent,
         display_name: formData.DisplayName,
-        email_address: formData.DisplayName,
+        email_address: formData.EmailAddress,
         map_location: { lat: location.latitude, lng: location.longitude },
         telephone_number: {
           area_code: selectedCode,
