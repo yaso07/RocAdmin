@@ -41,18 +41,18 @@ export const ParishData = [
 ];
 
 export const SeasonalityData = [
-    { title: "January", value: "january" },
-    { title: "July", value: "july" },
-    { title: "February", value: "february" },
-    { title: "August", value: "august" },
-    { title: "March", value: "march" },
-    { title: "September", value: "september" },
-    { title: "April", value: "april" },
-    { title: "October", value: "october" },
+    { title: "January", value: "January" },
+    { title: "July", value: "July" },
+    { title: "February", value: "February" },
+    { title: "August", value: "August" },
+    { title: "March", value: "March" },
+    { title: "September", value: "September" },
+    { title: "April", value: "April" },
+    { title: "October", value: "October" },
     { title: "May", value: "May" },
-    { title: "November", value: "november" },
-    { title: "June", value: "june" },
-    { title: "December", value: "december" },
+    { title: "November", value: "November" },
+    { title: "June", value: "June" },
+    { title: "December", value: "December" },
 ];
 
 

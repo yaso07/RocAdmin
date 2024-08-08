@@ -233,7 +233,6 @@ const EventDataShow = () => {
       finalObject.acf.eventType = "daily"
     }
     console.log(finalObject, "finalObject");
-    return
     dispatch(createEvent(finalObject) as any);
   };
 
@@ -455,13 +454,14 @@ const EventDataShow = () => {
   const handleCheckboxChange2 = (
     category: Category,
     value: string,
-    checked: boolean
+    checked: boolean,
+    label?:any
   ) => {
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
         ? [
           ...prevSelectedItems[category],
-          { label: value.split("-")[0], value },
+          { label: label, value },
         ]
         : prevSelectedItems[category].filter((item) => item.value !== value);
 
@@ -525,7 +525,20 @@ const EventDataShow = () => {
     }
   }
 
+useEffect(()=>{
+  if(file){
+    handleClose()
+  }
+},[file])
 
+function parseTitle(title: string) {
+  const [mainTitle, italicPart] = title.split('<br>');
+  const italicText = italicPart?.match(/<i>(.*?)<\/i>/)?.[1];
+  return {
+      mainTitle,
+      italicText
+  };
+}
 
 
   // try {
@@ -557,6 +570,8 @@ const EventDataShow = () => {
   // }
   // const MonthDays = selectedItems.MonthDays.map(day => day.value);
   // console.log(MonthDays,"selectedItems.MonthDays")
+
+  console.log(selectedItems.BusRoutes,"qwqwqwqwq")
 
   return (
     <div>
@@ -600,7 +615,7 @@ const EventDataShow = () => {
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("Type", value, checked)
+                            handleCheckboxChange2("Type", value, checked,item.title)
                           }
                         />
                       </div>
@@ -621,7 +636,7 @@ const EventDataShow = () => {
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("Location", value, checked)
+                            handleCheckboxChange2("Location", value, checked,item.title)
                           }
                         />
                       </div>
@@ -645,7 +660,8 @@ const EventDataShow = () => {
                             handleCheckboxChange2(
                               "KeyFacilities",
                               value,
-                              checked
+                              checked,
+                              item.title
                             )
                           }
                         />
@@ -764,7 +780,7 @@ const EventDataShow = () => {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Booking", value, checked)
+                          handleCheckboxChange2("Booking", value, checked,item.title)
                         }
                       />
                     </div>
@@ -960,7 +976,7 @@ const EventDataShow = () => {
                 </TitleTextMain>
                 <div style={{ display: "flex", gap: 20, marginBottom: 20, marginTop: 20 }}>
                   <input
-                    type="text"
+                    type="number"
                     className="custom-inputInfo"
                     placeholder="Latitude"
                     value={location?.latitude}
@@ -968,7 +984,7 @@ const EventDataShow = () => {
                     onChange={onchangelocation}
                   />
                   <input
-                    type="text"
+                    type="number"
                     className="custom-inputInfo"
                     placeholder="Longitude"
                     value={location.longitude}
@@ -995,7 +1011,7 @@ const EventDataShow = () => {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Seasonality", value, checked)
+                          handleCheckboxChange2("Seasonality", value, checked,item.title)
                         }
                       />
                     </div>
@@ -1011,22 +1027,23 @@ const EventDataShow = () => {
                 }}
               >
                 {BusRoutesData.map((item, index) => {
+                  const { mainTitle, italicText } = parseTitle(item.title);
                   return (
                     <div style={{ marginBottom: 10 }} key={index}>
                       {item.title != "" && (
                         <Checkbox
-                          title={item.title}
+                          title={mainTitle}
                           value={item.value}
                           isChecked={selectedItems.BusRoutes.some(
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("BusRoutes", value, checked)
+                            handleCheckboxChange2("BusRoutes", value, checked,item.title)
                           }
                         />
                       )}
 
-                      <p style={{ marginLeft: 20 }}>{item.RouteInfo}</p>
+                      <p style={{ marginLeft: 20 }}>{italicText}</p>
                     </div>
                   );
                 })}
@@ -1139,7 +1156,7 @@ const EventDataShow = () => {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Accessibility", value, checked)
+                          handleCheckboxChange2("Accessibility", value, checked,item.title)
                         }
                       />
                     </div>

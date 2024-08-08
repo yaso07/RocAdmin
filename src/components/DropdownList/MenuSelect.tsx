@@ -103,7 +103,7 @@ const MenuField: FC<InputProps> = ({
                         (items: any) => items.value === item.value
                       )}
                       onCheckboxChange={(value, checked) =>
-                        handleCheckboxChange("WeekDays", value, checked)
+                        handleCheckboxChange("WeekDays", value, checked,item.title)
                       }
                     />
                   </div>
@@ -166,7 +166,7 @@ const MenuField: FC<InputProps> = ({
                         (items: any) => items.value === item.value
                       )}
                       onCheckboxChange={(value, checked) =>
-                        handleCheckboxChange("MonthDays", value, checked)
+                        handleCheckboxChange("MonthDays", value, checked,item.title)
                       }
                     />
                   </div>
