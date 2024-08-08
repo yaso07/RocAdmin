@@ -21,6 +21,7 @@ import { formatDate } from "../types/date";
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { createSelector } from 'reselect';
+import { AccessibilityData, BookingData, BusRoutesData, countryCodes, keyfacilityData, locationData, ParishData, SeasonalityData, typesData, WeeklyDaysData } from "../utils/data";
 
 interface Acf {
   title: string;
@@ -31,9 +32,9 @@ interface Acf {
   key_facilities: { label: any; value: any }[];
   from_price: string;
   price_to: string;
-  url:any;
-  daysOfWeek?:any;
-  map_location:any;
+  url: any;
+  daysOfWeek?: any;
+  map_location: any;
   booking_information: { label: any; value: any }[];
   display_name: string;
   email_address: string;
@@ -63,8 +64,8 @@ interface Acf {
   customDates?: any; // Optional property
   event_dates_start?: string;
   event_dates_end?: string;
-  startTime?: string;
-  endTime?: string;
+  start_time?: string;
+  end_time?: string;
   eventType?: string;
 }
 
@@ -117,10 +118,10 @@ type Category =
   | "BusRoutes"
   | "Accessibility";
 
-  const selectSingleEventData = createSelector(
-    (state: any) => state.event.singleEventData,
-    (singleEventData) => singleEventData || { acf: {} }
-  );
+const selectSingleEventData = createSelector(
+  (state: any) => state.event.singleEventData,
+  (singleEventData) => singleEventData || { acf: {} }
+);
 
 const EventDataShow = () => {
   const dispatch = useDispatch();
@@ -158,10 +159,10 @@ const EventDataShow = () => {
     const MonthDays = selectedItems.MonthDays?.map(day => day.value);
     const WeekDays = selectedItems.WeekDays?.map(day => day.value);
 
-    const formatDateData = dateTimeComponents.map((item:any)=>({
-      selectedDate:formatDate(item.selectedDate),
-      customStartTime:item.customStartTime,
-      customEndTime:item.customEndTime
+    const formatDateData = dateTimeComponents.map((item: any) => ({
+      selectedDate: formatDate(item.selectedDate),
+      customStartTime: item.customStartTime,
+      customEndTime: item.customEndTime
     }))
 
     const finalObject: FinalObject = {
@@ -172,13 +173,13 @@ const EventDataShow = () => {
         type: eventTypeArray,
         location: eventLocationArray,
         key_facilities: keyFeature,
-        url:file,
+        url: file,
         from_price: formData.priceFrom,
         price_to: formData.priceTo,
         booking_information: BookingEvent,
         display_name: formData.DisplayName,
         email_address: formData.EmailAddress,
-        map_location: { lat: location.latitude, lng: location.longitude },
+        map_location: { lat: +location.latitude, lng: +location.longitude },
         telephone_number: {
           area_code: selectedCode,
           prefix: formData.Prefix,
@@ -209,32 +210,33 @@ const EventDataShow = () => {
     };
     if (selectedOptionEvent === "option4") {
       finalObject.acf.customDates = formatDateData;
-      finalObject.acf.eventType = "custom" ;
+      finalObject.acf.eventType = "custom";
     } else if (selectedOptionEvent === "option3") {
       finalObject.acf.event_dates_start = dateState.startDateMonth;
       finalObject.acf.event_dates_end = dateState.endDateMonth;
-      finalObject.acf.startTime = timeState.startTimeMonth;
-      finalObject.acf.endTime = timeState.endTimeMonth;
+      finalObject.acf.start_time = timeState.startTimeMonth;
+      finalObject.acf.end_time = timeState.endTimeMonth;
       finalObject.acf.daysOfWeek = MonthDays;
       finalObject.acf.eventType = "monthly"
     } else if (selectedOptionEvent === "option2") {
       finalObject.acf.event_dates_start = dateState.startDateWeekly;
       finalObject.acf.event_dates_end = dateState.endDateWeekly;
-      finalObject.acf.startTime = timeState.startTimeWeekly;
-      finalObject.acf.endTime = timeState.endTimeWeekly;
+      finalObject.acf.start_time = timeState.startTimeWeekly;
+      finalObject.acf.end_time = timeState.endTimeWeekly;
       finalObject.acf.daysOfWeek = WeekDays;
       finalObject.acf.eventType = "weekly"
     } else if (selectedOptionEvent === "option1") {
       finalObject.acf.event_dates_start = dateState.startDateDaily;
       finalObject.acf.event_dates_end = dateState.endDateDaily;
-      finalObject.acf.startTime = timeState.startTimeDaily;
-      finalObject.acf.endTime = timeState.endTimeDaily;
+      finalObject.acf.start_time = timeState.startTimeDaily;
+      finalObject.acf.end_time = timeState.endTimeDaily;
       finalObject.acf.eventType = "daily"
     }
     console.log(finalObject, "finalObject");
+    return
     dispatch(createEvent(finalObject) as any);
   };
-  
+
   const SingleEventData = useSelector(selectSingleEventData);
 
   const [formData, setFormData] = useState({
@@ -280,9 +282,9 @@ const EventDataShow = () => {
   //     setLocation({ latitude: latitude, longitude: longitude });
   //   });
   // }, []);
-  const onchangelocation = (e:any)=>{
+  const onchangelocation = (e: any) => {
     const { name, value } = e.target;
-    setLocation((prevData:any) => ({
+    setLocation((prevData: any) => ({
       ...prevData,
       [name]: value,
     }));
@@ -331,8 +333,8 @@ const EventDataShow = () => {
       customEndTime: undefined,
     },
   ]);
-  
-  console.log(dateTimeComponents,"Latitude")
+
+  // console.log(dateTimeComponents,"Latitude")
 
   const addDateTimeComponent = () => {
     setDateTimeComponents([
@@ -381,294 +383,23 @@ const EventDataShow = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+
+
+
+
   
 
-  const typesData = [
-    { title: "Arts & cultural", value: "arts-cultural" },
-    { title: "Music", value: "music" },
-    { title: "Family friendly", value: "family-friendly" },
-    { title: "Seasonal", value: "seasonal" },
-    { title: "Festivals", value: "festivals" },
-    { title: "Sports", value: "sports" },
-    { title: "Food & drink", value: "food-drink" },
-    { title: "Outdoor", value: "outdoor" },
-    { title: "Health & wellbeing", value: "health-wellbeing" },
-    { title: "Spectator", value: "spectator" },
-    { title: "History & Heritage", value: "history-Heritage" },
-    { title: "Participant", value: "participant" },
-  ];
 
-  const locationData = [
-    { title: "Coastal", value: "coastal" },
-    { title: "Town", value: "town" },
-    { title: "Countryside", value: "countryside" },
-  ];
-
-  const keyfacilityData = [
-    { title: "Indoor", value: "indoor" },
-    { title: "Catering", value: "catering" },
-    { title: "Outdoor", value: "outdoor" },
-    { title: "Wheelchair access", value: "wheelchair-access" },
-    { title: "Family friendly", value: "family-friendly" },
-    { title: "Parking", value: "parking" },
-    { title: "Couples", value: "couples" },
-    { title: "Hearing loop", value: "hearing-loop" },
-    { title: "Pet friendly", value: "pet-friendly" },
-  ];
-
-  const BookingData = [
-    { title: "Free entry", value: "free-entry" },
-    { title: "Free for children", value: "free-for-children" },
-    { title: "Booking needed", value: "booking-needed" },
-  ];
-
-  const SeasonalityData = [
-    { title: "January", value: "january" },
-    { title: "July", value: "july" },
-    { title: "February", value: "february" },
-    { title: "August", value: "august" },
-    { title: "March", value: "march" },
-    { title: "September", value: "september" },
-    { title: "April", value: "april" },
-    { title: "October", value: "october" },
-    { title: "May", value: "may" },
-    { title: "November", value: "november" },
-    { title: "June", value: "june" },
-    { title: "December", value: "december" },
-  ];
-
-  const WeeklyDaysData = [
-    { title: "Monday", value: "monday" },
-    { title: "Tuesday", value: "tuesday" },
-    { title: "Wednesday", value: "wednesday" },
-    { title: "Thursday", value: "thursday" },
-    { title: "Friday", value: "friday" },
-    { title: "Saturday", value: "saturday" },
-    { title: "Sunday", value: "sunday" },
-  ];
-
-  const BusRoutesData = [
-    {
-      title: "Route 1",
-      value: "Route 1",
-      RouteInfo: "Liberation Station - Gorey Pier)",
-    },
-    {
-      title: "Route 14",
-      value: "Route 14",
-      RouteInfo: "(Liberation Station - St. Brelade's Bay)",
-    },
-    {
-      title: "Route 1A",
-      value: "Route 1A",
-      RouteInfo: "(Liberation Station - Gorey Pier)",
-    },
-    {
-      title: "Route 15",
-      value: "Route 15",
-      RouteInfo: "(Liberation Station - Jersey Airport)",
-    },
-    {
-      title: "Route 2",
-      value: "Route 2",
-      RouteInfo: "(Liberation Station - St. Catherine)",
-    },
-    {
-      title: "Route 16",
-      value: "Route 16",
-      RouteInfo: "(Liberation Station - Liberation Station)",
-    },
-    {
-      title: "Route 2A",
-      value: "Route 2A",
-      RouteInfo: "(Liberation Station - St. Catherine)",
-    },
-    {
-      title: "Route 19",
-      value: "Route 19",
-      RouteInfo: "(Liberation Station - La Pouquelaye)",
-    },
-    {
-      title: "Route 3",
-      value: "Route 3",
-      RouteInfo: "(Liberation Station - Jersey Zoo)",
-    },
-    {
-      title: "Route 20",
-      value: "Route 20",
-      RouteInfo: "Town Link (Liberation Station - Halkett Place)",
-    },
-    {
-      title: "Route 4",
-      value: "Route 4",
-      RouteInfo: "(Liberation Station - Bonne Nuit Bay)",
-    },
-    {
-      title: "Route 21",
-      value: "Route 21",
-      RouteInfo: "(Liberation Station - Liberation Station)",
-    },
-    {
-      title: "Route 5",
-      value: "Route 5",
-      RouteInfo: "(Liberation Station - St. John's Church)",
-    },
-    {
-      title: "Route 22",
-      value: "Route 22",
-      RouteInfo: "(Liberation Station - L'Etacq)",
-    },
-    {
-      title: "Route 7",
-      value: "Route 7",
-      RouteInfo: "(Liberation Station - St. John's Church)",
-    },
-    {
-      title: "Route X22",
-      value: "Route X22",
-      RouteInfo: "(Liberation Station - L'Etacq)",
-    },
-    {
-      title: "Route 8",
-      value: "Route 8",
-      RouteInfo: "(Liberation Station - Plémont)",
-    },
-    {
-      title: "Route 23",
-      value: "Route 23",
-      RouteInfo: "(Liberation Station - Jersey Zoo)",
-    },
-    {
-      title: "Route 9",
-      value: "Route 9",
-      RouteInfo: "(Liberation Station - Grève De Lecq)",
-    },
-    {
-      title: "Route 23A",
-      value: "Route 23A",
-      RouteInfo: "(Liberation Station - St Martin's Hall)",
-    },
-    {
-      title: "Route 12A",
-      value: "Route 12A",
-      RouteInfo: "(Liberation Station - Corbière)",
-    },
-    {
-      title: "Route 24",
-      value: "Route 24",
-      RouteInfo: "Town Link (Liberation Station - Halkett Place)",
-    },
-    {
-      title: "Route 13",
-      value: "Route 13",
-      RouteInfo: "(Liberation Station - Jersey Zoo)",
-    },
-    {
-      title: "Route 28",
-      value: "Route 28",
-      RouteInfo: "(Liberation Station - La Mare Wine Estate)",
-    },
-    { title: "", value: "", RouteInfo: "" },
-    { title: "Not applicable", value: "Not applicable", RouteInfo: "" },
-  ];
-
-  const AccessibilityData = [
-    { title: "Access guide", value: "Access guide" },
-    {
-      title: "Accessible parking or drop-off point",
-      value: "Accessible parking or drop-off point",
-    },
-    { title: "Accessible toilets", value: "Accessible toilets" },
-    { title: "American sign language", value: "American sign language" },
-    { title: "British sign language", value: "British sign language" },
-    { title: "Hearing loop", value: "Hearing loop" },
-    {
-      title: "Large print, braille or audio",
-      value: "Large print, braille or audio",
-    },
-    { title: "Level access", value: "Level access" },
-    {
-      title: "Level access from entrance to reception",
-      value: "Level access from entrance to reception",
-    },
-    {
-      title: "Level access to all public areas",
-      value: "Level access to all public areas",
-    },
-    { title: "Level access to bar", value: "Level access to bar" },
-    {
-      title: "Level access to dining room, cafe or restaurant",
-      value: "Level access to dining room, cafe or restaurant",
-    },
-    {
-      title: "Level access to leisure facilities",
-      value: "Level access to leisure facilities",
-    },
-    {
-      title: "Level access to main entrance",
-      value: "Level access to main entrance",
-    },
-    {
-      title: "Level access to one or more bedrooms",
-      value: "Level access to one or more bedrooms",
-    },
-    { title: "Lift or stairlift", value: "Lift or stairlift" },
-    {
-      title: "Partial wheelchair access",
-      value: "Partially suitable for visitors with limited mobility",
-    },
-    { title: "Ramp to main entrance", value: "Ramp to main entrance" },
-    {
-      title: "Suitable for visitors with limited mobility",
-      value: "Suitable for visitors with limited mobility",
-    },
-    {
-      title: "Tactile route for visitors with visual impairments",
-      value: "Tactile route for visitors with visual impairments",
-    },
-    {
-      title: "Wet room or level entry shower",
-      value: "Wet room or level entry shower",
-    },
-    {
-      title: "Wheelchair access throughout",
-      value: "Wheelchair access throughout",
-    },
-    {
-      title: "Wheelchairs or mobility aids provided",
-      value: "Wheelchairs or mobility aids provided",
-    },
-  ];
-
+  
   const [selectedCode, setSelectedCode] = useState("");
 
   const handleChangeCode = (event: any) => {
     setSelectedCode(event.target.value);
   };
 
-  const countryCodes = [
-    { code: "+1", country: "United States" },
-    { code: "+44", country: "United Kingdom" },
-    { code: "+33", country: "France" },
-    { code: "+49", country: "Germany" },
-    // Add more country codes as needed
-  ];
 
-  const ParishData = [
-    { label: "Grouville", value: "grouville" },
-    { label: "St. Mary", value: "st-mary" },
-    { label: "St. Clement", value: "st-clement" },
-    { label: "St. Ouen", value: "st-ouen" },
-    { label: "St. Helier", value: "st-helier" },
-    { label: "St. Peter", value: "st-peter" },
-    { label: "St. John", value: "st-john" },
-    { label: "St. Saviour", value: "st-saviour" },
-    { label: "St. Lawrence", value: "st-lawrence" },
-    { label: "St. Brelade", value: "st-brelade" },
-    { label: "St. Martin", value: "st-martin" },
-    { label: "Trinity", value: "trinity" },
-    { label: "Jersey", value: "jersey" },
-  ];
+
+
 
   const [selectedOpt, setSelectedOpt] = useState<{
     label: string;
@@ -720,7 +451,6 @@ const EventDataShow = () => {
   };
 
 
-  console.log(selectedItems,"selectedItems")
 
   const handleCheckboxChange2 = (
     category: Category,
@@ -730,9 +460,9 @@ const EventDataShow = () => {
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
         ? [
-            ...prevSelectedItems[category],
-            { label: value.split("-")[0], value },
-          ]
+          ...prevSelectedItems[category],
+          { label: value.split("-")[0], value },
+        ]
         : prevSelectedItems[category].filter((item) => item.value !== value);
 
       return {
@@ -780,53 +510,53 @@ const EventDataShow = () => {
   //   };
 
   const [file, setFile] = useState();
- async function handleChange(e: any) {
-   
-   const file = e.target.files?.[0];
-   const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
-   if (file) {
-     const formData = new FormData();
-     formData.append("image", file);
-     const res = await axios.post(url, formData);
-     
-     setFile(res?.data);    
-    //  setFile(URL.createObjectURL(e.target.files[0]) as any);    
+  async function handleChange(e: any) {
+
+    const file = e.target.files?.[0];
+    const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
+    if (file) {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await axios.post(url, formData);
+
+      setFile(res?.data);
+      //  setFile(URL.createObjectURL(e.target.files[0]) as any);    
       console.log("dresponse", res)
     }
   }
 
 
-    
-    
-      // try {
-      //   setLoder(true);
-      //   const formData = new FormData();
-      //   formData.append("image", file);
-        
-      //   if (res.status == 200) {
-      //     const imageArray = [
-      //       {
-      //         alt_text: "",
-      //         original_filename: file.name,
-      //         public_id: "",
-      //         url: res?.data,
-      //       },
-      //     ];
-      //     setFieldValue("header_image_data", JSON.stringify(imageArray));
-      //     const reader = new FileReader();
-      //     reader.onloadend = () => {
-      //       setSelectedImage(reader.result);
-      //     };
-      //     reader.readAsDataURL(file);
-      //     setLoder(false);
-      //   } else {
-      //     setLoder(false);
-      //   }
-      // } catch (error) {
-      //   setLoder(false);
-      // }
-      const MonthDays = selectedItems.MonthDays.map(day => day.value);
-      console.log(MonthDays,"selectedItems.MonthDays")
+
+
+  // try {
+  //   setLoder(true);
+  //   const formData = new FormData();
+  //   formData.append("image", file);
+
+  //   if (res.status == 200) {
+  //     const imageArray = [
+  //       {
+  //         alt_text: "",
+  //         original_filename: file.name,
+  //         public_id: "",
+  //         url: res?.data,
+  //       },
+  //     ];
+  //     setFieldValue("header_image_data", JSON.stringify(imageArray));
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setSelectedImage(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //     setLoder(false);
+  //   } else {
+  //     setLoder(false);
+  //   }
+  // } catch (error) {
+  //   setLoder(false);
+  // }
+  // const MonthDays = selectedItems.MonthDays.map(day => day.value);
+  // console.log(MonthDays,"selectedItems.MonthDays")
 
   return (
     <div>
@@ -969,7 +699,7 @@ const EventDataShow = () => {
                 <TitleText style={{ margin: "20px 0px" }}>
                   Price from / to
                 </TitleText>
-                <p style={{ fontSize: 15, fontWeight: "400",marginTop:20 }}>
+                <p style={{ fontSize: 15, fontWeight: "400", marginTop: 20 }}>
                   When entering costs, please don’t use any decimal places
                   unless the cost includes pence.
                 </p>
@@ -1021,7 +751,7 @@ const EventDataShow = () => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr 1fr",
-                  marginTop:20
+                  marginTop: 20
                 }}
               >
                 {BookingData.map((item, index) => {
@@ -1072,9 +802,9 @@ const EventDataShow = () => {
                 Please provide your full telephone number, including area code.
                 For example: +44 (0) 1534 859000.
               </TitleTextMain>
-              <div style={{ display: "flex", gap: 24,marginTop:20 }}>
+              <div style={{ display: "flex", gap: 24, marginTop: 20 }}>
                 <div style={{ width: 140 }}>
-                  <h6 style={{marginBottom:20,fontWeight:"normal"}}>Area Code</h6>
+                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Area Code</h6>
                   <Select
                     id="country-code"
                     name="country-code"
@@ -1089,7 +819,7 @@ const EventDataShow = () => {
                   </Select>
                 </div>
                 <div style={{ width: 120 }}>
-                  <h6 style={{marginBottom:20,fontWeight:"normal"}}>Prefix</h6>
+                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Prefix</h6>
                   <div className="input-wrapper">
                     <input
                       type="number"
@@ -1101,7 +831,7 @@ const EventDataShow = () => {
                   </div>
                 </div>
                 <div style={{ width: "100%" }}>
-                  <h6 style={{marginBottom:20,fontWeight:"normal"}}>Telephone</h6>
+                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Telephone</h6>
                   <input
                     type="text"
                     className="custom-inputInfo"
@@ -1129,7 +859,7 @@ const EventDataShow = () => {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                  marginTop:20
+                  marginTop: 20
                 }}
               >
                 <AddressInfo>Place name</AddressInfo>
@@ -1203,7 +933,7 @@ const EventDataShow = () => {
                   gridTemplateColumns: "1fr 1fr",
                   gridGap: 10,
                   marginBottom: 20,
-                  marginTop:20
+                  marginTop: 20
                 }}
               >
                 {ParishData.map((item, index) => {
@@ -1224,11 +954,11 @@ const EventDataShow = () => {
               </div>
               <div>
                 <TitleText>Map location</TitleText>
-                <TitleTextMain style={{marginTop:20}}>
+                <TitleTextMain style={{ marginTop: 20 }}>
                   Search for your address or click on the map to manually place
                   a marker.
                 </TitleTextMain>
-                <div style={{ display: "flex", gap: 20, marginBottom: 20,marginTop:20 }}>
+                <div style={{ display: "flex", gap: 20, marginBottom: 20, marginTop: 20 }}>
                   <input
                     type="text"
                     className="custom-inputInfo"
@@ -1252,7 +982,7 @@ const EventDataShow = () => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
-                  marginTop:20
+                  marginTop: 20
                 }}
               >
                 {SeasonalityData.map((item, index) => {
@@ -1277,7 +1007,7 @@ const EventDataShow = () => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
-                  marginTop:20
+                  marginTop: 20
                 }}
               >
                 {BusRoutesData.map((item, index) => {
@@ -1396,7 +1126,7 @@ const EventDataShow = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: 20,
-                  marginTop:20
+                  marginTop: 20
                 }}
               >
                 {AccessibilityData.map((item, index) => {
@@ -1505,9 +1235,9 @@ const EventDataShow = () => {
                     borderLeft: "1px solid #ccc",
                     borderRight: "1px solid #ccc",
                     height: 300,
-                    marginTop:20
+                    marginTop: 20
                   }}
-                >   <img src={file} style={{ width: 100, marginTop: 20,marginLeft:20 }} /></div>
+                >   <img src={file} style={{ width: 100, marginTop: 20, marginLeft: 20 }} /></div>
                 <div
                   style={{
                     border: "1px solid #ccc",
@@ -1548,9 +1278,9 @@ const EventDataShow = () => {
                 <div
                   style={{
                     display: "flex",
-                    flexDirection:"column",
-                    justifyContent:"center",
-                    alignItems:"center"
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center"
                   }}
                 >
                   <div style={{ textAlign: "center" }}>

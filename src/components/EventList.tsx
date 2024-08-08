@@ -33,7 +33,7 @@ function EventDetails({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawe
     //   const mappedData: any = mappedArray(ela)
     //   setEventList(mappedData)
     // }else {
-    console.log("valueses", eventDataValue)
+
     const mappedData: any = mappedArray(eventDataValue)
     setEventList(mappedData)
     // }
