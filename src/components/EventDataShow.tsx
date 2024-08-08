@@ -160,9 +160,9 @@ const EventDataShow = () => {
     const WeekDays = selectedItems.WeekDays?.map(day => day.value);
 
     const formatDateData = dateTimeComponents.map((item: any) => ({
-      selectedDate: formatDate(item.selectedDate),
-      customStartTime: item.customStartTime,
-      customEndTime: item.customEndTime
+      date: formatDate(item.selectedDate),
+      start_time: item.customStartTime,
+      end_time: item.customEndTime
     }))
 
     const finalObject: FinalObject = {

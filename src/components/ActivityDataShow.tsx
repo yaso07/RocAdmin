@@ -171,7 +171,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
         booking_information: BookingEvent,
         display_name: formData.DisplayName,
         email_address: formData.EmailAddress,
-        map_location: { lat: location.latitude, lng: location.longitude },
+        map_location: { lat: +location.latitude, lng: +location.longitude },
         telephone_number: {
           area_code: selectedCode,
           prefix: formData.Prefix,
