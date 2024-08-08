@@ -41,8 +41,7 @@ const SingleEventData: React.FC<ModalProps> = ({
         setDrawerType("Edit")
     };
 
-    console.log(data,"data")
-
+    console.log("kdkdkdkdkdkdkdkdkdkd", data)
     const EventListData = [
         {
             name: data?.acf?.event_dates
@@ -163,7 +162,6 @@ const SingleEventData: React.FC<ModalProps> = ({
         }
     }, [currentEvent])
 
-    console.log("datatatat", data)
     return (
         <>
             {
@@ -231,7 +229,7 @@ const SingleEventData: React.FC<ModalProps> = ({
                             </ResturantDetailsContainer>
                             <RestDetailText>{strippedContent}</RestDetailText>
 
-                            {data?.acf?.event_dates != "" && (
+                            {/* {data?.acf?.event_dates != "" && (
                                 <>
                                     <AlsoSeeText>More dates</AlsoSeeText>
                                     {data?.acf?.event_dates?.map((item: any, index: any) => (
@@ -248,9 +246,9 @@ const SingleEventData: React.FC<ModalProps> = ({
                                         </DatesContainer>
                                     ))}
                                 </>
-                            )}
+                            )} */}
 
-                            {data?.type !== "activities" && data?.acf?.key_facilities != "" && (
+                            {data?.acf?.key_facilities != "" && (
                                 <>
                                     <AlsoSeeText>Key Features</AlsoSeeText>
                                     <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -261,7 +259,7 @@ const SingleEventData: React.FC<ModalProps> = ({
                                 </>
                             )}
 
-                            {data?.type !== "activities" && data?.acf?.accessibility != "" && (
+                            {data?.acf?.accessibility != "" && (
                                 <>
                                     <AlsoSeeText>Accessibility</AlsoSeeText>
                                     <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -272,7 +270,7 @@ const SingleEventData: React.FC<ModalProps> = ({
                                 </>
                             )}
 
-                            {data?.type !== "activities" && data?.acf?.bus_routes != "" && (
+                            {data?.acf?.bus_routes != "" && (
                                 <>
                                     <AlsoSeeText>Bus Route</AlsoSeeText>
                                     <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -370,6 +368,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding-bottom: 20px;
 `;
 
 const ResturatContainer = styled.div`

@@ -296,7 +296,6 @@ const EventDataShow = () => {
   };
   const [timeState, setTimeState] = useState<TimeState>({});
 
-  console.log(timeState, "sdsdsd");
 
   const handleTimeChange = (field: any) => (date: any) => {
     setTimeState((prevState) => ({
@@ -713,7 +712,6 @@ const EventDataShow = () => {
     longitude: 0,
   });
 
-  console.log(location, "latitude");
 
   // useEffect(() => {
   //   navigator.geolocation.getCurrentPosition(({ coords }) => {
@@ -761,7 +759,6 @@ const EventDataShow = () => {
     value: string;
   } | null>(null);
 
-  console.log(selectedActivity, "aasas");
 
   const handleChangeRadioActivity = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -839,7 +836,6 @@ const EventDataShow = () => {
     Accessibility: [],
   });
 
-  console.log(selectedItems, "sdssdsdsd");
 
   const subTypeValue =
     selectedActivity?.label == "Outdoor activities"

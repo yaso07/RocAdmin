@@ -1,6 +1,8 @@
 import moment from "moment";
 
+import fallback from '../assets/fallbackimage.png'
 
+export const fallbackImage = fallback
 
 export function formatDate(timestamp: Date): string {
     return moment(timestamp).format("DD");
@@ -103,6 +105,17 @@ export function convertTo12HourTime(time24Hour: any) {
       return date;
 };
 
+
+export const getImgeUrl = (arr: any) =>{
+if(arr){
+  const imgArray = arr !== undefined ? JSON.parse(arr) : [{ url: fallback }];
+  return imgArray[0].url
+}
+else {
+  return ""
+}
+
+}
 
 
   

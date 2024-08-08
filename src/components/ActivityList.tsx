@@ -1,10 +1,9 @@
 
 
 
-import { useEffect, useState } from "react";
 // import Drawer from "./Drawer";
+import { fallbackImage, getImgeUrl } from "../utils/commanFun";
 import ActivityDataList from "./ActivityDataList";
-import { mappedArray } from "../utils/dataMapping";
 
 
 interface Props {
@@ -17,39 +16,17 @@ interface Props {
   selectedList?: number;
 }
 
-function EventDetails({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }: Props) {
-  // const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [eventList, setEventList] = useState([])
-  // const elaString = localStorage.getItem('ela');
+function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }: Props) {
 
 
 
-
-
-  useEffect(() => {
-
-    // const ela = elaString ? JSON.parse(elaString) : [];
-    // if(ela.length){
-    //   const mappedData: any = mappedArray(ela)
-    //   setEventList(mappedData)
-    // }else {
-    console.log("valueses", eventDataValue)
-    const mappedData: any = mappedArray(eventDataValue)
-    setEventList(mappedData)
-    // }
-
-  }, [eventList.length, isDrawerOpen, eventDataValue])
-
-  // useEffect(()=>{
-  //   dispatch(getEventList() as any)
-  // },[])
 
   const toggleDrawer = (name: string) => {
     setIsDrawerOpen(!isDrawerOpen);
     setDrawerType(name)
 
   };
-
+  
 
   return (
     <>
@@ -62,21 +39,26 @@ function EventDetails({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawe
 
         <div className="overflow-y-auto max-h-[calc(100dvh-200px)] hide-scrollbar">
           {
-            eventList.map((item: any, index: number) => {
+            eventDataValue.map((item: any, index: number) => {
+              if(item?.acf?.header_image_data === undefined){
+                return ""
+              }
+            
               return (
                 <div
                   className={`flex items-center gap-x-5 border-b border-gray-300 p-2 cursor-pointer ${selectedList === index && "bg-indigo-300"}`}
                   key={index}
-                  onClick={() => handleEventData(index, item?.image)}
+                  onClick={() => handleEventData(index, getImgeUrl(item?.acf?.header_image_data))}
                 >
                   <div style={{ width: "90px", height: "90px" }}>
                     <img
-                      className="w-full h-full rounded-md "
-                      src={item?.image}
+                      className="w-full h-full rounded-md object-fit-cover" 
+                      src={getImgeUrl(item?.acf?.header_image_data) ? getImgeUrl(item?.acf?.header_image_data) : fallbackImage}
+                      loading="lazy"
                     />
                   </div>
                   <div className="flex flex-col gap-y-1">
-                    <p>{item?.title}</p>
+                    <p>{item?.acf?.title}</p>
                     <p className="text-orange-500">{item?.date}</p>
                   </div>
                 </div>
@@ -93,4 +75,4 @@ function EventDetails({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawe
 }
 
 
-export default EventDetails
+export default ActivityLeftData
