@@ -1,250 +1,234 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import {
-  formatCalenderTime,
-  formatDate,
-  formatDay,
-  formatFullDate,
-  formatMonth,
-} from "../utils/commanFun";
+import { formatCalenderTime, formatDate, formatDay, formatFullDate, formatMonth } from "../utils/commanFun";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEventById, getEventList } from "../api/EventSlice/eventThunk";
 import ConfirmationComponent from "./ActivityDelete";
 import Loading from "./Loading";
 
+
+
+
+
+
 interface ModalProps {
-  dataImage?: any;
-  reservationModal?: any;
-  data?: any;
-  setIsDrawerOpen?: any;
-  setDrawerType?: any;
-  setSelectedList?: any;
+    dataImage?: any;
+    reservationModal?: any;
+    data?: any;
+    setIsDrawerOpen?: any;
+    setDrawerType?: any;
+    setSelectedList?: any;
 }
 
+
 const SingleActivitytData: React.FC<ModalProps> = ({
-  dataImage,
-  data,
-  setIsDrawerOpen,
-  setDrawerType,
-  setSelectedList,
+    dataImage,
+    data,
+    setIsDrawerOpen,
+    setDrawerType,
+    setSelectedList,
+
 }) => {
-  const dispatch = useDispatch();
-  const currentEvent = useSelector((state: any) => state.event.currentEvent);
-  const loading = useSelector((state: any) => state.event.isLoading);
-  const error = useSelector((state: any) => state.event.error);
+    const dispatch = useDispatch();
+    const currentEvent = useSelector((state: any) => state.event.currentEvent)
+    const loading = useSelector((state: any) => state.event.isLoading)
+    const error = useSelector((state: any) => state.event.error)
 
-  const toggleDrawer = () => {
-    setIsDrawerOpen(true);
-    dispatch(fetchEventById(data) as any);
-    setDrawerType("Edit");
-  };
+    const toggleDrawer = () => {
+        setIsDrawerOpen(true);
+        dispatch(fetchEventById(data) as any)
+        setDrawerType("Edit")
+    };
 
-  const EventListData = [
-    {
-      name: data?.acf?.event_dates ? (
-        <span>{formatFullDate(data.acf?.event_dates[0]?.date)}</span>
-      ) : (
-        "No events"
-      ),
-      // name: "ssds",
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fcalendar.png?alt=media&token=4dcb085b-44bc-4182-8893-27dda5f0325f",
-      width: 14,
-      height: 24,
-      nameValue: data?.acf?.event_dates ? true : false,
-    },
-    {
-      name: data?.acf?.event_dates ? (
-        <span>{data.acf?.event_dates[0]?.start_time}</span>
-      ) : (
-        "No events"
-      ),
-      // name: "sdsd",
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fclock.png?alt=media&token=5f80c9da-b46f-4c37-8018-db55c0cfd72e",
-      width: 16,
-      height: 24,
-      nameValue:
-        data?.acf?.event_dates?.length && data?.acf?.event_dates[0].start_time
-          ? true
-          : false,
-    },
-    {
-      name: <span>{`£ ${data?.acf?.price_to}`}</span>,
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fgbp.png?alt=media&token=30f60889-d511-46d9-a8ce-30ef112929e8",
-      width: 10,
-      height: 24,
-      nameValue: data?.acf?.price_to ? true : false,
-    },
-    {
-      name: <span>{data?.acf?.email_address}</span>,
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fenvelope.png?alt=media&token=08ba6331-d66b-485c-b274-4d85de7f76b0",
-      width: 16,
-      height: 24,
-      nameValue: data?.acf?.email_address ? true : false,
-    },
-    {
-      name: (
-        <WebsiteLink
-          to={data?.acf?.website ? data?.acf?.website : ""}
-          target="_blank"
-        >
-          {data?.acf?.website}
-        </WebsiteLink>
-      ),
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fglobe.png?alt=media&token=0fa8a5a4-35c8-46ae-bb83-45c00d6d7328",
-      width: 16,
-      height: 24,
-      nameValue: data?.acf?.website ? true : false,
-    },
-    {
-      name: (
-        <span>
-          {data?.acf?.address?.place_name}, {data?.acf?.address?.address_line_1}
-          , {data?.acf?.address?.address_line_2},
-        </span>
-      ),
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Flocation-dot.png?alt=media&token=d6ea3348-daab-4b8e-acb6-977148c16e1f",
-      width: 12,
-      height: 24,
-      nameValue:
-        data?.acf?.address?.place_name ||
-        data?.acf?.address?.address_line_1 ||
-        data?.acf?.address?.address_line_2
-          ? true
-          : false,
-    },
-  ];
+    const EventListData = [
+        {
+            name: data?.acf?.event_dates
+                ? (
 
-  const daysOfWeek = Object.keys(data?.acf?.opening_hours ?? {});
-  const daysOfWeekTiming = Object.values(data?.acf?.opening_hours ?? {}) as {
-    opens: string;
-    closes: string;
-  }[];
+                    <span>
+                        {formatFullDate(data.acf?.event_dates[0]?.date)}
+                    </span>
 
-  const formattedValues = () => {
-    const typeData = data?.acf?.type;
-    if (Array.isArray(typeData)) {
-      return data?.acf?.type.map((item: any) => item?.label).join(" | ");
-    } else {
-      return data?.acf?.type?.label;
-    }
-  };
-
-  const strippedContent = data?.acf?.short_description
-    ? data?.acf?.short_description
-        .replace(/<p[^>]*>/g, "")
-        .replace(/<\/p>/g, "")
-    : "";
-
-  const formatRoute = (routeText: any) => {
-    return routeText
-      ? routeText
-          .replace("<br>", ": ")
-          .replace("<i>", "")
-          .replace("</i>", "")
-          .replace(/(\()/, "")
-          .replace(/\)/, "")
-      : "";
-  };
-
-  // const handleDelete = (id: string) => {
-  //     dispatch(deleteEvent(id) as any)
-  //     dispatch(getEventList() as any)
-  // }
-
-  useEffect(() => {
-    if (!loading && error === "") {
-      dispatch(getEventList() as any);
-      setIsDrawerOpen(false);
-    }
-  }, [currentEvent]);
-
-  const isEmptyObject = Object.keys(data).length === 0;
-
-  return (
-    <>
-      {loading ? (
-        <Loading />
-      ) : !isEmptyObject ? (
-        <Container className="overflow-y-auto max-h-[calc(100dvh-90px)] hide-scrollbar">
-          <Title className="">
-            <h1 className="font-semibold text-lg capitalize">
-              {data?.acf?.title}
-            </h1>
-            <div className="">
-              <EditBtn
-                className="font-semibold text-lg capitalize mr-4"
-                onClick={() => toggleDrawer()}
-              >
-                Edit
-              </EditBtn>
-              <ConfirmationComponent
-                data={data?._id}
-                {...{ setSelectedList }}
-              />
-            </div>
-          </Title>
-
-          <ResturatContainer>
-            <ResturatWrapper>
-              <p style={{ fontSize: "14px", textTransform: "capitalize" }}>
-                {formattedValues()}
-              </p>
-            </ResturatWrapper>
-          </ResturatContainer>
-          <ItemImageContainer>
-            <img
-              src={
-                dataImage
-                  ? dataImage
-                  : "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FNo_Image_Available.jpg?alt=media&token=90cbe8cc-39f6-45f9-8c4b-59e9be631a07"
-              }
-              alt="Logo"
-              width={200}
-              height={80}
-              style={{ borderRadius: 4, maxWidth: "100%", objectFit: "cover" }}
-            />
-          </ItemImageContainer>
-          <ResturantDetailsContainer>
-            {EventListData.map((item: any, index: number) => {
-              return (
-                item?.nameValue && (
-                  <ResturantDetailsWrapper key={index}>
-                    {" "}
-                    <div style={{ width: 20 }}>
-                      <img
-                        style={{ cursor: "pointer", height: "auto" }}
-                        src={item.image}
-                        width={item.width}
-                        height={item.height}
-                        alt="Logo Outline"
-                      />{" "}
-                    </div>
-                    {index == 4 ? (
-                      <RestDetailTitleWebsite href={item?.name} target="_blank">
-                        {item?.name}
-                      </RestDetailTitleWebsite>
-                    ) : (
-                      <RestDetailTitle>{item?.name}</RestDetailTitle>
-                    )}
-                  </ResturantDetailsWrapper>
                 )
-              );
-            })}
-            {/* <ViewDirection onClick={() => reservationModal("DirectionModal")}>
+                : "No events",
+            // name: "ssds",
+            image:
+                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fcalendar.png?alt=media&token=4dcb085b-44bc-4182-8893-27dda5f0325f",
+            width: 14,
+            height: 24,
+            nameValue: data?.acf?.event_dates ? true : false,
+        },
+        {
+            name: data?.acf?.event_dates
+                ? (<span >
+                    {data.acf?.event_dates[0]?.start_time}
+                </span>)
+                : "No events",
+            // name: "sdsd",
+            image:
+                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fclock.png?alt=media&token=5f80c9da-b46f-4c37-8018-db55c0cfd72e",
+            width: 16,
+            height: 24,
+            nameValue: data?.acf?.event_dates?.length && data?.acf?.event_dates[0].start_time ? true : false,
+        },
+        {
+            name: <span >
+                {`£ ${data?.acf?.price_to}`}
+            </span>,
+            image:
+                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fgbp.png?alt=media&token=30f60889-d511-46d9-a8ce-30ef112929e8",
+            width: 10,
+            height: 24,
+            nameValue: data?.acf?.price_to ? true : false,
+        },
+        {
+            name:
+
+                <span >
+                    {data?.acf?.email_address}
+                </span>
+            ,
+            image:
+                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fenvelope.png?alt=media&token=08ba6331-d66b-485c-b274-4d85de7f76b0",
+            width: 16,
+            height: 24,
+            nameValue: data?.acf?.email_address ? true : false,
+        },
+        {
+            name: <WebsiteLink to={data?.acf?.website ? data?.acf?.website : ""} target="_blank">
+                {data?.acf?.website}
+            </WebsiteLink>,
+            image:
+                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fglobe.png?alt=media&token=0fa8a5a4-35c8-46ae-bb83-45c00d6d7328",
+            width: 16,
+            height: 24,
+            nameValue: data?.acf?.website ? true : false,
+        },
+        {
+            name:
+
+                <span >
+                    {data?.acf?.address?.place_name}, {data?.acf?.address?.address_line_1}, {data?.acf?.address?.address_line_2},
+                </span>,
+            image:
+                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Flocation-dot.png?alt=media&token=d6ea3348-daab-4b8e-acb6-977148c16e1f",
+            width: 12,
+            height: 24,
+            nameValue: (data?.acf?.address?.place_name || data?.acf?.address?.address_line_1 || data?.acf?.address?.address_line_2) ? true : false,
+        },
+    ];
+
+    const daysOfWeek = Object.keys(data?.acf?.opening_hours ?? {});
+    const daysOfWeekTiming = Object.values(data?.acf?.opening_hours ?? {}) as {
+        opens: string;
+        closes: string;
+    }[];
+
+
+    const formattedValues = () => {
+        const typeData = data?.acf?.type
+        if (Array.isArray(typeData)) {
+            return data?.acf?.type.map((item: any) => item?.label).join(" | ");
+        } else {
+            return data?.acf?.type?.label;
+        }
+    };
+
+    const strippedContent = data?.acf?.short_description ? data?.acf?.short_description
+        .replace(/<p[^>]*>/g, "")
+        .replace(/<\/p>/g, "") : ""
+
+    const formatRoute = (routeText: any) => {
+        return routeText ? routeText
+            .replace("<br>", ": ")
+            .replace("<i>", "")
+            .replace("</i>", "")
+            .replace(/(\()/, "")
+            .replace(/\)/, "") : ""
+    };
+
+    // const handleDelete = (id: string) => {
+    //     dispatch(deleteEvent(id) as any)
+    //     dispatch(getEventList() as any)
+    // }
+
+    useEffect(() => {
+        if (!loading && error === '') {
+
+            dispatch(getEventList() as any)
+            setIsDrawerOpen(false);
+        }
+    }, [currentEvent])
+
+    return (
+        <>
+            {
+                loading ?
+                    <Loading />
+                    :
+                    data ?
+
+                        <Container className="overflow-y-auto max-h-[calc(100dvh-90px)] hide-scrollbar">
+                            <Title className="">
+                                <h1 className="font-semibold text-lg capitalize">{data?.acf?.title}</h1>
+                                <div className="">
+                                    <EditBtn className="font-semibold text-lg capitalize mr-4" onClick={() => toggleDrawer()}>Edit</EditBtn>
+                                    <ConfirmationComponent data={data?._id} {...{ setSelectedList }} />
+                                </div>
+                            </Title>
+
+                            <ResturatContainer>
+                                <ResturatWrapper>
+                                    <p style={{ fontSize: "14px", textTransform: 'capitalize' }}>{formattedValues()}</p>
+                                </ResturatWrapper>
+                            </ResturatContainer>
+                            <ItemImageContainer>
+                                <img
+                                    src={
+                                        dataImage
+                                            ? dataImage
+                                            : "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FNo_Image_Available.jpg?alt=media&token=90cbe8cc-39f6-45f9-8c4b-59e9be631a07"
+                                    }
+                                    alt="Logo"
+                                    width={200}
+                                    height={80}
+                                    style={{ borderRadius: 4, maxWidth: "100%", objectFit: "cover" }}
+                                />
+                            </ItemImageContainer>
+                            <ResturantDetailsContainer>
+                                {EventListData.map((item: any, index: number) => {
+
+                                    return (
+                                        item?.nameValue &&
+                                        <ResturantDetailsWrapper key={index}>
+                                            {" "}
+                                            <div style={{ width: 20 }}>
+                                                <img
+                                                    style={{ cursor: "pointer", height: "auto" }}
+                                                    src={item.image}
+                                                    width={item.width}
+                                                    height={item.height}
+                                                    alt="Logo Outline"
+                                                />{" "}
+                                            </div>
+                                            {index == 4 ? (
+                                                <RestDetailTitleWebsite href={item?.name} target="_blank">
+                                                    {item?.name}
+                                                </RestDetailTitleWebsite>
+                                            ) : (
+                                                <RestDetailTitle>{item?.name}</RestDetailTitle>
+                                            )}
+                                        </ResturantDetailsWrapper>
+                                    );
+                                })}
+                                {/* <ViewDirection onClick={() => reservationModal("DirectionModal")}>
                     View Directions
                 </ViewDirection> */}
-          </ResturantDetailsContainer>
-          <AlsoSeeText>Description</AlsoSeeText>
-          <RestDetailText>{strippedContent}</RestDetailText>
+                            </ResturantDetailsContainer>
+                            <RestDetailText>{strippedContent}</RestDetailText>
 
-          {/* {data?.acf?.event_dates != "" && (
+                            {/* {data?.acf?.event_dates != "" && (
                                 <>
                                     <AlsoSeeText>More dates</AlsoSeeText>
                                     {data?.acf?.event_dates?.map((item: any, index: any) => (
@@ -263,31 +247,31 @@ const SingleActivitytData: React.FC<ModalProps> = ({
                                 </>
                             )} */}
 
-          {data?.acf?.key_facilities != "" && (
-            <>
-              <AlsoSeeText>Key Features</AlsoSeeText>
-              <BulletPointWrapper style={{ marginLeft: 40 }}>
-                {data?.acf?.key_facilities.map((item: any, index: any) => (
-                  <li key={index}>{item.label}</li>
-                ))}
-              </BulletPointWrapper>
-            </>
-          )}
+                            {data?.acf?.key_facilities != "" && (
+                                <>
+                                    <AlsoSeeText>Key Features</AlsoSeeText>
+                                    <BulletPointWrapper style={{ marginLeft: 40 }}>
+                                        {data?.acf?.key_facilities.map((item: any, index: any) => (
+                                            <li key={index}>{item.label}</li>
+                                        ))}
+                                    </BulletPointWrapper>
+                                </>
+                            )}
 
-          {data?.acf?.accessibility != "" && (
-            <>
-              <AlsoSeeText>Accessibility</AlsoSeeText>
-              <BulletPointWrapper style={{ marginLeft: 40 }}>
-                {data?.acf?.accessibility.map((item: any, index: any) => (
-                  <li key={index}>{item?.label}</li>
-                ))}
-              </BulletPointWrapper>
-            </>
-          )}
+                            {data?.acf?.accessibility != "" && (
+                                <>
+                                    <AlsoSeeText>Accessibility</AlsoSeeText>
+                                    <BulletPointWrapper style={{ marginLeft: 40 }}>
+                                        {data?.acf?.accessibility.map((item: any, index: any) => (
+                                            <li key={index}>{item?.label}</li>
+                                        ))}
+                                    </BulletPointWrapper>
+                                </>
+                            )}
 
-          {data?.acf?.bus_routes != "" && (
-            <>
-              {/* <AlsoSeeText>Bus Route</AlsoSeeText>
+                            {data?.acf?.bus_routes != "" && (
+                                <>
+                                    {/* <AlsoSeeText>Bus Route</AlsoSeeText>
                                     <BulletPointWrapper style={{ marginLeft: 40 }}>
                                         {data?.acf?.bus_routes.map((item: any, index: any) => (
                                             <li key={index} style={{ textDecoration: "underline" }}>
@@ -295,83 +279,89 @@ const SingleActivitytData: React.FC<ModalProps> = ({
                                             </li>
                                         ))}
                                     </BulletPointWrapper> */}
-            </>
-          )}
+                                </>
+                            )}
 
-          <AlsoSeeText>Seasonality</AlsoSeeText>
-          <BulletPointWrapper>
-            <OpningDatesContainer>
-              <DatesWrapperText>
-                {data?.acf?.seasonality &&
-                  data?.acf?.seasonality.map((item: any, index: any) => (
-                    <p key={index}>
-                      {item?.label}
-                      {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
-                    </p>
-                  ))}
-              </DatesWrapperText>
-            </OpningDatesContainer>
-          </BulletPointWrapper>
+                            <AlsoSeeText>Opening</AlsoSeeText>
+                            <BulletPointWrapper>
+                                <OpningDatesContainer>
 
-          <AlsoSeeText>Opening hours</AlsoSeeText>
-          <BulletPointWrapper>
-            <OpningDatesContainer>
-              {daysOfWeek.map((item, index) => (
-                <WeekTimeArrange key={index}>
-                  <p>{item}:</p>
-                  <p>
-                    {daysOfWeekTiming[index].opens} -{" "}
-                    {daysOfWeekTiming[index].closes}
-                  </p>
-                </WeekTimeArrange>
-              ))}
-            </OpningDatesContainer>
-          </BulletPointWrapper>
-        </Container>
-      ) : (
-        <div className="flex flex-col items-center justify-center h-full">
-          <svg
-            className="w-16 h-16 text-gray-400 mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 17v-6h6v6m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm6 0H9m3-16.5V9m0 0L15 6m-3 3L9 6"
-            ></path>
-          </svg>
-          <p className="text-gray-500 text-lg">No data available</p>
-        </div>
-      )}
-    </>
-  );
+
+                                    <DatesWrapperText>
+                                        {data?.acf?.seasonality &&
+                                            data?.acf?.seasonality.map((item: any, index: any) => (
+                                                <p key={index}>
+                                                    {item?.label}
+                                                    {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
+                                                </p>
+                                            ))}
+                                    </DatesWrapperText>
+
+
+                                    {
+                                        daysOfWeek.map((item, index) => (
+                                            <WeekTimeArrange key={index}>
+                                                <p>{item}:</p>
+                                                <p>
+                                                    {daysOfWeekTiming[index].opens} - {daysOfWeekTiming[index].closes}
+                                                </p>
+                                            </WeekTimeArrange>
+                                        ))
+                                    }
+
+                                </OpningDatesContainer>
+                            </BulletPointWrapper>
+                        </Container>
+                        :
+                        <div className="flex flex-col items-center justify-center h-full">
+                            <svg
+                                className="w-16 h-16 text-gray-400 mb-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M9 17v-6h6v6m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm6 0H9m3-16.5V9m0 0L15 6m-3 3L9 6"
+                                ></path>
+                            </svg>
+                            <p className="text-gray-500 text-lg">No data available</p>
+                        </div>
+
+            }
+
+
+        </>
+    );
 };
 
 export default SingleActivitytData;
 
 const Title = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
+display: flex;
+justify-content: space-between;
+width:100%;
 `;
 
 const EditBtn = styled.button`
-  padding: 0px 12px;
-  border: 1px solid gray;
-  margin: 4px;
-  border-radius: 5px;
-  cursor: pointer;
-  background: #1e2832;
-  color: white;
-  &:hover {
+    padding: 0px 12px;
+    border: 1px solid gray;
+    margin: 4px;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #1e2832;
+    color: white;
+    &:hover{
+    
     background: red;
-    transaction: 0.3s;
-  }
+    transaction: .3s
+    }
+
 `;
+
 
 const Container = styled.div`
   display: flex;
@@ -391,6 +381,8 @@ const ResturatWrapper = styled.div`
   gap: 8px;
   align-items: center;
 `;
+
+
 
 const ResturantDetailsContainer = styled.div`
   display: flex;
@@ -422,6 +414,7 @@ const RestDetailTitle = styled.p`
   line-height: 24px; /* 150% */
 `;
 
+
 const RestDetailText = styled.p`
   color: #000;
   font-size: 16px;
@@ -442,6 +435,9 @@ const RestDetailText = styled.p`
 //   }
 // `;
 
+
+
+
 const AlsoSeeText = styled.p`
   color: #000;
   font-size: 24px;
@@ -450,6 +446,8 @@ const AlsoSeeText = styled.p`
   line-height: normal;
   margin-left: 24px;
 `;
+
+
 
 const DatesContainer = styled.div`
   padding: 8px 16px;
@@ -533,7 +531,7 @@ const Monthstyle = styled.p`
 
 const WeekTimeArrange = styled.div`
   display: flex;
-  gap: 10px;
+  gap:10px;
   align-items: center;
 
   p {
@@ -546,8 +544,9 @@ const WeekTimeArrange = styled.div`
   }
 `;
 
+
 const OpningDatesContainer = styled.div`
-  padding: 0px;
+  padding: 16px 16px;
   margin: 0px 24px;
   border-radius: 8px;
   background: var(--White, #fff);

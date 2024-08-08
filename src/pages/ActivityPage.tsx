@@ -18,19 +18,26 @@ const EventsPage = () => {
 
     const [drawerType, setDrawerType] = useState<string>('')
     const dispatch = useDispatch()
-
+   
     useEffect(() => {
         dispatch(getActivityList() as any)
     }, [data.currentActivity])
 
     useEffect(() => {
         if (eventDataValue !== undefined) {
+
             if (eventDataValue[selectedList]?.acf?.header_image_data !== undefined) {
                 const imageData = eventDataValue[selectedList]?.acf?.header_image_data ? JSON.parse(eventDataValue[selectedList]?.acf?.header_image_data) : [{ url: "" }]
                 setEventData(eventDataValue[selectedList])
                 setDataImage(imageData[0].url)
             }
+             if (eventDataValue.length == 0) {
+               setEventData("");
+               setDataImage("");
+             }
         }
+       
+     
     }, [eventDataValue, isDrawerOpen])
 
     const handleEventData = (index: any, image: string) => {

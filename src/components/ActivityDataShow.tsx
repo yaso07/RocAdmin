@@ -45,7 +45,7 @@ interface Acf {
   parish: any;
   seasonality: { label: any; value: any }[];
   bus_routes: { label: any; value: any }[];
-  opening_hours: string;
+  opening_hours: any;
   social_media: {
     facebook: string;
     instagram: string;
@@ -92,7 +92,7 @@ interface TimeState {
   [key: string]: {
     opens?: string;
     closes?: string;
-    is_open?: string;
+    is_open?: number;
   };
 }
 
@@ -170,8 +170,8 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
         price_to: formData.priceTo,
         booking_information: BookingEvent,
         display_name: formData.DisplayName,
-        email_address: formData.EmailAddress,
-        map_location: { lat: +location.latitude, lng: +location.longitude },
+        email_address: formData.DisplayName,
+        map_location: { lat: location.latitude, lng: location.longitude },
         telephone_number: {
           area_code: selectedCode,
           prefix: formData.Prefix,
@@ -270,13 +270,13 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       return { ...prevState, WeekDays: newWeekDays };
     });
 
-    setTimeState((prevState:any) => {
+    setTimeState((prevState) => {
       return {
         ...prevState,
         [value]: {
           // opens: checked ? prevState[value]?.opens || '' : '',
           // closes: checked ? prevState[value]?.closes || '' : '',
-          is_open: checked ? 1 : 0,
+          is_open: checked ? "1" : "0",
         },
       };
     });
@@ -403,8 +403,8 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
 
 
   const [location, setLocation] = useState<any>({
-    latitude: "",
-    longitude: "",
+    latitude: 0,
+    longitude: 0,
   });
 
 
@@ -515,12 +515,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
     BusRoutes: [],
     Accessibility: [],
   });
-
-  useEffect(()=>{
-    if(file){
-      handleClose()
-    }
-  },[file])
 
 
   const subTypeValue =
@@ -1292,6 +1286,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                 </div>
               </div>
             </div>
+            <button onClick={submitFormikFunction}>submit</button>
             <Modal
               show={show}
               onHide={handleClose}
@@ -1348,7 +1343,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
           </>
         }
       />
-       <ButtonSubmit onClick={submitFormikFunction}>Submit</ButtonSubmit>
     </div>
   );
 };
@@ -1461,12 +1455,3 @@ const SelectImage = styled.button`
   padding: 6px 12px;
   font-size: 12px;
 `;
-
-const ButtonSubmit = styled.button`
-  padding: 10px;
-  background-color: #2271b1;
-  color: #fff;
-  margin-top: 20px;
-  border-radius: 5px;
-
-`

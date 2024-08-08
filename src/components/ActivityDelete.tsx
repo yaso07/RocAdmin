@@ -32,7 +32,7 @@ const ConfirmationComponent: React.FC<propsData> = ({ data, setSelectedList }) =
     return (
         <Popconfirm
             title="Delete the event"
-            description="Are you sure to delete this event?"
+            description="Are you sure to delete this Activity?"
             onConfirm={(e) => confirm(e, data)}
             onCancel={cancel}
             okText="Yes"

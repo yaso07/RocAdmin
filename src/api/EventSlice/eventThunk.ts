@@ -22,7 +22,7 @@ export const createEvent = createAsyncThunk(
         }
       );
       console.log("event data kya hhhh", response)
-      if (response?.data == 200) {
+      if (response?.status == 200) {
         toast.success(response?.data?.message)
       } else {
         toast.error(response?.data?.message)
