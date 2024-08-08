@@ -22,7 +22,7 @@ interface ModalProps {
 }
 
 
-const SingleEventData: React.FC<ModalProps> = ({
+const SingleActivitytData: React.FC<ModalProps> = ({
     dataImage,
     data,
     setIsDrawerOpen,
@@ -338,7 +338,7 @@ const SingleEventData: React.FC<ModalProps> = ({
     );
 };
 
-export default SingleEventData;
+export default SingleActivitytData;
 
 const Title = styled.div`
 display: flex;

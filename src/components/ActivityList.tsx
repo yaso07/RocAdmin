@@ -3,9 +3,10 @@
 
 // import Drawer from "./Drawer";
 import { useEffect, useState } from "react";
-import { fallbackImage, getImgeUrl } from "../utils/commanFun";
+import { getImgeUrl } from "../utils/commanFun";
 import ActivityDataList from "./ActivityDataList";
 import { mappedArray } from "../utils/dataMapping";
+import { useSelector } from "react-redux";
 
 
 interface Props {
@@ -19,7 +20,6 @@ interface Props {
 }
 
 function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }: Props) {
-
   const [eventList, setEventList] = useState([])
   // const elaString = localStorage.getItem('ela');
 
@@ -28,17 +28,16 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
 
 
   useEffect(() => {
-
     const mappedData: any = mappedArray(eventDataValue)
     setEventList(mappedData)
-  }, [eventList.length, isDrawerOpen, eventDataValue])
+  }, [isDrawerOpen, eventList, eventDataValue])
 
 
   const toggleDrawer = (name: string) => {
     setIsDrawerOpen(!isDrawerOpen);
     setDrawerType(name)
   };
-  
+
 
   return (
     <>
@@ -60,7 +59,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
                 >
                   <div style={{ width: "90px", height: "90px" }}>
                     <img
-                      className="w-full h-full rounded-md object-fit-cover" 
+                      className="w-full h-full rounded-md object-fit-cover"
                       src={item?.image?.url}
                       loading="lazy"
                     />
@@ -75,8 +74,6 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
           }
         </div>
       </div>
-
-      {/* <Drawer isOpen={isDrawerOpen} {...{setIsDrawerOpen, drawerType, setDrawerType}}/> */}
       <ActivityDataList isOpen={isDrawerOpen} {...{ setIsDrawerOpen, drawerType, setDrawerType }} />
     </>
   );

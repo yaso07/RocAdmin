@@ -51,6 +51,7 @@ function EventDetails({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawe
   };
 
 
+
   return (
     <>
       <div className="p-2 flex flex-col gap-y-3 border-r border-gray-300">
@@ -72,7 +73,7 @@ function EventDetails({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawe
                   <div style={{ width: "90px", height: "90px" }}>
                     <img
                       className="w-full h-full rounded-md "
-                      src={item?.image}
+                      src={item?.image?.url}
                     />
                   </div>
                   <div className="flex flex-col gap-y-1">
