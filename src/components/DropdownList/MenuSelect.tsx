@@ -289,7 +289,7 @@ const TimeContainer = styled.div`
   margin-top: 20px;
 `;
 
-const TitleText = styled.p`
+const TitleText = styled.h6`
   display: block;
   line-height: 1;
   margin-bottom: 0.625rem;
@@ -298,7 +298,7 @@ const TitleText = styled.p`
   color: #333;
 `;
 
-const TitleTextMain = styled.p`
+const TitleTextMain = styled.h6`
   font-size: 0.875rem;
   color: #757575;
   margin-bottom: 20px;

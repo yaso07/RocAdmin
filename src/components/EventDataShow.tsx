@@ -212,27 +212,28 @@ const EventDataShow = () => {
       finalObject.acf.customDates = formatDateData;
       finalObject.acf.eventType = "custom";
     } else if (selectedOptionEvent === "option3") {
-      finalObject.acf.event_dates_start = dateState.startDateMonth;
-      finalObject.acf.event_dates_end = dateState.endDateMonth;
+      finalObject.acf.event_dates_start = formatDate(dateState.startDateMonth);
+      finalObject.acf.event_dates_end = formatDate(dateState.endDateMonth);
       finalObject.acf.start_time = timeState.startTimeMonth;
       finalObject.acf.end_time = timeState.endTimeMonth;
       finalObject.acf.daysOfWeek = MonthDays;
       finalObject.acf.eventType = "monthly"
     } else if (selectedOptionEvent === "option2") {
-      finalObject.acf.event_dates_start = dateState.startDateWeekly;
-      finalObject.acf.event_dates_end = dateState.endDateWeekly;
+      finalObject.acf.event_dates_start = formatDate(dateState.startDateWeekly);
+      finalObject.acf.event_dates_end = formatDate(dateState.endDateWeekly);
       finalObject.acf.start_time = timeState.startTimeWeekly;
       finalObject.acf.end_time = timeState.endTimeWeekly;
       finalObject.acf.daysOfWeek = WeekDays;
       finalObject.acf.eventType = "weekly"
     } else if (selectedOptionEvent === "option1") {
-      finalObject.acf.event_dates_start = dateState.startDateDaily;
-      finalObject.acf.event_dates_end = dateState.endDateDaily;
+      finalObject.acf.event_dates_start = formatDate(dateState.startDateDaily);
+      finalObject.acf.event_dates_end = formatDate(dateState.endDateDaily);
       finalObject.acf.start_time = timeState.startTimeDaily;
       finalObject.acf.end_time = timeState.endTimeDaily;
       finalObject.acf.eventType = "daily"
     }
     console.log(finalObject, "finalObject");
+    return
     dispatch(createEvent(finalObject) as any);
   };
 
@@ -293,7 +294,7 @@ const EventDataShow = () => {
 
   //   const { isOpen, toggle } = useModal();
 
-  const [dateState, setDateState] = useState({
+  const [dateState, setDateState] = useState<any>({
     startDateMonth: "",
     endDateMonth: "",
     startDateWeekly: "",
@@ -303,7 +304,7 @@ const EventDataShow = () => {
   });
 
   const handleDateChange = (field: any) => (date: any) => {
-    setDateState((prevState) => ({
+    setDateState((prevState:any) => ({
       ...prevState,
       [field]: date,
     }));

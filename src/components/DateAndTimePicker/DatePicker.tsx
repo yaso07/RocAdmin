@@ -11,6 +11,8 @@ interface InputProps {
 
 const DateTimePicker: React.FC<InputProps> = ({value,onchange}) => {
 
+  const today = new Date();
+
   return (
     <div>
       <div>
@@ -20,6 +22,7 @@ const DateTimePicker: React.FC<InputProps> = ({value,onchange}) => {
           className='DateAndTimeInput'
           onChange={onchange}
           dateFormat="MMMM d, yyyy"
+          minDate={today}
         />
       </div>
     </div>
