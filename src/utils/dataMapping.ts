@@ -9,7 +9,7 @@ export const mappedArray = (arr: any) => {
             const imgArray = item?.acf?.header_image_data !== undefined ? JSON.parse(item?.acf?.header_image_data) : [{ url: fallback }];
             newObj.image = imgArray[0];
             newObj.title = item?.acf?.title;
-            newObj.date = item?.type === "events" && ((item?.acf?.event_dates).length ? formatFullDate(item?.acf?.event_dates[0].data) : "") as any;
+            newObj.date = item?.type === "events" && ((item?.acf?.event_dates).length ? formatFullDate(item?.acf?.event_dates[0].date) : "") as any;
             mappedData.push(newObj);
         })
     }

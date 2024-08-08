@@ -45,7 +45,7 @@ interface Acf {
   parish: any;
   seasonality: { label: any; value: any }[];
   bus_routes: { label: any; value: any }[];
-  opening_hours: any;
+  opening_hours: string;
   social_media: {
     facebook: string;
     instagram: string;
@@ -92,7 +92,7 @@ interface TimeState {
   [key: string]: {
     opens?: string;
     closes?: string;
-    is_open?: number;
+    is_open?: string;
   };
 }
 
@@ -270,7 +270,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       return { ...prevState, WeekDays: newWeekDays };
     });
 
-    setTimeState((prevState) => {
+    setTimeState((prevState:any) => {
       return {
         ...prevState,
         [value]: {
