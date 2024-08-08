@@ -21,6 +21,7 @@ interface Props {
 
 function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }: Props) {
   const [eventList, setEventList] = useState([])
+  const currectActivity = useSelector((state: any)=> state.event.currectActivity)
   // const elaString = localStorage.getItem('ela');
 
 
@@ -30,7 +31,12 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
   useEffect(() => {
     const mappedData: any = mappedArray(eventDataValue)
     setEventList(mappedData)
-  }, [isDrawerOpen,eventDataValue])
+  }, [currectActivity])
+
+  useEffect(() => {
+    const mappedData: any = mappedArray(eventDataValue)
+    setEventList(mappedData)
+  }, [isDrawerOpen, eventDataValue])
 
 
   const toggleDrawer = (name: string) => {
@@ -55,7 +61,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
                 <div
                   className={`flex items-center gap-x-5 border-b border-gray-300 p-2 cursor-pointer ${selectedList === index && "bg-indigo-300"}`}
                   key={index}
-                  onClick={() => handleEventData(index, getImgeUrl(item?.acf?.header_image_data))}
+                  onClick={() => handleEventData(index, item?.image?.url)}
                 >
                   <div style={{ width: "90px", height: "90px" }}>
                     <img

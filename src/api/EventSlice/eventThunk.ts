@@ -109,7 +109,6 @@ export const getActivityList = createAsyncThunk(
 
 // ======================================== GET EVENT BY ID ===========================================
 export const fetchEventById = createAsyncThunk('event/fetchById', async (data: any) => {
-  console.log("jflkdsfksjlkjlfsjfksfs", data)
   return data
 })
 

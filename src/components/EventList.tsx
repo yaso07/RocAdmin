@@ -68,7 +68,7 @@ function EventDetails({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawe
                 <div
                   className={`flex items-center gap-x-5 border-b border-gray-300 p-2 cursor-pointer ${selectedList === index && "bg-indigo-300"}`}
                   key={index}
-                  onClick={() => handleEventData(index, item?.image)}
+                  onClick={() => handleEventData(index, item?.image?.url)}
                 >
                   <div style={{ width: "90px", height: "90px" }}>
                     <img

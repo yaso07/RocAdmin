@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createEvent, deleteEvent, fetchEventById, getActivityList, getEventList, updateEvent } from "./eventThunk";
+import { createActivity, createEvent, deleteEvent, fetchEventById, getActivityList, getEventList, updateEvent } from "./eventThunk";
 
 
 interface initialState {
     isLoading: boolean,
     error: string,
     currentEvent: any,
+    currentActivity: any,
     updateEvent: any,
     eventList: string[],
     activitiesList: string[],
@@ -32,6 +33,20 @@ export const eventSlice = createSlice({
             state.error = ''
         });
         builder.addCase(createEvent.rejected, (state, action) => {
+            state.isLoading = false
+            state.error = action.error.message ? action.error.message : ''
+        });
+        // CREATE Activity LIST DATA
+        builder.addCase(createActivity.fulfilled, (state, action) => {
+            state.currentActivity = action.payload
+            state.error = ''
+            state.isLoading = false
+        })
+        builder.addCase(createActivity.pending, (state) => {
+            state.isLoading = true
+            state.error = ''
+        });
+        builder.addCase(createActivity.rejected, (state, action) => {
             state.isLoading = false
             state.error = action.error.message ? action.error.message : ''
         });

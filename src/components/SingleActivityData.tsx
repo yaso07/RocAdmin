@@ -271,14 +271,14 @@ const SingleActivitytData: React.FC<ModalProps> = ({
 
                             {data?.acf?.bus_routes != "" && (
                                 <>
-                                    <AlsoSeeText>Bus Route</AlsoSeeText>
+                                    {/* <AlsoSeeText>Bus Route</AlsoSeeText>
                                     <BulletPointWrapper style={{ marginLeft: 40 }}>
                                         {data?.acf?.bus_routes.map((item: any, index: any) => (
                                             <li key={index} style={{ textDecoration: "underline" }}>
                                                 {formatRoute(item.label)}
                                             </li>
                                         ))}
-                                    </BulletPointWrapper>
+                                    </BulletPointWrapper> */}
                                 </>
                             )}
 
