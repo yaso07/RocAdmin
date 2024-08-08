@@ -443,13 +443,13 @@ const Drawer = ({
           <button onClick={() => toggleDrawer("close")} className="text-black">
             Close
           </button>
-          <button
+          {/* <button
             type="button"
             onClick={submitData}
             className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md transform transition-transform duration-150 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 active:bg-blue-700 active:scale-95"
           >
             {loading ? "loading..." : drawerType === "add" ? "Save" : "Update"}
-          </button>
+          </button> */}
         </div>
         <hr />
         {/* <div style={{ display: "flex",alignItems:"center",gap:10,marginTop:10,marginBottom:20 }}>

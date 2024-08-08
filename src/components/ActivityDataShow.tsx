@@ -403,8 +403,8 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
 
 
   const [location, setLocation] = useState<any>({
-    latitude: 0,
-    longitude: 0,
+    latitude: "",
+    longitude: "",
   });
 
 
@@ -515,6 +515,12 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
     BusRoutes: [],
     Accessibility: [],
   });
+
+  useEffect(()=>{
+    if(file){
+      handleClose()
+    }
+  },[file])
 
 
   const subTypeValue =

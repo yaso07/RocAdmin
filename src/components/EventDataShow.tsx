@@ -271,8 +271,8 @@ const EventDataShow = () => {
   };
 
   const [location, setLocation] = useState<any>({
-    latitude: 0,
-    longitude: 0,
+    latitude: "",
+    longitude: "",
   });
 
   // useEffect(() => {
