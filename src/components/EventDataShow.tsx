@@ -233,7 +233,6 @@ const EventDataShow = () => {
       finalObject.acf.eventType = "daily"
     }
     console.log(finalObject, "finalObject");
-    return
     dispatch(createEvent(finalObject) as any);
   };
 
@@ -1273,7 +1272,6 @@ function parseTitle(title: string) {
                 </div>
               </div>
             </div>
-            <button onClick={submitFormikFunction}>submit</button>
             <Modal
               show={show}
               onHide={handleClose}
@@ -1330,6 +1328,7 @@ function parseTitle(title: string) {
           </>
         }
       />
+          <ButtonSubmit onClick={submitFormikFunction}>Submit</ButtonSubmit>
     </div>
   );
 };
@@ -1498,3 +1497,12 @@ const SelectImage = styled.button`
   padding: 6px 12px;
   font-size: 12px;
 `;
+
+const ButtonSubmit = styled.button`
+  padding: 10px;
+  background-color: #2271b1;
+  color: #fff;
+  margin-top: 20px;
+  border-radius: 5px;
+
+`

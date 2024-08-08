@@ -1286,7 +1286,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                 </div>
               </div>
             </div>
-            <button onClick={submitFormikFunction}>submit</button>
             <Modal
               show={show}
               onHide={handleClose}
@@ -1343,6 +1342,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
           </>
         }
       />
+       <ButtonSubmit onClick={submitFormikFunction}>Submit</ButtonSubmit>
     </div>
   );
 };
@@ -1455,3 +1455,12 @@ const SelectImage = styled.button`
   padding: 6px 12px;
   font-size: 12px;
 `;
+
+const ButtonSubmit = styled.button`
+  padding: 10px;
+  background-color: #2271b1;
+  color: #fff;
+  margin-top: 20px;
+  border-radius: 5px;
+
+`
