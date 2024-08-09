@@ -230,8 +230,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen }: Props) => {
     }
     const obj = { finalObject, setIsDrawerOpen };
     console.log(finalObject, "finalobject");
-    // dispatch(createActivity(obj) as any);
-    // dispatch(getActivityList() as any)
+    dispatch(createActivity(obj) as any);
+    dispatch(getActivityList() as any)
 
     setFormData({
       DescriptionTitle: "",
