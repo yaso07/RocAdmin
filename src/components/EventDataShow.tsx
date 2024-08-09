@@ -192,7 +192,7 @@ const EventDataShow = () => {
           address_line_2: formData.AddressLineOptional,
           postcode: formData.Postcode,
         },
-        parish: selectedValue,
+        parish: selectedOption,
         seasonality: seasonalityArray,
         bus_routes: busRouteArray,
         social_media: {
@@ -288,7 +288,7 @@ const EventDataShow = () => {
       longitude: "",
     })
     setFile(undefined)
-    setSelectedValue('')
+    setSelectedOption({ label: "", value: "" });
     setTimeState({
       startTimeMonth: "",
       endTimeMonth: "",
@@ -446,7 +446,18 @@ const EventDataShow = () => {
 
 
 
+  const [selectedOption, setSelectedOption] = useState({
+    label: "",
+    value: "",
+  });
 
+  const handleChangeRadio = (event: any) => {
+    const selectedItem = ParishData.find(
+      (item) => item.value === event.target.value
+    );
+    const selectedLabel = selectedItem ? selectedItem.label : ""; // Default to an empty string if undefined
+    setSelectedOption({ label: selectedLabel, value: event.target.value });
+  };
 
   
 
@@ -475,11 +486,11 @@ const EventDataShow = () => {
   //   setSelectedOpt(selected || null);
   // };
 
-  const [selectedValue, setSelectedValue] = useState('');
+  // const [selectedValue, setSelectedValue] = useState('');
 
-  const handleChangeRadio = (event:any) => {
-    setSelectedValue(event.target.value);
-  };
+  // const handleChangeRadio = (event:any) => {
+  //   setSelectedValue(event.target.value);
+  // };
 
   const [selectedItems, setSelectedItems] = useState<SelectedItems>({
     Type: [],
@@ -1024,7 +1035,7 @@ function parseTitle(title: string) {
                         name="location"
                         value={item.value}
                         onChange={handleChangeRadio}
-                        checked={selectedValue === item.value}
+                        checked={selectedOption.value === item.value}
                         style={{ marginRight: 10 }}
                       />
                       <label>{item.label}</label>

@@ -12,7 +12,18 @@ import styled from "styled-components";
 import TimePicker from "./DateAndTimePicker/TimePicker";
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { AccessibilityData, BookingData, BusRoutesData, keyfacilityData, locationData, opnintHoursData, ParishData, SeasonalityData, typesData, WeeklyDaysData } from "../utils/data";
+import {
+  AccessibilityData,
+  BookingData,
+  BusRoutesData,
+  keyfacilityData,
+  locationData,
+  opnintHoursData,
+  ParishData,
+  SeasonalityData,
+  typesData,
+  WeeklyDaysData,
+} from "../utils/data";
 import { updateOpenHours } from "../utils/commanFun";
 
 interface Acf {
@@ -123,7 +134,7 @@ type Category =
   | "BusRoutes"
   | "Accessibility";
 
-const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
+const ActivityDataCreate = ({ setIsDrawerOpen }: Props) => {
   const dispatch = useDispatch();
 
   const submitFormikFunction = () => {
@@ -184,7 +195,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
           address_line_2: formData.AddressLineOptional,
           postcode: formData.Postcode,
         },
-        parish: selectedValue,
+        parish: selectedOption,
         seasonality: seasonalityArray,
         bus_routes: busRouteArray,
         opening_hours: updateOpenHours(timeState),
@@ -217,9 +228,10 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       finalObject.acf.event_dates_end = dateState.endDateDaily;
       finalObject.acf.eventType = "daily";
     }
-    const obj = {finalObject, setIsDrawerOpen}
-    dispatch(createActivity(obj) as any);
-    dispatch(getActivityList() as any)
+    const obj = { finalObject, setIsDrawerOpen };
+    console.log(finalObject, "finalobject");
+    // dispatch(createActivity(obj) as any);
+    // dispatch(getActivityList() as any)
 
     setFormData({
       DescriptionTitle: "",
@@ -254,7 +266,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       Seasonality: [],
       BusRoutes: [],
       Accessibility: [],
-    })
+    });
     setDateState({
       startDateMonth: "",
       endDateMonth: "",
@@ -262,23 +274,23 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       endDateWeekly: "",
       startDateDaily: "",
       endDateDaily: "",
-    })
-    setTimeState({})
+    });
+    setTimeState({});
     setDateTimeComponents([
       {
         selectedDate: undefined,
         customStartTime: undefined,
         customEndTime: undefined,
       },
-    ])
-    setSelectedCode("")
-    setSelectedActivity(null)
+    ]);
+    setSelectedCode("");
+    setSelectedActivity({ label: "", value: "" });
     setLocation({
       latitude: "",
       longitude: "",
-    })
-    setFile(undefined)
-    setSelectedValue('')
+    });
+    setFile(undefined);
+    setSelectedOption({ label: "", value: "" });
   };
 
   const [formData, setFormData] = useState({
@@ -320,8 +332,11 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
 
   //   const [timeState, setTimeState] = useState({});
 
-
-  const handleCheckboxChange = (category: string, value: string, checked: boolean) => {
+  const handleCheckboxChange = (
+    category: string,
+    value: string,
+    checked: boolean
+  ) => {
     setSelectedItems((prevState: any) => {
       const newWeekDays = checked
         ? [...prevState.WeekDays, { value }]
@@ -329,7 +344,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       return { ...prevState, WeekDays: newWeekDays };
     });
 
-    setTimeState((prevState:any) => {
+    setTimeState((prevState: any) => {
       return {
         ...prevState,
         [value]: {
@@ -341,15 +356,16 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
     });
   };
 
-  const handleTimeChangehour = (day: string, type: 'opens' | 'closes') => (time: string) => {
-    setTimeState((prevState) => ({
-      ...prevState,
-      [day]: {
-        ...prevState[day],
-        [type]: time,
-      },
-    }));
-  };
+  const handleTimeChangehour =
+    (day: string, type: "opens" | "closes") => (time: string) => {
+      setTimeState((prevState) => ({
+        ...prevState,
+        [day]: {
+          ...prevState[day],
+          [type]: time,
+        },
+      }));
+    };
 
   const [timeState, setTimeState] = useState<TimeState>({});
 
@@ -360,7 +376,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       customEndTime: undefined,
     },
   ]);
-
 
   const handleTextFieldChange = (e: any) => {
     const { name, value } = e.target;
@@ -374,7 +389,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
 
   const IndoretypesData = [
     {
@@ -422,7 +436,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       ...prevData,
       [name]: value,
     }));
-  }
+  };
 
   const [selectedCode, setSelectedCode] = useState("");
 
@@ -443,21 +457,19 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
     { label: "Indoor activities", value: "indoor-activities" },
   ];
 
-  const [selectedActivity, setSelectedActivity] = useState<{
-    label: string;
-    value: string;
-  } | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState({
+    label: "",
+    value: "",
+  });
 
-
-  const handleChangeRadioActivity = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const selectedValue = event.target.value;
-    const selected = TypeActivityData.find(
-      (option) => option.value === selectedValue
+  const handleChangeRadioActivity = (event: any) => {
+    const selectedItem = TypeActivityData.find(
+      (item) => item.value === event.target.value
     );
-    setSelectedActivity(selected || null);
+    const selectedLabel = selectedItem ? selectedItem.label : ""; // Default to an empty string if undefined
+    setSelectedActivity({ label: selectedLabel, value: event.target.value });
   };
+
 
   const subTypeActivity =
     selectedActivity?.label == "Outdoor activities"
@@ -482,7 +494,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
     }
   }
 
-
   // const [selectedOpt, setSelectedOpt] = useState<{
   //   label: string;
   //   value: string;
@@ -496,10 +507,17 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
   //   setSelectedOpt(selected || null);
   // };
 
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedOption, setSelectedOption] = useState({
+    label: "",
+    value: "",
+  });
 
-  const handleChangeRadio = (event:any) => {
-    setSelectedValue(event.target.value);
+  const handleChangeRadio = (event: any) => {
+    const selectedItem = ParishData.find(
+      (item) => item.value === event.target.value
+    );
+    const selectedLabel = selectedItem ? selectedItem.label : ""; // Default to an empty string if undefined
+    setSelectedOption({ label: selectedLabel, value: event.target.value });
   };
 
   const [selectedItems, setSelectedItems] = useState<SelectedItems>({
@@ -516,7 +534,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
     Accessibility: [],
   });
 
-
   const subTypeValue =
     selectedActivity?.label == "Outdoor activities"
       ? selectedItems?.subTypeOutdoor
@@ -526,15 +543,11 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
     category: Category,
     value: string,
     checked: boolean,
-    title?:any
+    title?: any
   ) => {
-
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
-        ? [
-          ...prevSelectedItems[category],
-          { label: title, value },
-        ]
+        ? [...prevSelectedItems[category], { label: title, value }]
         : prevSelectedItems[category].filter((item) => item.value !== value);
 
       return {
@@ -545,20 +558,19 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
   };
 
   function parseTitle(title: string) {
-    const [mainTitle, italicPart] = title.split('<br>');
+    const [mainTitle, italicPart] = title.split("<br>");
     const italicText = italicPart?.match(/<i>(.*?)<\/i>/)?.[1];
     return {
-        mainTitle,
-        italicText
+      mainTitle,
+      italicText,
     };
   }
 
-  
-  useEffect(()=>{
-    if(file){
-      handleClose()
+  useEffect(() => {
+    if (file) {
+      handleClose();
     }
-  },[file])
+  }, [file]);
 
   return (
     <div>
@@ -606,7 +618,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                         name="location"
                         value={item.value}
                         onChange={handleChangeRadioActivity}
-                        defaultChecked={index === 1}
+                        checked={selectedActivity.value === item.value}
                         style={{ marginRight: 10 }}
                       />
                       <label>{item.label}</label>
@@ -627,7 +639,12 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2(subTypeAct, value, checked,item.title)
+                            handleCheckboxChange2(
+                              subTypeAct,
+                              value,
+                              checked,
+                              item.title
+                            )
                           }
                         />
                       </div>
@@ -648,7 +665,12 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("Location", value, checked,item.title)
+                            handleCheckboxChange2(
+                              "Location",
+                              value,
+                              checked,
+                              item.title
+                            )
                           }
                         />
                       </div>
@@ -750,7 +772,12 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Booking", value, checked,item.title)
+                          handleCheckboxChange2(
+                            "Booking",
+                            value,
+                            checked,
+                            item.title
+                          )
                         }
                       />
                     </div>
@@ -790,7 +817,9 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
               </TitleTextMain>
               <div style={{ display: "flex", gap: 24 }}>
                 <div style={{ width: 140 }}>
-                  <h6 style={{ fontWeight: "normal", marginBottom: 20 }}>Area Code</h6>
+                  <h6 style={{ fontWeight: "normal", marginBottom: 20 }}>
+                    Area Code
+                  </h6>
                   <Select
                     id="country-code"
                     name="country-code"
@@ -805,7 +834,9 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                   </Select>
                 </div>
                 <div style={{ width: 120 }}>
-                  <h6 style={{ fontWeight: "normal", marginBottom: 20 }}>Prefix</h6>
+                  <h6 style={{ fontWeight: "normal", marginBottom: 20 }}>
+                    Prefix
+                  </h6>
                   <div className="input-wrapper">
                     <input
                       type="number"
@@ -817,7 +848,9 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                   </div>
                 </div>
                 <div style={{ width: "100%" }}>
-                  <h6 style={{ fontWeight: "normal", marginBottom: 20 }}>Telephone</h6>
+                  <h6 style={{ fontWeight: "normal", marginBottom: 20 }}>
+                    Telephone
+                  </h6>
                   <input
                     type="text"
                     className="custom-inputInfo"
@@ -929,7 +962,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                         name="location"
                         value={item.value}
                         onChange={handleChangeRadio}
-                        checked={selectedValue === item.value}
+                        checked={selectedOption.value === item.value}
                         style={{ marginRight: 10 }}
                       />
                       <label>{item.label}</label>
@@ -979,7 +1012,12 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Seasonality", value, checked,item.title)
+                          handleCheckboxChange2(
+                            "Seasonality",
+                            value,
+                            checked,
+                            item.title
+                          )
                         }
                       />
                     </div>
@@ -993,7 +1031,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                   gridTemplateColumns: "1fr 1fr",
                 }}
               >
-               {BusRoutesData.map((item, index) => {
+                {BusRoutesData.map((item, index) => {
                   const { mainTitle, italicText } = parseTitle(item.title);
                   return (
                     <div style={{ marginBottom: 10 }} key={index}>
@@ -1005,7 +1043,12 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("BusRoutes", value, checked,item.title)
+                            handleCheckboxChange2(
+                              "BusRoutes",
+                              value,
+                              checked,
+                              item.title
+                            )
                           }
                         />
                       )}
@@ -1159,7 +1202,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                   display: "flex",
                   flexDirection: "column",
                   gap: 20,
-                  marginTop: 20
+                  marginTop: 20,
                 }}
               >
                 {AccessibilityData.map((item, index) => {
@@ -1172,7 +1215,12 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Accessibility", value, checked,item.title)
+                          handleCheckboxChange2(
+                            "Accessibility",
+                            value,
+                            checked,
+                            item.title
+                          )
                         }
                       />
                     </div>
@@ -1268,7 +1316,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                     borderLeft: "1px solid #ccc",
                     borderRight: "1px solid #ccc",
                     height: 300,
-                    marginTop: 20
+                    marginTop: 20,
                   }}
                 >
                   {" "}
@@ -1350,7 +1398,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
           </>
         }
       />
-           <ButtonSubmit onClick={submitFormikFunction}>Submit</ButtonSubmit>
+      <ButtonSubmit onClick={submitFormikFunction}>Submit</ButtonSubmit>
     </div>
   );
 };
@@ -1463,7 +1511,6 @@ const SelectImage = styled.button`
   padding: 6px 12px;
   font-size: 12px;
 `;
-
 
 const ButtonSubmit = styled.button`
   padding: 10px;
