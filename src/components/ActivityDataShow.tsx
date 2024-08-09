@@ -218,8 +218,8 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       finalObject.acf.eventType = "daily";
     }
     const obj = {finalObject, setIsDrawerOpen}
-    // dispatch(createActivity(obj) as any);
-    // dispatch(getActivityList() as any)
+    dispatch(createActivity(obj) as any);
+    dispatch(getActivityList() as any)
 
     setFormData({
       DescriptionTitle: "",
