@@ -170,8 +170,8 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
         price_to: formData.priceTo,
         booking_information: BookingEvent,
         display_name: formData.DisplayName,
-        email_address: formData.DisplayName,
-        map_location: { lat: location.latitude, lng: location.longitude },
+        email_address: formData.EmailAddress,
+        map_location: { lat: +location.latitude, lng: +location.longitude },
         telephone_number: {
           area_code: selectedCode,
           prefix: formData.Prefix,
@@ -270,7 +270,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       return { ...prevState, WeekDays: newWeekDays };
     });
 
-    setTimeState((prevState) => {
+    setTimeState((prevState:any) => {
       return {
         ...prevState,
         [value]: {
@@ -403,8 +403,8 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
 
 
   const [location, setLocation] = useState<any>({
-    latitude: 0,
-    longitude: 0,
+    latitude: "",
+    longitude: "",
   });
 
 
@@ -552,6 +552,13 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
         italicText
     };
   }
+
+  
+  useEffect(()=>{
+    if(file){
+      handleClose()
+    }
+  },[file])
 
   return (
     <div>
@@ -1286,7 +1293,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                 </div>
               </div>
             </div>
-            <button onClick={submitFormikFunction}>submit</button>
             <Modal
               show={show}
               onHide={handleClose}
@@ -1343,6 +1349,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
           </>
         }
       />
+           <ButtonSubmit onClick={submitFormikFunction}>Submit</ButtonSubmit>
     </div>
   );
 };
@@ -1454,4 +1461,13 @@ const SelectImage = styled.button`
   cursor: default;
   padding: 6px 12px;
   font-size: 12px;
+`;
+
+
+const ButtonSubmit = styled.button`
+  padding: 10px;
+  background-color: #2271b1;
+  color: #fff;
+  margin-top: 20px;
+  border-radius: 5px;
 `;

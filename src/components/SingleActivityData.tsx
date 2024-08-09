@@ -226,6 +226,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
                     View Directions
                 </ViewDirection> */}
                             </ResturantDetailsContainer>
+                            <AlsoSeeText>Description</AlsoSeeText>
                             <RestDetailText>{strippedContent}</RestDetailText>
 
                             {/* {data?.acf?.event_dates != "" && (
@@ -282,35 +283,35 @@ const SingleActivitytData: React.FC<ModalProps> = ({
                                 </>
                             )}
 
-                            <AlsoSeeText>Opening</AlsoSeeText>
-                            <BulletPointWrapper>
-                                <OpningDatesContainer>
+<AlsoSeeText>Seasonality</AlsoSeeText>
+          <BulletPointWrapper>
+            <OpningDatesContainer>
+              <DatesWrapperText>
+                {data?.acf?.seasonality &&
+                  data?.acf?.seasonality.map((item: any, index: any) => (
+                    <p key={index}>
+                      {item?.label}
+                      {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
+                    </p>
+                  ))}
+              </DatesWrapperText>
+            </OpningDatesContainer>
+          </BulletPointWrapper>
 
-
-                                    <DatesWrapperText>
-                                        {data?.acf?.seasonality &&
-                                            data?.acf?.seasonality.map((item: any, index: any) => (
-                                                <p key={index}>
-                                                    {item?.label}
-                                                    {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
-                                                </p>
-                                            ))}
-                                    </DatesWrapperText>
-
-
-                                    {
-                                        daysOfWeek.map((item, index) => (
-                                            <WeekTimeArrange key={index}>
-                                                <p>{item}:</p>
-                                                <p>
-                                                    {daysOfWeekTiming[index].opens} - {daysOfWeekTiming[index].closes}
-                                                </p>
-                                            </WeekTimeArrange>
-                                        ))
-                                    }
-
-                                </OpningDatesContainer>
-                            </BulletPointWrapper>
+          <AlsoSeeText>Opening hours</AlsoSeeText>
+          <BulletPointWrapper>
+            <OpningDatesContainer>
+              {daysOfWeek.map((item, index) => (
+                <WeekTimeArrange key={index}>
+                  <p>{item}:</p>
+                  <p>
+                    {daysOfWeekTiming[index].opens} -{" "}
+                    {daysOfWeekTiming[index].closes}
+                  </p>
+                </WeekTimeArrange>
+              ))}
+            </OpningDatesContainer>
+          </BulletPointWrapper>
                         </Container>
                         :
                         <div className="flex flex-col items-center justify-center h-full">
