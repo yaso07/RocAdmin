@@ -184,7 +184,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
           address_line_2: formData.AddressLineOptional,
           postcode: formData.Postcode,
         },
-        parish: selectedOpt,
+        parish: selectedValue,
         seasonality: seasonalityArray,
         bus_routes: busRouteArray,
         opening_hours: updateOpenHours(timeState),
@@ -278,8 +278,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       longitude: "",
     })
     setFile(undefined)
-    setSelectedOpt(null)
-    
+    setSelectedValue('')
   };
 
   const [formData, setFormData] = useState({
@@ -484,17 +483,23 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
   }
 
 
-  const [selectedOpt, setSelectedOpt] = useState<{
-    label: string;
-    value: string;
-  } | null>(null);
+  // const [selectedOpt, setSelectedOpt] = useState<{
+  //   label: string;
+  //   value: string;
+  // } | null>(null);
 
-  const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedValue = event.target.value;
-    const selected = ParishData.find(
-      (option) => option.value === selectedValue
-    );
-    setSelectedOpt(selected || null);
+  // const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const selectedValue = event.target.value;
+  //   const selected = ParishData.find(
+  //     (option) => option.value === selectedValue
+  //   );
+  //   setSelectedOpt(selected || null);
+  // };
+
+  const [selectedValue, setSelectedValue] = useState('');
+
+  const handleChangeRadio = (event:any) => {
+    setSelectedValue(event.target.value);
   };
 
   const [selectedItems, setSelectedItems] = useState<SelectedItems>({
@@ -924,6 +929,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
                         name="location"
                         value={item.value}
                         onChange={handleChangeRadio}
+                        checked={selectedValue === item.value}
                         style={{ marginRight: 10 }}
                       />
                       <label>{item.label}</label>
