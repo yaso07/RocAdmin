@@ -234,6 +234,61 @@ const EventDataShow = () => {
     }
     console.log(finalObject, "finalObject");
     dispatch(createEvent(finalObject) as any);
+
+    setFormData({
+      DescriptionTitle: "",
+      introDescription: "",
+      moreInformation: "",
+      priceFrom: "",
+      priceTo: "",
+      DisplayName: "",
+      EmailAddress: "",
+      Prefix: "",
+      Telephone: "",
+      Website: "",
+      PlaceName: "",
+      AddressLine: "",
+      AddressLineOptional: "",
+      Postcode: "",
+      Facebook: "",
+      Instagram: "",
+      Twitter: "",
+      AdditionalInfo: "",
+      AccessibilityURL: "",
+    });
+    setSelectedItems({
+      Type: [],
+      Location: [],
+      KeyFacilities: [],
+      Booking: [],
+      WeekDays: [],
+      MonthDays: [],
+      Seasonality: [],
+      BusRoutes: [],
+      Accessibility: [],
+    })
+    setDateState({
+      startDateMonth: "",
+      endDateMonth: "",
+      startDateWeekly: "",
+      endDateWeekly: "",
+      startDateDaily: "",
+      endDateDaily: "",
+    })
+    setDateTimeComponents([
+      {
+        selectedDate: undefined,
+        customStartTime: undefined,
+        customEndTime: undefined,
+      },
+    ])
+    setSelectedCode("")
+    setLocation({
+      latitude: "",
+      longitude: "",
+    })
+    setFile(undefined)
+    setSelectedOpt(null)
   };
 
   const SingleEventData = useSelector(selectSingleEventData);
@@ -333,7 +388,6 @@ const EventDataShow = () => {
     },
   ]);
 
-  // console.log(dateTimeComponents,"Latitude")
 
   const addDateTimeComponent = () => {
     setDateTimeComponents([
@@ -504,7 +558,6 @@ const EventDataShow = () => {
   //         setLoader(false);
   //       } catch (error) {
   //         setLoader(false);
-  //         console.error("Error uploading image:", error);
   //       }
   //     }
   //   };
@@ -521,7 +574,6 @@ const EventDataShow = () => {
 
       setFile(res?.data);
       //  setFile(URL.createObjectURL(e.target.files[0]) as any);    
-      console.log("dresponse", res)
     }
   }
 
@@ -569,9 +621,6 @@ function parseTitle(title: string) {
   //   setLoder(false);
   // }
   // const MonthDays = selectedItems.MonthDays.map(day => day.value);
-  // console.log(MonthDays,"selectedItems.MonthDays")
-
-  console.log(selectedItems.BusRoutes,"qwqwqwqwq")
 
   return (
     <div>

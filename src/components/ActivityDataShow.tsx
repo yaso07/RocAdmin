@@ -218,8 +218,68 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
       finalObject.acf.eventType = "daily";
     }
     const obj = {finalObject, setIsDrawerOpen}
-    dispatch(createActivity(obj) as any);
-    dispatch(getActivityList() as any)
+    // dispatch(createActivity(obj) as any);
+    // dispatch(getActivityList() as any)
+
+    setFormData({
+      DescriptionTitle: "",
+      introDescription: "",
+      moreInformation: "",
+      priceFrom: "",
+      priceTo: "",
+      DisplayName: "",
+      EmailAddress: "",
+      Prefix: "",
+      Telephone: "",
+      Website: "",
+      PlaceName: "",
+      AddressLine: "",
+      AddressLineOptional: "",
+      Postcode: "",
+      Facebook: "",
+      Instagram: "",
+      Twitter: "",
+      AdditionalInfo: "",
+      AccessibilityURL: "",
+    });
+    setSelectedItems({
+      Type: [],
+      subTypeOutdoor: [],
+      subTypeIutdoor: [],
+      Location: [],
+      KeyFacilities: [],
+      Booking: [],
+      WeekDays: [],
+      MonthDays: [],
+      Seasonality: [],
+      BusRoutes: [],
+      Accessibility: [],
+    })
+    setDateState({
+      startDateMonth: "",
+      endDateMonth: "",
+      startDateWeekly: "",
+      endDateWeekly: "",
+      startDateDaily: "",
+      endDateDaily: "",
+    })
+    setTimeState({})
+    setDateTimeComponents([
+      {
+        selectedDate: undefined,
+        customStartTime: undefined,
+        customEndTime: undefined,
+      },
+    ])
+    setSelectedCode("")
+    setSelectedActivity(null)
+    setLocation({
+      latitude: "",
+      longitude: "",
+    })
+    setFile(undefined)
+    setSelectedOpt(null)
+    
   };
 
   const [formData, setFormData] = useState({
@@ -292,21 +352,7 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
     }));
   };
 
-  const handleDateChange = (field: any) => (date: any) => {
-    setDateState((prevState) => ({
-      ...prevState,
-      [field]: date,
-    }));
-  };
   const [timeState, setTimeState] = useState<TimeState>({});
-
-
-  const handleTimeChange = (field: any) => (date: any) => {
-    setTimeState((prevState) => ({
-      ...prevState,
-      [field]: date,
-    }));
-  };
 
   const [dateTimeComponents, setDateTimeComponents] = useState([
     {
@@ -316,34 +362,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
     },
   ]);
 
-  const addDateTimeComponent = () => {
-    setDateTimeComponents([
-      ...dateTimeComponents,
-      {
-        selectedDate: undefined,
-        customStartTime: undefined,
-        customEndTime: undefined,
-      },
-    ]);
-  };
-
-  const setSelectedDate = (index: any, date: any) => {
-    const newComponents = [...dateTimeComponents];
-    newComponents[index].selectedDate = date;
-    setDateTimeComponents(newComponents);
-  };
-
-  const setCustomTime = (index: any, time: any) => {
-    const newComponents = [...dateTimeComponents];
-    newComponents[index].customStartTime = time;
-    setDateTimeComponents(newComponents);
-  };
-
-  const setCustomEndTime = (index: any, time: any) => {
-    const newComponents = [...dateTimeComponents];
-    newComponents[index].customEndTime = time;
-    setDateTimeComponents(newComponents);
-  };
 
   const handleTextFieldChange = (e: any) => {
     const { name, value } = e.target;
@@ -357,12 +375,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  const [selectedOption, setSelectedOption] = useState("");
-
-  const handleChange2 = (event: any) => {
-    setSelectedOption(event.target.value);
-  };
 
 
   const IndoretypesData = [
@@ -400,20 +412,10 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
     },
   ];
 
-
-
   const [location, setLocation] = useState<any>({
     latitude: "",
     longitude: "",
   });
-
-
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(({ coords }) => {
-  //     const { latitude, longitude } = coords;
-  //     setLocation({ latitude: latitude, longitude: longitude });
-  //   });
-  // }, []);
 
   const onchangelocation = (e: any) => {
     const { name, value } = e.target;
@@ -427,13 +429,6 @@ const ActivityDataCreate = ({setIsDrawerOpen}: Props) => {
 
   const handleChangeCode = (event: any) => {
     setSelectedCode(event.target.value);
-  };
-
-  const handleTimeChangeStart = (field: any) => (date: any) => {
-    setTimeState((prevState) => ({
-      ...prevState,
-      [field]: date,
-    }));
   };
 
   const countryCodes = [

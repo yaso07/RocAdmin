@@ -85,7 +85,7 @@ const MenuField: FC<InputProps> = ({
                 />
               </div>
             </TimeContainer>
-            <GenerateButton>Generate</GenerateButton>
+            {/* <GenerateButton>Generate</GenerateButton> */}
           </div>
         );
       case "option2":
@@ -148,7 +148,7 @@ const MenuField: FC<InputProps> = ({
                 />
               </div>
             </TimeContainer>
-            <GenerateButton>Generate</GenerateButton>
+            {/* <GenerateButton>Generate</GenerateButton> */}
           </div>
         );
       case "option3":
@@ -207,7 +207,7 @@ const MenuField: FC<InputProps> = ({
                 />
               </div>
             </TimeContainer>
-            <GenerateButton>Generate</GenerateButton>
+            {/* <GenerateButton>Generate</GenerateButton> */}
           </div>
         );
       case "option4":
