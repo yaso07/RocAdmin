@@ -233,7 +233,7 @@ const EventDataShow = () => {
       finalObject.acf.eventType = "daily"
     }
     console.log(finalObject, "finalObject");
-    // dispatch(createEvent(finalObject) as any);
+    dispatch(createEvent(finalObject) as any);
 
     setFormData({
       DescriptionTitle: "",
