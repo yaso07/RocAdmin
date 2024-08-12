@@ -308,7 +308,7 @@ const Drawer = ({ isOpen, setIsDrawerOpen, drawerType, setDrawerType }: Props) =
             }
             // const data = {};
             // dispatch(fetchEventById(data) as any)
-            dispatch(getEventList() as any)
+            // dispatch(getEventList() as any)
         }
     }, [currentEvent, updateEventValue])
 

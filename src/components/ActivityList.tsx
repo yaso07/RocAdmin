@@ -3,7 +3,6 @@
 
 // import Drawer from "./Drawer";
 import { useEffect, useState } from "react";
-import { getImgeUrl } from "../utils/commanFun";
 import ActivityDataList from "./ActivityDataList";
 import { mappedArray } from "../utils/dataMapping";
 import { useSelector } from "react-redux";

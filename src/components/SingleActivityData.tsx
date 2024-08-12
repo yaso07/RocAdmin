@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { formatCalenderTime, formatDate, formatDay, formatFullDate, formatMonth } from "../utils/commanFun";
+import { formatFullDate } from "../utils/commanFun";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEventById, getEventList } from "../api/EventSlice/eventThunk";
 import ConfirmationComponent from "./ActivityDelete";
 import Loading from "./Loading";
+import { GET_ACTIVITY_LIST } from "../api/constant";
 
 
 
@@ -35,8 +36,9 @@ const SingleActivitytData: React.FC<ModalProps> = ({
     const loading = useSelector((state: any) => state.event.isLoading)
     const error = useSelector((state: any) => state.event.error)
 
-    const toggleDrawer = () => {
+    const toggleDrawer = (id: any) => {
         setIsDrawerOpen(true);
+        const data = { id: id, api: GET_ACTIVITY_LIST }
         dispatch(fetchEventById(data) as any)
         setDrawerType("Edit")
     };
@@ -45,11 +47,9 @@ const SingleActivitytData: React.FC<ModalProps> = ({
         {
             name: data?.acf?.event_dates
                 ? (
-
                     <span>
                         {formatFullDate(data.acf?.event_dates[0]?.date)}
                     </span>
-
                 )
                 : "No events",
             // name: "ssds",
@@ -139,14 +139,14 @@ const SingleActivitytData: React.FC<ModalProps> = ({
         .replace(/<p[^>]*>/g, "")
         .replace(/<\/p>/g, "") : ""
 
-    const formatRoute = (routeText: any) => {
-        return routeText ? routeText
-            .replace("<br>", ": ")
-            .replace("<i>", "")
-            .replace("</i>", "")
-            .replace(/(\()/, "")
-            .replace(/\)/, "") : ""
-    };
+    // const formatRoute = (routeText: any) => {
+    //     return routeText ? routeText
+    //         .replace("<br>", ": ")
+    //         .replace("<i>", "")
+    //         .replace("</i>", "")
+    //         .replace(/(\()/, "")
+    //         .replace(/\)/, "") : ""
+    // };
 
     // const handleDelete = (id: string) => {
     //     dispatch(deleteEvent(id) as any)
@@ -156,7 +156,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
     useEffect(() => {
         if (!loading && error === '') {
 
-            dispatch(getEventList() as any)
+            // dispatch(getEventList() as any)
             setIsDrawerOpen(false);
         }
     }, [currentEvent])
@@ -173,7 +173,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
                             <Title className="">
                                 <h1 className="font-semibold text-lg capitalize">{data?.acf?.title}</h1>
                                 <div className="">
-                                    <EditBtn className="font-semibold text-lg capitalize mr-4" onClick={() => toggleDrawer()}>Edit</EditBtn>
+                                    <EditBtn className="font-semibold text-lg capitalize mr-4" onClick={() => toggleDrawer(data?._id)}>Edit</EditBtn>
                                     <ConfirmationComponent data={data?._id} {...{ setSelectedList }} />
                                 </div>
                             </Title>
@@ -283,35 +283,37 @@ const SingleActivitytData: React.FC<ModalProps> = ({
                                 </>
                             )}
 
-<AlsoSeeText>Seasonality</AlsoSeeText>
-          <BulletPointWrapper>
-            <OpningDatesContainer>
-              <DatesWrapperText>
-                {data?.acf?.seasonality &&
-                  data?.acf?.seasonality.map((item: any, index: any) => (
-                    <p key={index}>
-                      {item?.label}
-                      {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
-                    </p>
-                  ))}
-              </DatesWrapperText>
-            </OpningDatesContainer>
-          </BulletPointWrapper>
+                            <AlsoSeeText>Seasonality</AlsoSeeText>
+                            <BulletPointWrapper>
+                                <OpningDatesContainer>
+                                    <DatesWrapperText>
+                                        {data?.acf?.seasonality &&
+                                            data?.acf?.seasonality.map((item: any, index: any) => (
+                                                <p key={index}>
+                                                    {item?.label}
+                                                    {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
+                                                </p>
+                                            ))}
+                                    </DatesWrapperText>
+                                </OpningDatesContainer>
+                            </BulletPointWrapper>
 
-          <AlsoSeeText>Opening hours</AlsoSeeText>
-          <BulletPointWrapper>
-            <OpningDatesContainer>
-              {daysOfWeek.map((item, index) => (
-                <WeekTimeArrange key={index}>
-                  <p>{item}:</p>
-                  <p>
-                    {daysOfWeekTiming[index].opens} -{" "}
-                    {daysOfWeekTiming[index].closes}
-                  </p>
-                </WeekTimeArrange>
-              ))}
-            </OpningDatesContainer>
-          </BulletPointWrapper>
+                            <AlsoSeeText>Opening hours</AlsoSeeText>
+                            <BulletPointWrapper>
+                                <OpningDatesContainer>
+                                    {daysOfWeek.map((item, index) => (
+                                        daysOfWeekTiming[index].opens && (
+                                            <WeekTimeArrange key={index}>
+                                                <p>{item}:</p>
+                                                 <p>
+                                                    {daysOfWeekTiming[index].opens} -{" "}
+                                                    {daysOfWeekTiming[index].closes}
+                                                </p>
+                                            </WeekTimeArrange>
+                                        )
+                                    ))}
+                                </OpningDatesContainer>
+                            </BulletPointWrapper>
                         </Container>
                         :
                         <div className="flex flex-col items-center justify-center h-full">
@@ -450,17 +452,6 @@ const AlsoSeeText = styled.p`
 
 
 
-const DatesContainer = styled.div`
-  padding: 8px 16px;
-  margin: 0px 24px;
-  border-radius: 8px;
-  background: var(--White, #fff);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 88px;
-`;
-
 const DatesWrapperText = styled.div`
   color: var(--BODY, #000);
   font-size: 16px;
@@ -513,22 +504,8 @@ const BulletPointWrapper = styled.ul`
   }
 `;
 
-const DateMonthWraaper = styled.div`
-  border-radius: 4px;
-  background: rgb(242, 242, 242);
-  text-align: center;
-  font-weight: bold;
-`;
 
-const Monthstyle = styled.p`
-  background: red;
-  font-size: 10px;
-  color: white;
-  padding: 0px 5px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  text-transform: uppercase;
-`;
+
 
 const WeekTimeArrange = styled.div`
   display: flex;

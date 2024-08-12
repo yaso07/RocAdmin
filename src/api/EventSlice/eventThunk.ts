@@ -109,7 +109,24 @@ export const getActivityList = createAsyncThunk(
 
 // ======================================== GET EVENT BY ID ===========================================
 export const fetchEventById = createAsyncThunk('event/fetchById', async (data: any) => {
-  return data
+  const token = JSON.parse(getUser()).token;
+  if( data?.api === 'manual-activity'){
+    try {
+      const res = await axios.get(
+        import.meta.env.VITE_REACT_APP_API_BASE_URL + GET_ACTIVITY_LIST + '/' + data?.id,
+        {
+          headers: {
+            "x-login-token": token
+          },
+        }
+      )
+      return res?.data
+    } catch (error) {
+      return error
+    }
+  } else {
+    return data
+  }
 })
 
 
@@ -126,6 +143,27 @@ export const updateEvent = createAsyncThunk('updateEventStatus',
       }
     )
     return status?.id
+  })
+// ================================ UPDATE EVENT DATA ====================================================
+export const updateActivity = createAsyncThunk('updateActivityStatus',
+  async (obj: any) => {
+    const token = JSON.parse(getUser()).token;
+    const response = await axios.put(
+      import.meta.env.VITE_REACT_APP_API_BASE_URL + CREATE_ACTIVITY + obj?.id, obj?.finalObject,
+      {
+        headers: {
+          "x-login-token": token
+        },
+      }
+    )
+    if (response?.status == 200) {
+      obj?.setIsDrawerOpen(false)
+      toast.success(response?.data?.message)
+    } else {
+      toast.error(response?.data?.message)
+    }
+    console.log("response of update activity =====", response)
+    return response.data
   })
 // ================================ DELETE EVENT DATA ====================================================
 export const deleteEvent = createAsyncThunk('event/delete',

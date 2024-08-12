@@ -46,16 +46,7 @@ interface SelectedItems {
   Accessibility: { label: string; value: string }[];
 }
 
-// type Category =
-//   | "Type"
-//   | "Location"
-//   | "KeyFacilities"
-//   | "Booking"
-//   | "WeekDays"
-//   | "MonthDays"
-//   | "Seasonality"
-//   | "BusRoutes"
-//   | "Accessibility";
+
 
 const initialFormValues: formDataType = {
   title: "",
@@ -104,7 +95,7 @@ const Drawer = ({
   const [selectedImage, setSelectedImage] = useState<
     string | ArrayBuffer | null
   >(null);
-
+  
   const {
     handleSubmit,
     setFieldValue,
@@ -115,193 +106,14 @@ const Drawer = ({
     onSubmit: () => submitFormikFunction(),
   });
 
-  // ============================ GET DATA BY ID ==========================================================
-  useEffect(() => {
-    if (drawerType !== "add") {
-      if (SingleEventData) {
-        setFieldValue("title", SingleEventData?.acf?.title);
-        setFieldValue("email_address", SingleEventData?.acf?.email_address);
-        setFieldValue("lat", SingleEventData?.acf?.map_location_lat);
-        setFieldValue("lng", SingleEventData?.acf?.map_location_lng);
-        setFieldValue(
-          "short_description",
-          SingleEventData?.acf?.short_description
-        );
-        setFieldValue("website", SingleEventData?.acf?.website);
-        setFieldValue("place_name", SingleEventData?.acf?.address?.place_name);
-        setFieldValue(
-          "address_line_1",
-          SingleEventData?.acf?.address?.address_line_1
-        );
-        setFieldValue(
-          "address_line_2",
-          SingleEventData?.acf?.address?.address_line_2
-        );
-        setFieldValue("postcode", SingleEventData?.acf?.address?.postcode);
-        setFieldValue(
-          "phoneNumber",
-          SingleEventData?.acf?.telephone_number?.formatted
-        );
-        setFieldValue("from_price", SingleEventData?.acf?.from_price);
-        setFieldValue("price_to", SingleEventData?.acf?.price_to);
-        if (SingleEventData?.acf?.header_image_data) {
-          const imgArray = JSON.parse(SingleEventData?.acf?.header_image_data);
-          setSelectedImage(imgArray[0].url);
-        } else {
-          setSelectedImage("");
-        }
-        setFieldValue(
-          "header_image_data",
-          SingleEventData?.acf?.header_image_data
-        );
-        setParishName({ ...SingleEventData?.acf?.parish });
-        const eventTypeArray: TransformedType[] =
-          SingleEventData?.acf?.type.map((item: any) => ({
-            id: item.value,
-            text: item.label,
-          }));
-        setEventType([...eventTypeArray]);
-        const accessibilityArray: TransformedType[] =
-          SingleEventData?.acf?.accessibility.map((item: any) => ({
-            id: item.value,
-            text: item.label,
-          }));
-        setAccessibility([...accessibilityArray]);
-        const featureArray: TransformedType[] =
-          SingleEventData?.acf?.key_facilities.map((item: any) => ({
-            id: item.value,
-            text: item.label,
-          }));
-        setFeature([...featureArray]);
-        const busRouteArray: TransformedType[] =
-          SingleEventData?.acf?.bus_routes.map((item: any) => ({
-            id: item.value,
-            text: item.label,
-          }));
-        setBusRoute([...busRouteArray]);
-        const opningTimeArray: TransformedType[] =
-          SingleEventData?.acf?.seasonality.map((item: any) => ({
-            id: item.value,
-            text: item.label,
-          }));
-        setOpningTime([...opningTimeArray]);
-        // event_dates
-        const newData = SingleEventData?.acf?.event_dates.map(
-          (item: any, index: number) => ({
-            id: index + 1,
-            date: moment(item.date).format("YYYY/MM/DD"),
-            start_time: item.start_time,
-            end_time: item.end_time,
-          })
-        );
-        setDateTimes([...newData]);
-        setShowDateTime([...newData]);
-      }
-    } else {
-      resetForm();
-      setFeature([]);
-      setBusRoute([]);
-      setDateTimes([]);
-      setShowDateTime([]);
-      setAccessibility([]);
-      setOpningTime([]);
-      setEventType([]);
-      setSelectedImage(null);
-      // Reset the input field
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ""; // Reset the input element
-      }
-    }
-  }, [SingleEventData, drawerType]);
 
-  // ====================================== Image upload URL =====================================================
-  const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
-    if (file) {
-      try {
-        setLoder(true);
-        const formData = new FormData();
-        formData.append("image", file);
-        const res = await axios.post(url, formData);
-        if (res.status == 200) {
-          const imageArray = [
-            {
-              alt_text: "",
-              original_filename: file.name,
-              public_id: "",
-              url: res?.data,
-            },
-          ];
-          setFieldValue("header_image_data", JSON.stringify(imageArray));
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            setSelectedImage(reader.result);
-          };
-          reader.readAsDataURL(file);
-          setLoder(false);
-        } else {
-          setLoder(false);
-        }
-      } catch (error) {
-        setLoder(false);
-      }
-    }
-  };
 
   // ==================================== POST FINAL EVENT DATA ====================================================
   const submitFormikFunction = () => {
 
 
     const finalObject = {
-      // acf: {
-      //   title: formData.DescriptionTitle,
-      //   short_description: formData.introDescription,
-      //   long_description: formData.moreInformation,
-      //   type: eventTypeArray,
-      //   location: eventLocationArray,
-      //   key_facilities: keyFeature,
-      //   eventType: eventType(),
-      //   customDates: dateTimeComponents,
-      //   event_dates_start: "",
-      //   event_dates_end: "",
-      //   daysOfWeek: "",
-      //   startTime: "",
-      //   endTime: "",
-      //   from_price: formData.priceFrom,
-      //   price_to: formData.priceTo,
-      //   booking_information: BookingEvent,
-      //   display_name: formData.DisplayName,
-      //   email_address: formData.DisplayName,
-      //   telephone_number: {
-      //     area_code: selectedCode,
-      //     prefix: formData.Prefix,
-      //     number: formData.Telephone,
-      //   },
-      //   website: formData.Website,
-      //   address: {
-      //     place_name: formData.PlaceName,
-      //     address_line_1: formData.AddressLine,
-      //     address_line_2: formData.AddressLineOptional,
-      //     postcode: formData.Postcode,
-      //   },
-      //   parish: selectedOpt,
-      //   seasonality: seasonalityArray,
-      //   bus_routes: busRouteArray,
-      //   social_media: {
-      //     facebook: formData.Facebook,
-      //     instagram: formData.Instagram,
-      //     twitter: formData.Twitter,
-      //   },
-      //   accessibility: accessibilityArray,
-      //   accessibility_additional_info: formData.AdditionalInfo,
-      //   accessibility_url: formData.AccessibilityURL,
-      //   header_image_data: values.header_image_data,
-      //   // header_image_data: "[{\"url\":\"https://cdn.jersey.com/image/upload/v1715339820/Listings/8645486459_seaside-treasure.jpg\",\"public_id\":\"Listings/8645486459_seaside-treasure\",\"alt_text\":\"\",\"original_filename\":\"Seaside-Treasure\"}]",
-      //   event_dates: dateTimeArray,
-      //   map_location_lat: values.lat,
-      //   map_location_lng: values.lng,
-      // },
+      
       data_type: "jersey",
       type: "events",
       manual: true,
@@ -333,7 +145,7 @@ const Drawer = ({
       }
       // const data = {};
       // dispatch(fetchEventById(data) as any)
-      dispatch(getEventList() as any);
+      // dispatch(getEventList() as any);
     }
   }, [currentEvent, updateEventValue]);
 
@@ -342,51 +154,7 @@ const Drawer = ({
   const submitData = (e: any) => {
     e.preventDefault();
     handleSubmit();
-    // const existingData: any[] = JSON.parse(localStorage.getItem("ela") || "[]");
-    // const keyFeature: TransformedType[] = feature.map(item => ({
-    //     label: item.id,
-    //     value: item.text,
-    // }));
-    // const busRouteArray: TransformedType[] = busRoute.map(item => ({
-    //     label: item.id,
-    //     value: item.text,
-    // }));
-    // const accessibilityArray: TransformedType[] = accessibility.map(item => ({
-    //     label: item.id,
-    //     value: item.text,
-    // }));
-    // const seasonalityArray: TransformedType[] = opningTime.map(item => ({
-    //     label: item.id,
-    //     value: item.text,
-    // }));
-    // const finalObject = {
-    //     acf: {
-    //         title: title,
-    //         type: [{ value: subTitle, label: subTitle }],
-    //         header_image_data: "[{\"url\":\"https://cdn.jersey.com/image/upload/v1715339820/Listings/8645486459_seaside-treasure.jpg\",\"public_id\":\"Listings/8645486459_seaside-treasure\",\"alt_text\":\"\",\"original_filename\":\"Seaside-Treasure\"}]",
-    //         event_dates: dateTimes,
-    //         email_address,
-    //         website,
-    //         address: {
-    //             place_name,
-    //             address_line_1,
-    //             address_line_2,
-    //             postcode
-    //         },
-    //         map_location_lat: lat,
-    //         map_location_lng: lng,
-    //         short_description,
-    //         key_facilities: keyFeature,
-    //         accessibility: accessibilityArray,
-    //         bus_routes: busRouteArray,
-    //         seasonality: seasonalityArray,
-    //         from_price: "String",
-    //         price_to:
-    //     },
-    //     data_type: "jersey",
-    //     type: "events",
-    // }
-
+    
     // // Combine existing data with the new data
     // const combinedData = [...existingData, finalObject];
     // localStorage.setItem("ela", JSON.stringify(combinedData))
@@ -409,11 +177,8 @@ const Drawer = ({
     // setShortDescription('')
   };
   
-  const [selectedOption, setSelectedOption] = useState("");
 
-  const handleChange2 = (event: any) => {
-    setSelectedOption(event.target.value);
-  };
+
 
   const toggleDrawer = (name: string) => {
     setIsDrawerOpen(false);
@@ -453,7 +218,7 @@ const Drawer = ({
           </button> */}
         </div>
         <hr />
-        <ActivityDataCreate {...{setIsDrawerOpen}} />
+        <ActivityDataCreate {...{setIsDrawerOpen, drawerType}} />
       </div>
     </div>
   );

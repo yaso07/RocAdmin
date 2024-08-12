@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchEventById, getEventList } from "../api/EventSlice/eventThunk";
 import ConfirmationComponent from "./confirmationUI";
 import Loading from "./Loading";
+import { GET_EVENT_LIST } from "../api/constant";
 
 
 
@@ -35,7 +36,8 @@ const SingleEventData: React.FC<ModalProps> = ({
     const loading = useSelector((state: any) => state.event.isLoading)
     const error = useSelector((state: any) => state.event.error)
 
-    const toggleDrawer = () => {
+    const toggleDrawer = (id: any) => {
+        const data = {id: id, api : GET_EVENT_LIST }
         setIsDrawerOpen(true);
         dispatch(fetchEventById(data) as any)
         setDrawerType("Edit")
@@ -174,7 +176,7 @@ const SingleEventData: React.FC<ModalProps> = ({
                             <Title className="">
                                 <h1 className="font-semibold text-lg capitalize">{data?.acf?.title}</h1>
                                 <div className="">
-                                    <EditBtn className="font-semibold text-lg capitalize mr-4" onClick={() => toggleDrawer()}>Edit</EditBtn>
+                                    <EditBtn className="font-semibold text-lg capitalize mr-4" onClick={() => toggleDrawer(data?._id)}>Edit</EditBtn>
                                     <ConfirmationComponent data={data?._id} {...{ setSelectedList }} />
                                 </div>
                             </Title>

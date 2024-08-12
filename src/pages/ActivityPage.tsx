@@ -9,8 +9,8 @@ import SingleActivitytData from "../components/SingleActivityData";
 
 
 const EventsPage = () => {
-    const data= useSelector((state: any) => {return state.event})
-    const eventDataValue=data.activitiesList
+    const data = useSelector((state: any) => { return state.event })
+    const eventDataValue = data.activitiesList;
     const [eventdata, setEventData] = useState({})
     const [dataImage, setDataImage] = useState('')
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -18,10 +18,10 @@ const EventsPage = () => {
 
     const [drawerType, setDrawerType] = useState<string>('')
     const dispatch = useDispatch()
-   
+
     useEffect(() => {
         dispatch(getActivityList() as any)
-    }, [data.currentActivity])
+    }, [data.currentActivity, data.updateActivity])
 
     useEffect(() => {
         if (eventDataValue !== undefined) {
@@ -31,13 +31,13 @@ const EventsPage = () => {
                 setEventData(eventDataValue[selectedList])
                 setDataImage(imageData[0].url)
             }
-             if (eventDataValue.length == 0) {
-               setEventData("");
-               setDataImage("");
-             }
+            if (eventDataValue.length == 0) {
+                setEventData("");
+                setDataImage("");
+            }
         }
-       
-     
+
+
     }, [eventDataValue, isDrawerOpen])
 
     const handleEventData = (index: any, image: string) => {
