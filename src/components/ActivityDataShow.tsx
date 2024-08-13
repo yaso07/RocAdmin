@@ -16,121 +16,25 @@ import {
   AccessibilityData,
   BookingData,
   BusRoutesData,
+  countryCodes,
+  IndoretypesData,
   keyfacilityData,
   locationData,
   ParishData,
   SeasonalityData,
+  TypeActivityData,
   typesData,
   WeeklyDaysData,
 } from "../utils/data";
 import { updateOpenHours } from "../utils/commanFun";
-
-interface Acf {
-  title: string;
-  short_description: string;
-  long_description: string;
-  type: any;
-  location: { label: any; value: any }[];
-  key_facilities: { label: any; value: any }[];
-  sub_type: any;
-  from_price: string;
-  price_to: string;
-  url: any;
-  map_location: any;
-  booking_information: { label: any; value: any }[];
-  display_name: string;
-  email_address: string;
-  telephone_number: {
-    area_code: string;
-    prefix: string;
-    number: string;
-  };
-  website: string;
-  address: {
-    place_name: string;
-    address_line_1: string;
-    address_line_2?: string;
-    postcode: string;
-  };
-  parish: any;
-  seasonality: { label: any; value: any }[];
-  bus_routes: { label: any; value: any }[];
-  opening_hours: any;
-  social_media: {
-    facebook: string;
-    instagram: string;
-    twitter: string;
-  };
-  accessibility: { label: any; value: any }[];
-  accessibility_additional_info: string;
-  accessibility_url: string;
-  customDates?: any; // Optional property
-  event_dates_start?: string;
-  event_dates_end?: string;
-  startTime?: string;
-  endTime?: string;
-  eventType?: string;
-}
-
-interface FinalObject {
-  acf: Acf;
-  data_type: string;
-  type: string;
-  manual: boolean;
-}
-
-interface Props {
-  isOpen?: any;
-  setIsDrawerOpen?: any;
-  setDrawerType?: any;
-  drawerType?: string;
-}
+import { Category, FinalObject, Props, SelectedItems, TimeState } from "../utils/interface";
 
 
-
-
-
-interface TimeState {
-  [key: string]: {
-    opens?: string;
-    closes?: string;
-    is_open?: number;
-  };
-}
-
-interface SelectedItems {
-  Type: { label: string; value: string }[];
-  subTypeOutdoor: { label: string; value: string }[];
-  subTypeIutdoor: { label: string; value: string }[];
-  Location: { label: string; value: string }[];
-  KeyFacilities: { label: string; value: string }[];
-  Booking: { label: string; value: string }[];
-  WeekDays: { label: string; value: string }[];
-  MonthDays: { label: string; value: string }[];
-  Seasonality: { label: string; value: string }[];
-  BusRoutes: { label: string; value: string }[];
-  Accessibility: { label: string; value: string }[];
-}
-
-type Category =
-  | "Type"
-  | "subTypeOutdoor"
-  | "subTypeIutdoor"
-  | "Location"
-  | "KeyFacilities"
-  | "Booking"
-  | "WeekDays"
-  | "MonthDays"
-  | "Seasonality"
-  | "BusRoutes"
-  | "Accessibility";
 
 const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
   const dataById = useSelector((state: any) => state.event.singleEventData)
   const dispatch = useDispatch();
-
-
 
   const [formData, setFormData] = useState({
     DescriptionTitle: "",
@@ -154,23 +58,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     AccessibilityURL: "",
   });
 
-  // const [dateState, setDateState] = useState({
-  //   startDateMonth: "",
-  //   endDateMonth: "",
-  //   startDateWeekly: "",
-  //   endDateWeekly: "",
-  //   startDateDaily: "",
-  //   endDateDaily: "",
-  // });
-  const [timeState, setTimeState] = useState<TimeState>({});
 
-  // const [dateTimeComponents, setDateTimeComponents] = useState([
-  //   {
-  //     selectedDate: undefined,
-  //     customStartTime: undefined,
-  //     customEndTime: undefined,
-  //   },
-  // ]);
+  const [timeState, setTimeState] = useState<TimeState>({});
   const [show, setShow] = useState(false);
 
   const [selectedCode, setSelectedCode] = useState("");
@@ -201,13 +90,11 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     longitude: "",
   });
 
-  // const [selectedOptionEvent, setSelectedOptionEvent] = useState("");
 
   useEffect(() => {
     if (drawerType === "Edit") {
-      console.log("data by id", dataById)
       if (dataById?.acf?.title) {
-          formData.DescriptionTitle = dataById?.acf?.title,
+        formData.DescriptionTitle = dataById?.acf?.title,
           formData.introDescription = dataById?.acf?.short_description,
           formData.moreInformation = dataById?.acf?.long_description,
           formData.priceFrom = dataById?.acf?.from_price, // not getting key from backend
@@ -232,7 +119,6 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         for (const key in dataById?.acf?.opening_hours) {
           if (dataById?.acf?.opening_hours.hasOwnProperty(key)) {
             if (dataById?.acf?.opening_hours[key].is_open == 1) {
-              // console.log(`: ${dataById?.acf?.opening_hours[key].is_open}`);
               weekDay.push({ value: key })
             }
           }
@@ -305,24 +191,17 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
 
 
-  // const handleChangeEvent = (event: any) => {
-  //   setSelectedOptionEvent(event.target.value);
-  // };
-
-
-
-  //   const [timeState, setTimeState] = useState({});
 
   const handleCheckboxChange = (
     category: string,
     value: string,
     checked: boolean
   ) => {
+    console.log(category)
     setSelectedItems((prevState: any) => {
       const newWeekDays = checked
         ? [...prevState.WeekDays, { value }]
         : prevState.WeekDays.filter((item: any) => item.value !== value);
-      console.log("newWeekDays===", newWeekDays)
       return { ...prevState, WeekDays: newWeekDays };
     });
 
@@ -362,40 +241,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const IndoretypesData = [
-    {
-      value: "spa-health",
-      title: "Spa & health",
-    },
-    {
-      value: "fitness-leisure",
-      title: "Fitness & leisure",
-    },
-    {
-      value: "food-drink",
-      title: "Food & drink",
-    },
-    {
-      value: "history-culture",
-      title: "History & culture",
-    },
-    {
-      value: "family",
-      title: "Family",
-    },
-    {
-      value: "indoor-sports",
-      title: "indoor-sports",
-    },
-    {
-      value: "swimming",
-      title: "Swimming",
-    },
-    {
-      value: "outdoor-sports",
-      title: "Outdoor sports",
-    },
-  ];
+
 
 
 
@@ -413,18 +259,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     setSelectedCode(event.target.value);
   };
 
-  const countryCodes = [
-    { code: "+1", country: "United States" },
-    { code: "+44", country: "United Kingdom" },
-    { code: "+33", country: "France" },
-    { code: "+49", country: "Germany" },
-    // Add more country codes as needed
-  ];
 
-  const TypeActivityData = [
-    { label: "Outdoor activities", value: "outdoor-activities" },
-    { label: "Indoor activities", value: "indoor-activities" },
-  ];
 
 
 
@@ -460,18 +295,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     }
   }
 
-  // const [selectedOpt, setSelectedOpt] = useState<{
-  //   label: string;
-  //   value: string;
-  // } | null>(null);
 
-  // const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const selectedValue = event.target.value;
-  //   const selected = ParishData.find(
-  //     (option) => option.value === selectedValue
-  //   );
-  //   setSelectedOpt(selected || null);
-  // };
 
 
 
@@ -596,27 +420,10 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       type: "activities",
       manual: true,
     };
-    // if (selectedOptionEvent === "option4") {
-    //   finalObject.acf.customDates = dateTimeComponents;
-    //   finalObject.acf.eventType = "custom";
-    // } else if (selectedOptionEvent === "option3") {
-    //   finalObject.acf.event_dates_start = dateState.startDateMonth;
-    //   finalObject.acf.event_dates_end = dateState.endDateMonth;
-    //   finalObject.acf.eventType = "month";
-    // } else if (selectedOptionEvent === "option2") {
-    //   finalObject.acf.event_dates_start = dateState.startDateWeekly;
-    //   finalObject.acf.event_dates_end = dateState.endDateWeekly;
-    //   finalObject.acf.eventType = "weekly";
-    // } else if (selectedOptionEvent === "option1") {
-    //   finalObject.acf.event_dates_start = dateState.startDateDaily;
-    //   finalObject.acf.event_dates_end = dateState.endDateDaily;
-    //   finalObject.acf.eventType = "daily";
-    // }
-    // console.log(finalObject, "finalobject");
-    // return
+    
     if (drawerType === "Edit") {
-      const obj = { finalObject, setIsDrawerOpen, id:dataById?._id };
-      
+      const obj = { finalObject, setIsDrawerOpen, id: dataById?._id };
+
       dispatch(updateActivity(obj) as any);
       dispatch(getActivityList() as any)
     } else {

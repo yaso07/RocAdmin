@@ -306,6 +306,48 @@ export const BusRoutesData = [
     }
 ]
 
+export const IndoretypesData = [
+    {
+      value: "spa-health",
+      title: "Spa & health",
+    },
+    {
+      value: "fitness-leisure",
+      title: "Fitness & leisure",
+    },
+    {
+      value: "food-drink",
+      title: "Food & drink",
+    },
+    {
+      value: "history-culture",
+      title: "History & culture",
+    },
+    {
+      value: "family",
+      title: "Family",
+    },
+    {
+      value: "indoor-sports",
+      title: "indoor-sports",
+    },
+    {
+      value: "swimming",
+      title: "Swimming",
+    },
+    {
+      value: "outdoor-sports",
+      title: "Outdoor sports",
+    },
+  ];
+
+
+
+  export const TypeActivityData = [
+    { label: "Outdoor activities", value: "outdoor-activities" },
+    { label: "Indoor activities", value: "indoor-activities" },
+  ];
+
 export const opnintHoursData: any = {
     Monday: {
       closes: '', opens: '', is_open: "0"
