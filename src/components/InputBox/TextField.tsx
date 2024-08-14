@@ -9,7 +9,10 @@ interface InputProps {
   letterValueShow?: boolean;
   value?:string;
   onchange?:any;
-  name?:string
+  name?:string;
+  error?: any;
+  touch?: any;
+  handleBlur?: any;
 }
 
 const TextField: FC<InputProps> = ({
@@ -18,7 +21,7 @@ const TextField: FC<InputProps> = ({
   maxLength,
   letterValueShow = true,
   value,
-  onchange,name
+  onchange,name, handleBlur, error, touch
 }) => {
   const [textValue, setTextValue] = useState("");
   //   const maxLength = 250;
@@ -45,6 +48,7 @@ const TextField: FC<InputProps> = ({
           placeholder="Enter your text..."
           value={value}
           onChange={onchange}
+          onBlur={handleBlur}
           maxLength={maxLength}
           name={name}
           style={{marginTop:20}}
@@ -54,6 +58,9 @@ const TextField: FC<InputProps> = ({
             {value?.length} / {maxLength}
           </div>
         )}
+        {touch ? (
+          <div style={{color:'red'}}>{error}</div>
+        ) : null}
       </div>
     </div>
   );

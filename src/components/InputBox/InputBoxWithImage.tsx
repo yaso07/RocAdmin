@@ -1,29 +1,33 @@
-import React, { useState,FC } from 'react';
+import { useState, FC } from 'react';
 import fallbackimage from '../../assets/fallbackimage.png'
 
 
 interface InputProps {
-  value?:string;
-  onchange?:any;
-  name?:string
+  value?: string;
+  onchange?: any;
+  name?: string;
+  error?: any;
+  touch?: any;
+  handleBlur?: any;
 }
 
-const SearchInput: FC<InputProps>  = ({value,onchange,name}) => {
+const SearchInput: FC<InputProps> = ({ value, onchange, name, handleBlur, error, touch }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => setIsFocused(true);
-  const handleBlur = () => setIsFocused(false);
+  // const handleBlur = () => setIsFocused(false);
 
   return (
+    <>
     <div
       style={{
         ...styles.container,
-        borderColor: isFocused ? '#4965a7' : '#ccc', 
-        marginTop:20
+        borderColor: isFocused ? '#4965a7' : '#ccc',
+        marginTop: 20
         // Change border color on focus
       }}
     >
-        <img src={fallbackimage} style={styles.icon} alt="" />
+      <img src={fallbackimage} style={styles.icon} alt="" />
       <input
         type="text"
         value={value}
@@ -34,6 +38,10 @@ const SearchInput: FC<InputProps>  = ({value,onchange,name}) => {
         onBlur={handleBlur}
       />
     </div>
+      {touch ? (
+        <div style={{ color: 'red' }}>{error}</div>
+      ) : null}
+    </>
   );
 };
 
@@ -45,13 +53,13 @@ const styles = {
     borderRadius: '5px',
     padding: '5px 10px',
     transition: 'border-color 0.3s', // Smooth transition for border color
-    width:"100%"
+    width: "100%"
   },
   icon: {
     marginRight: '10px',
     color: '#888',
-    width:"20px",
-    height:"20px"
+    width: "20px",
+    height: "20px"
   },
   input: {
     border: 'none',

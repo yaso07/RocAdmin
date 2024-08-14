@@ -28,6 +28,9 @@ import {
 } from "../utils/data";
 import { updateOpenHours } from "../utils/commanFun";
 import { Category, FinalObject, Props, SelectedItems, TimeState } from "../utils/interface";
+import { useFormik } from "formik";
+import { activitySchema } from "../utils/validation";
+// import { formDataType } from "../types/event";
 
 
 
@@ -36,31 +39,10 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
   const dataById = useSelector((state: any) => state.event.singleEventData)
   const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({
-    DescriptionTitle: "",
-    introDescription: "",
-    moreInformation: "",
-    priceFrom: "",
-    priceTo: "",
-    DisplayName: "",
-    EmailAddress: "",
-    Prefix: "",
-    Telephone: "",
-    Website: "",
-    PlaceName: "",
-    AddressLine: "",
-    AddressLineOptional: "",
-    Postcode: "",
-    Facebook: "",
-    Instagram: "",
-    Twitter: "",
-    AdditionalInfo: "",
-    AccessibilityURL: "",
-  });
-
 
   const [timeState, setTimeState] = useState<TimeState>({});
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const [selectedCode, setSelectedCode] = useState("");
   const [selectedActivity, setSelectedActivity] = useState({
@@ -84,37 +66,95 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     BusRoutes: [],
     Accessibility: [],
   });
-  const [file, setFile] = useState();
+  const [file, setFile] = useState("");
   const [location, setLocation] = useState<any>({
     latitude: "",
     longitude: "",
   });
 
+  const initialFormValues = {
+    DescriptionTitle: "",
+    introDescription: "",
+    moreInformation: "",
+    priceFrom: "",
+    priceTo: "",
+    DisplayName: "",
+    EmailAddress: "",
+    Prefix: "",
+    Telephone: "",
+    Website: "",
+    PlaceName: "",
+    AddressLine: "",
+    AddressLineOptional: "",
+    Postcode: "",
+    Facebook: "",
+    Instagram: "",
+    Twitter: "",
+    AdditionalInfo: "",
+    AccessibilityURL: "",
+    file: "",
+    activityType: "indoor-activities",
+    subTypeActivity: [],
+    Location: [],
+    KeyFacilities: [],
+    Seasonality: [],
+    BusRoutes: [],
+  }
+
+  const { handleChange, handleSubmit, setFieldValue, handleBlur, resetForm, values, errors, touched } = useFormik({
+    initialValues: initialFormValues,
+    validationSchema: activitySchema,
+    onSubmit: () => finalActivitySubmition(),
+  });
+
+
+
 
   useEffect(() => {
     if (drawerType === "Edit") {
       if (dataById?.acf?.title) {
-        formData.DescriptionTitle = dataById?.acf?.title,
-          formData.introDescription = dataById?.acf?.short_description,
-          formData.moreInformation = dataById?.acf?.long_description,
-          formData.priceFrom = dataById?.acf?.from_price, // not getting key from backend
-          formData.priceTo = dataById?.acf?.price_to,
-          formData.DisplayName = dataById?.acf?.display_name, // not getting key from backend
-          formData.EmailAddress = dataById?.acf?.email_address,
-          formData.Prefix = dataById?.acf?.telephone_number?.prefix,
-          formData.Telephone = dataById?.acf?.telephone_number?.number,
-          formData.Website = dataById?.acf?.website,
-          formData.PlaceName = dataById?.acf?.address?.place_name,
-          formData.AddressLine = dataById?.acf?.address?.address_line_1,
-          formData.AddressLineOptional = dataById?.acf?.address?.address_line_2,
-          formData.Postcode = dataById?.acf?.address?.postcode,
-          formData.Facebook = dataById?.acf?.social_media.facebook,
-          formData.Instagram = dataById?.acf?.social_media.instagram,
-          formData.Twitter = dataById?.acf?.social_media.twitter,
-          formData.AdditionalInfo = dataById?.acf?.accessibility_additional_info, // not getting key from backend
-          formData.AccessibilityURL = dataById?.acf?.accessibility_url // not getting key from backend
-        setFormData({ ...formData })
+        setFieldValue("DescriptionTitle", dataById?.acf?.title);
+        setFieldValue("introDescription", dataById?.acf?.short_description);
+        setFieldValue("moreInformation", dataById?.acf?.long_description);
+        setFieldValue("priceFrom", dataById?.acf?.from_price); // not getting key from backend
+        setFieldValue("priceTo", dataById?.acf?.price_to);
+        setFieldValue("DisplayName", dataById?.acf?.display_name); // not getting key from backend
+        setFieldValue("EmailAddress", dataById?.acf?.email_address);
+        setFieldValue("Prefix", dataById?.acf?.telephone_number?.prefix);
+        setFieldValue("Telephone", dataById?.acf?.telephone_number?.number);
+        setFieldValue("Website", dataById?.acf?.website);
+        setFieldValue("PlaceName", dataById?.acf?.address?.place_name);
+        setFieldValue("AddressLine", dataById?.acf?.address?.address_line_1);
+        setFieldValue("AddressLineOptional", dataById?.acf?.address?.address_line_2);
+        setFieldValue("Postcode", dataById?.acf?.address?.postcode);
+        setFieldValue("Facebook", dataById?.acf?.social_media.facebook);
+        setFieldValue("Instagram", dataById?.acf?.social_media.instagram);
+        setFieldValue("Twitter", dataById?.acf?.social_media.twitter);
+        setFieldValue("AdditionalInfo", dataById?.acf?.accessibility_additional_info); // not getting key from backend
+        setFieldValue("AccessibilityURL", dataById?.acf?.accessibility_url); // not getting key from backend
+        // formData.DescriptionTitle = dataById?.acf?.title,
+        //   formData.introDescription = dataById?.acf?.short_description,
+        //   formData.moreInformation = dataById?.acf?.long_description,
+        //   formData.priceFrom = dataById?.acf?.from_price, // not getting key from backend
+        //   formData.priceTo = dataById?.acf?.price_to,
+        //   formData.DisplayName = dataById?.acf?.display_name, // not getting key from backend
+        //   formData.EmailAddress = dataById?.acf?.email_address,
+        //   formData.Prefix = dataById?.acf?.telephone_number?.prefix,
+        //   formData.Telephone = dataById?.acf?.telephone_number?.number,
+        //   formData.Website = dataById?.acf?.website,
+        //   formData.PlaceName = dataById?.acf?.address?.place_name,
+        //   formData.AddressLine = dataById?.acf?.address?.address_line_1,
+        //   formData.AddressLineOptional = dataById?.acf?.address?.address_line_2,
+        //   formData.Postcode = dataById?.acf?.address?.postcode,
+        //   formData.Facebook = dataById?.acf?.social_media.facebook,
+        //   formData.Instagram = dataById?.acf?.social_media.instagram,
+        //   formData.Twitter = dataById?.acf?.social_media.twitter,
+        //   formData.AdditionalInfo = dataById?.acf?.accessibility_additional_info, // not getting key from backend
+        //   formData.AccessibilityURL = dataById?.acf?.accessibility_url // not getting key from backend
+        // setFormData({ ...formData })
         setSelectedActivity({ label: dataById?.acf?.type?.label, value: dataById?.acf?.type?.value });
+
+        setFieldValue("activityType", dataById?.acf?.type?.value)
         const weekDay: any = []
         for (const key in dataById?.acf?.opening_hours) {
           if (dataById?.acf?.opening_hours.hasOwnProperty(key)) {
@@ -136,33 +176,19 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
           Seasonality: dataById?.acf?.seasonality,
           WeekDays: weekDay,
         })
+        setFieldValue("subTypeActivity", dataById?.acf?.sub_type)
+        setFieldValue("Location", dataById?.acf?.location)
+        setFieldValue("KeyFacilities", dataById?.acf?.key_facilities)
+        setFieldValue("BusRoutes", dataById?.acf?.booking_information)
+        setFieldValue("Seasonality", dataById?.acf?.seasonality)
         setTimeState({ ...dataById?.acf?.opening_hours })
         setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
         const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
         setFile(image[0].url)
+        setFieldValue("file", image[0].url)
       }
     } else {
-      setFormData({
-        DescriptionTitle: "",
-        introDescription: "",
-        moreInformation: "",
-        priceFrom: "",
-        priceTo: "",
-        DisplayName: "",
-        EmailAddress: "",
-        Prefix: "",
-        Telephone: "",
-        Website: "",
-        PlaceName: "",
-        AddressLine: "",
-        AddressLineOptional: "",
-        Postcode: "",
-        Facebook: "",
-        Instagram: "",
-        Twitter: "",
-        AdditionalInfo: "",
-        AccessibilityURL: "",
-      });
+      resetForm()
       setSelectedItems({
         Type: [],
         subTypeOutdoor: [],
@@ -183,7 +209,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         latitude: "",
         longitude: "",
       });
-      setFile(undefined);
+      setFile("");
       setSelectedOption({ label: "", value: "" });
     }
 
@@ -228,14 +254,6 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
 
 
-  const handleTextFieldChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
 
 
   const handleClose = () => setShow(false);
@@ -269,6 +287,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     );
     const selectedLabel = selectedItem ? selectedItem.label : ""; // Default to an empty string if undefined
     setSelectedActivity({ label: selectedLabel, value: event.target.value });
+    setFieldValue("activityType", event.target.value)
   };
 
 
@@ -282,15 +301,27 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       : "subTypeIutdoor";
 
 
-  async function handleChange(e: any) {
+  async function handleFileChange(e: any) {
     const file = e.target.files?.[0];
     const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
     if (file) {
       const formData = new FormData();
       formData.append("image", file);
-      const res = await axios.post(url, formData);
-
-      setFile(res?.data);
+      try {
+        setLoading(true)
+        const res = await axios.post(url, formData);
+        if (res?.status === 200) {
+          setLoading(false)
+          setFile(res?.data);
+          setFieldValue("file", res?.data)
+        } else {
+          setLoading(false)
+          setFile("");
+          setFieldValue("file", "")
+        }
+      } catch (error) {
+        setLoading(false)
+      }
       //  setFile(URL.createObjectURL(e.target.files[0]) as any);
     }
   }
@@ -319,6 +350,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     checked: boolean,
     title?: any
   ) => {
+    console.log("category", category, value, checked, title)
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
         ? [...prevSelectedItems[category], { label: title, value }]
@@ -329,6 +361,71 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         [category]: updatedCategory,
       };
     });
+
+
+    const nameValue = ((category as string) === "subTypeOutdoor") || ((category as string) === "subTypeIutdoor") ? "subTypeActivity" : category
+    if (((category as string) === "subTypeOutdoor") || ((category as string) === "subTypeIutdoor")) {
+      if (checked) {
+        setFieldValue(nameValue, [
+          ...values.subTypeActivity,
+          { value, title },
+        ]);
+      } else {
+        setFieldValue(
+          nameValue,
+          values.subTypeActivity.filter((item: any) => item.value !== value)
+        );
+      }
+
+    } else if ((category as string) === "Location") {
+      if (checked) {
+        setFieldValue(nameValue, [
+          ...values.Location,
+          { value, title },
+        ]);
+      } else {
+        setFieldValue(
+          nameValue,
+          values.Location.filter((item: any) => item.value !== value)
+        );
+      }
+    } else if ((category as string) === "KeyFacilities") {
+      if (checked) {
+        setFieldValue(nameValue, [
+          ...values.KeyFacilities,
+          { value, title },
+        ]);
+      } else {
+        setFieldValue(
+          nameValue,
+          values.KeyFacilities.filter((item: any) => item.value !== value)
+        );
+      }
+    } else if ((category as string) === "Seasonality") {
+      if (checked) {
+        setFieldValue(nameValue, [
+          ...values.Seasonality,
+          { value, title },
+        ]);
+      } else {
+        setFieldValue(
+          nameValue,
+          values.Seasonality.filter((item: any) => item.value !== value)
+        );
+      }
+    } else if ((category as string) === "BusRoutes") {
+      if (checked) {
+        setFieldValue(nameValue, [
+          ...values.BusRoutes,
+          { value, title },
+        ]);
+      } else {
+        setFieldValue(
+          nameValue,
+          values.BusRoutes.filter((item: any) => item.value !== value)
+        );
+      }
+    }
   };
 
   function parseTitle(title: string) {
@@ -348,7 +445,14 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
 
 
-  const submitFormikFunction = () => {
+  const submitFormikFunction = (e: any) => {
+    e.preventDefault();
+    handleSubmit()
+
+  };
+
+
+  const finalActivitySubmition = () => {
     const keyFeature = selectedItems.KeyFacilities.map((item: any) => ({
       label: item.label,
       value: item.value,
@@ -377,50 +481,50 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
     const finalObject: FinalObject = {
       acf: {
-        title: formData.DescriptionTitle,
-        short_description: formData.introDescription,
-        long_description: formData.moreInformation,
+        title: values.DescriptionTitle,
+        short_description: values.introDescription,
+        long_description: values.moreInformation,
         sub_type: subTypeValue,
         type: selectedActivity,
         location: eventLocationArray,
         key_facilities: keyFeature,
         url: file,
-        from_price: formData.priceFrom,
-        price_to: formData.priceTo,
+        from_price: values.priceFrom,
+        price_to: values.priceTo,
         booking_information: BookingEvent,
-        display_name: formData.DisplayName,
-        email_address: formData.EmailAddress,
+        display_name: values.DisplayName,
+        email_address: values.EmailAddress,
         map_location: { lat: +location.latitude, lng: +location.longitude },
         telephone_number: {
           area_code: selectedCode,
-          prefix: formData.Prefix,
-          number: formData.Telephone,
+          prefix: values.Prefix,
+          number: values.Telephone,
         },
-        website: formData.Website,
+        website: values.Website,
         address: {
-          place_name: formData.PlaceName,
-          address_line_1: formData.AddressLine,
-          address_line_2: formData.AddressLineOptional,
-          postcode: formData.Postcode,
+          place_name: values.PlaceName,
+          address_line_1: values.AddressLine,
+          address_line_2: values.AddressLineOptional,
+          postcode: values.Postcode,
         },
         parish: selectedOption,
         seasonality: seasonalityArray,
         bus_routes: busRouteArray,
         opening_hours: updateOpenHours(timeState),
         social_media: {
-          facebook: formData.Facebook,
-          instagram: formData.Instagram,
-          twitter: formData.Twitter,
+          facebook: values.Facebook,
+          instagram: values.Instagram,
+          twitter: values.Twitter,
         },
         accessibility: accessibilityArray,
-        accessibility_additional_info: formData.AdditionalInfo,
-        accessibility_url: formData.AccessibilityURL,
+        accessibility_additional_info: values.AdditionalInfo,
+        accessibility_url: values.AccessibilityURL,
       },
       data_type: "jersey",
       type: "activities",
       manual: true,
     };
-    
+
     if (drawerType === "Edit") {
       const obj = { finalObject, setIsDrawerOpen, id: dataById?._id };
 
@@ -431,27 +535,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       dispatch(createActivity(obj) as any);
       dispatch(getActivityList() as any)
     }
-    setFormData({
-      DescriptionTitle: "",
-      introDescription: "",
-      moreInformation: "",
-      priceFrom: "",
-      priceTo: "",
-      DisplayName: "",
-      EmailAddress: "",
-      Prefix: "",
-      Telephone: "",
-      Website: "",
-      PlaceName: "",
-      AddressLine: "",
-      AddressLineOptional: "",
-      Postcode: "",
-      Facebook: "",
-      Instagram: "",
-      Twitter: "",
-      AdditionalInfo: "",
-      AccessibilityURL: "",
-    });
+    resetForm()
     setSelectedItems({
       Type: [],
       subTypeOutdoor: [],
@@ -472,9 +556,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       latitude: "",
       longitude: "",
     });
-    setFile(undefined);
+    setFile("");
     setSelectedOption({ label: "", value: "" });
-  };
+  }
 
   return (
     <div>
@@ -484,26 +568,47 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
           <>
             <div>
               <ReusableInput
-                title="Title*"
-                DescriptionTitle={formData.DescriptionTitle}
-                handleDescriptionTitle={handleTextFieldChange}
+                title="Title *"
                 name="DescriptionTitle"
+                showCouter={true}
+                DescriptionTitle={values.DescriptionTitle}
+                handleDescriptionTitle={handleChange}
+                error={errors.DescriptionTitle}
+                touch={touched.DescriptionTitle && errors.DescriptionTitle}
+                {...{ handleBlur }}
+
+
+              // DescriptionTitle={formData.DescriptionTitle}
+              // handleDescriptionTitle={handleTextFieldChange}
+
               />
               <TextField
                 title="Introductory Description *"
                 description="This will be used for the What’s On printed guide. It will also be used on the website where a short, preview piece of copy may be required to introduce your listing."
                 maxLength="350"
-                value={formData.introDescription}
                 name="introDescription"
-                onchange={handleTextFieldChange}
+                value={values.introDescription}
+                onchange={handleChange}
+                handleBlur={handleBlur}
+                error={errors.introDescription}
+                touch={touched.introDescription && errors.introDescription}
+
+              // value={formData.introDescription}
+              // DescriptionTitle={formData.DescriptionTitle}
               />
               <TextField
                 title="More Information *"
                 description="This is the main piece of copy within the body of your listing."
                 maxLength="750"
-                value={formData.moreInformation}
                 name="moreInformation"
-                onchange={handleTextFieldChange}
+                value={values.moreInformation}
+                handleBlur={handleBlur}
+                onchange={handleChange}
+                error={errors.moreInformation}
+                touch={touched.moreInformation && errors.moreInformation}
+
+              // value={formData.moreInformation}
+              // onchange={handleTextFieldChange}
               />
               <TitleText style={{ marginTop: 20 }}>Type *</TitleText>
               <div
@@ -519,10 +624,14 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                       <input
                         type="radio"
                         id={item.value}
-                        name="location"
+                        name="activityType"
+                        // value={values.activityType}
+                        // onChange={handleChange}
+                        onBlur={handleBlur}
+                        checked={values.activityType === item.value}
                         value={item.value}
                         onChange={handleChangeRadioActivity}
-                        checked={selectedActivity.value === item.value}
+                        // checked={selectedActivity.value === item.value}
                         style={{ marginRight: 10 }}
                       />
                       <label>{item.label}</label>
@@ -530,6 +639,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   );
                 })}
               </div>
+              {/* {(touched.activityType && errors.activityType) ? (
+                <div style={{ color: 'red' }}>{errors.activityType}</div>
+              ) : null} */}
               <div style={{ marginTop: 20 }}>
                 <TitleText>SubType *</TitleText>
                 <div className="checkboxContainer">
@@ -537,12 +649,11 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
                     return (
                       <div style={{ marginBottom: 10 }} key={index}>
-
                         <Checkbox
                           title={item.title}
                           value={item.value}
-                          isChecked={subTypeValue.some(
-                            (items) => items.value === item.value
+                          isChecked={values.subTypeActivity.some(
+                            (items: any) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
                             handleCheckboxChange2(
@@ -557,6 +668,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     );
                   })}
                 </div>
+                {errors.subTypeActivity && touched.subTypeActivity ? (
+                  <div style={{ color: 'red' }}>{errors.subTypeActivity}</div>
+                ) : null}
               </div>
               <div style={{ marginTop: 20 }}>
                 <TitleText>Location *</TitleText>
@@ -567,8 +681,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                         <Checkbox
                           title={item.title}
                           value={item.value}
-                          isChecked={selectedItems.Location.some(
-                            (items) => items.value === item.value
+                          isChecked={values.Location.some(
+                            (items: any) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
                             handleCheckboxChange2(
@@ -583,6 +697,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     );
                   })}
                 </div>
+                {errors.Location && touched.Location ? (
+                  <div style={{ color: 'red' }}>{errors.Location}</div>
+                ) : null}
               </div>
               <div style={{ marginTop: 20, marginBottom: 20 }}>
                 <TitleText>Key facilities *</TitleText>
@@ -593,8 +710,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                         <Checkbox
                           title={item.title}
                           value={item.value}
-                          isChecked={selectedItems.KeyFacilities.some(
-                            (items) => items.value === item.value
+                          isChecked={values.KeyFacilities.some(
+                            (items: any) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
                             handleCheckboxChange2(
@@ -609,6 +726,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     );
                   })}
                 </div>
+                {errors.KeyFacilities && touched.KeyFacilities ? (
+                  <div style={{ color: 'red' }}>{errors.KeyFacilities}</div>
+                ) : null}
               </div>
               <div>
                 <TitleText style={{ margin: "20px 0px" }}>
@@ -632,12 +752,21 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     <PriceInputText>£</PriceInputText>
                     <input
                       type="number"
-                      className="custom-inputPrice"
-                      value={formData.priceFrom}
-                      onChange={handleTextFieldChange}
                       name="priceFrom"
+                      className="custom-inputPrice"
+                      value={values.priceFrom}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+
+
+                    // value={formData.priceFrom}
+                    // onChange={handleTextFieldChange}
                     />
+
                   </div>
+                  {(touched.priceFrom && errors.priceFrom) ? (
+                    <div style={{ color: 'red' }}>{errors.priceFrom}</div>
+                  ) : null}
                 </div>
                 <div>
                   <TitleText>Price to</TitleText>
@@ -652,11 +781,19 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     <input
                       type="number"
                       className="custom-inputPrice"
-                      value={formData.priceTo}
-                      onChange={handleTextFieldChange}
                       name="priceTo"
+                      value={values.priceTo}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+
+
+                    // value={formData.priceTo}
+                    // onChange={handleTextFieldChange}
                     />
                   </div>
+                  {(touched.priceTo && errors.priceTo) ? (
+                    <div style={{ color: 'red' }}>{errors.priceTo}</div>
+                  ) : null}
                 </div>
               </InputContainer>
               <TitleText style={{ margin: "20px 0px" }}>
@@ -702,18 +839,32 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
             <div>
               <ReusableInput
                 title="Display name*"
-                showCouter={false}
-                DescriptionTitle={formData.DisplayName}
-                handleDescriptionTitle={handleTextFieldChange}
                 name="DisplayName"
+                showCouter={false}
+                DescriptionTitle={values.DisplayName}
+                handleDescriptionTitle={handleChange}
+                error={errors.DisplayName}
+                touch={touched.DisplayName && errors.DisplayName}
+                {...{ handleBlur }}
+
+
+              // DescriptionTitle={formData.DisplayName}
+              // handleDescriptionTitle={handleTextFieldChange}
               />
               <div style={{ margin: "20px 0px" }}>
                 <ReusableInput
                   title="Email address *"
                   showCouter={false}
-                  DescriptionTitle={formData.EmailAddress}
-                  handleDescriptionTitle={handleTextFieldChange}
                   name="EmailAddress"
+                  DescriptionTitle={values.EmailAddress}
+                  handleDescriptionTitle={handleChange}
+                  handleBlur={handleBlur}
+                  error={errors.EmailAddress}
+                  touch={touched.EmailAddress && errors.EmailAddress}
+
+
+                // DescriptionTitle={formData.EmailAddress}
+                // handleDescriptionTitle={handleTextFieldChange}
                 />
               </div>
               <TitleText>Telephone number</TitleText>
@@ -746,9 +897,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   <div className="input-wrapper">
                     <input
                       type="number"
-                      value={formData.Prefix}
+                      value={values.Prefix}
                       name="Prefix"
-                      onChange={handleTextFieldChange}
+                      onChange={handleChange}
                       className="parentheses-input"
                     />
                   </div>
@@ -761,10 +912,13 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     type="text"
                     className="custom-inputInfo"
                     placeholder="153400000"
-                    value={formData.Telephone}
+                    value={values.Telephone}
                     name="Telephone"
-                    onChange={handleTextFieldChange}
+                    onChange={handleChange}
                   />
+                  {(touched.Telephone && errors.Telephone) ? (
+                    <div style={{ color: 'red' }}>{errors.Telephone}</div>
+                  ) : null}
                 </div>
               </div>
               <TitleText>Website *</TitleText>
@@ -773,9 +927,12 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 https://jersey.test.
               </TitleTextMain>
               <InputBoxWithImage
-                value={formData.Website}
+                value={values.Website}
                 name="Website"
-                onchange={handleTextFieldChange}
+                onchange={handleChange}
+                handleBlur={handleBlur}
+                error={errors.Website}
+                touch={touched.Website && errors.Website}
               />
               <TitleText style={{ marginTop: 20 }}>Address</TitleText>
               <div
@@ -791,10 +948,15 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   type="text"
                   className="custom-inputInfo"
                   placeholder="Place name"
-                  value={formData.PlaceName}
                   name="PlaceName"
-                  onChange={handleTextFieldChange}
+                  value={values.PlaceName}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                // onChange={handleTextFieldChange}
                 />
+                {(touched.PlaceName && errors.PlaceName) ? (
+                  <div style={{ color: 'red' }}>{errors.PlaceName}</div>
+                ) : null}
               </div>
               <div
                 style={{
@@ -809,10 +971,16 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   type="text"
                   className="custom-inputInfo"
                   placeholder="Address line 1"
-                  value={formData.AddressLine}
                   name="AddressLine"
-                  onChange={handleTextFieldChange}
+                  value={values.AddressLine}
+                  // onBlur={handleBlur}
+                  onChange={handleChange}
+
+                // onChange={handleTextFieldChange}
                 />
+                {/* {(touched.AddressLine && errors.AddressLine) ? (
+                  <div style={{ color: 'red' }}>{errors.AddressLine}</div>
+                ) : null} */}
               </div>
               <div
                 style={{
@@ -827,9 +995,10 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   type="text"
                   className="custom-inputInfo"
                   placeholder="Address line 2"
-                  value={formData.AddressLineOptional}
                   name="AddressLineOptional"
-                  onChange={handleTextFieldChange}
+                  value={values.AddressLineOptional}
+                  onChange={handleChange}
+                // onChange={handleTextFieldChange}
                 />
               </div>
               <div
@@ -844,11 +1013,16 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 <input
                   type="text"
                   className="custom-inputInfo"
-                  placeholder="Postcode"
-                  value={formData.Postcode}
                   name="Postcode"
-                  onChange={handleTextFieldChange}
+                  placeholder="Postcode"
+                  value={values.Postcode}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                // onChange={handleTextFieldChange}
                 />
+                {/* {(touched.Postcode && errors.Postcode) ? (
+                  <div style={{ color: 'red' }}>{errors.Postcode}</div>
+                ) : null} */}
               </div>
               <TitleText>Parish</TitleText>
               <div
@@ -914,8 +1088,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                       <Checkbox
                         title={item.title}
                         value={item.value}
-                        isChecked={selectedItems.Seasonality.some(
-                          (items) => items.value === item.value
+                        isChecked={values.Seasonality.some(
+                          (items: any) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
                           handleCheckboxChange2(
@@ -930,6 +1104,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   );
                 })}
               </div>
+              {errors.Seasonality && touched.Seasonality ? (
+                <div style={{ color: 'red' }}>{errors.Seasonality}</div>
+              ) : null}
               <TitleText style={{ marginTop: 20 }}>Bus routes *</TitleText>
               <div
                 style={{
@@ -945,8 +1122,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                         <Checkbox
                           title={mainTitle}
                           value={item.value}
-                          isChecked={selectedItems.BusRoutes.some(
-                            (items) => items.value === item.value
+                          isChecked={values.BusRoutes.some(
+                            (items: any) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
                             handleCheckboxChange2(
@@ -964,12 +1141,14 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   );
                 })}
               </div>
+              {errors.BusRoutes && touched.BusRoutes ? (
+                <div style={{ color: 'red' }}>{errors.BusRoutes}</div>
+              ) : null}
               <TitleText style={{ marginTop: 10 }}>Opening hours</TitleText>
               <TitleTextMain>
                 If you are open all day,please leave the startend date blank
               </TitleTextMain>
               {WeeklyDaysData.map((item, index) => {
-                // console.log("kdkdddkdkdkd", item, selectedItems?.WeekDays)
                 const isChecked = selectedItems?.WeekDays.some(
                   (weekday) => weekday?.value === item?.value
                 );
@@ -1030,9 +1209,12 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
               >
                 <AddressInfo>Facebook</AddressInfo>
                 <InputBoxWithImage
-                  value={formData.Facebook}
+                  value={values.Facebook}
                   name="Facebook"
-                  onchange={handleTextFieldChange}
+                  onchange={handleChange}
+                  handleBlur={handleBlur}
+                  error={errors.Facebook}
+                  touch={touched.Facebook && errors.Facebook}
                 />
               </div>
               <div
@@ -1045,9 +1227,12 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
               >
                 <AddressInfo>Instagram</AddressInfo>
                 <InputBoxWithImage
-                  value={formData.Instagram}
+                  value={values.Instagram}
                   name="Instagram"
-                  onchange={handleTextFieldChange}
+                  onchange={handleChange}
+                  handleBlur={handleBlur}
+                  error={errors.Instagram}
+                  touch={touched.Instagram && errors.Instagram}
                 />
               </div>
               <div
@@ -1060,9 +1245,12 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
               >
                 <AddressInfo>Twitter</AddressInfo>
                 <InputBoxWithImage
-                  value={formData.Twitter}
+                  value={values.Twitter}
                   name="Twitter"
-                  onchange={handleTextFieldChange}
+                  onchange={handleChange}
+                  handleBlur={handleBlur}
+                  error={errors.Twitter}
+                  touch={touched.Twitter && errors.Twitter}
                 />
               </div>
               {/* <TitleText>Tripadvisor</TitleText>
@@ -1139,9 +1327,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 title="Additional information"
                 description="Explain a little more about the accessibility of your business and encourage users to contact you directly for further assistance."
                 letterValueShow={false}
-                value={formData.AdditionalInfo}
+                value={values.AdditionalInfo}
                 name="AdditionalInfo"
-                onchange={handleTextFieldChange}
+                onchange={handleChange}
               />
               <p
                 style={{
@@ -1163,10 +1351,16 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 website, include a link here.
               </p>
               <InputBoxWithImage
-                value={formData.AccessibilityURL}
+                value={values.AccessibilityURL}
                 name="AccessibilityURL"
-                onchange={handleTextFieldChange}
+                onchange={handleChange}
+                handleBlur={handleBlur}
+                error={errors.AccessibilityURL}
+                touch={touched.AccessibilityURL && errors.AccessibilityURL}
               />
+              {/* {(touched.AccessibilityURL && errors.AccessibilityURL) ? (
+                <div style={{ color: 'red' }}>{errors.AccessibilityURL}</div>
+              ) : null} */}
             </div>
           </>
         }
@@ -1209,7 +1403,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 business via Visit Jersey’s wider channels.
               </ImageInfoText>
               <div>
-                <p
+                <div
                   style={{
                     fontSize: 17,
                     fontWeight: "600",
@@ -1217,7 +1411,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   }}
                 >
                   Header image *
-                </p>
+                </div>
                 <div
                   style={{
                     borderTop: "1px solid #ccc",
@@ -1249,6 +1443,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   </MaximumImageValue>
                 </div>
               </div>
+              {errors.file && touched.file ? (
+                <div style={{ color: 'red' }}>{errors.file}</div>
+              ) : null}
             </div>
             <Modal
               show={show}
@@ -1277,25 +1474,31 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     alignItems: "center",
                   }}
                 >
-                  <div style={{ textAlign: "center" }}>
-                    <DropImage>Drop files to upload</DropImage>
-                    <p>or</p>
-                    <input
-                      type="file"
-                      id="imageget"
-                      onChange={handleChange}
-                      hidden
-                    />
-                    <ButtonImage htmlFor="imageget">Select Files</ButtonImage>
-                  </div>
+                  {
+                    loading ? <p>Uploading...</p> :
+                      <div style={{ textAlign: "center" }}>
+                        <DropImage>Drop files to upload</DropImage>
+                        <p>or</p>
+                        <input
+                          type="file"
+                          id="imageget"
+                          name="file"
+                          onChange={handleFileChange}
+                          onBlur={handleBlur}
+                          accept="image/png, image/jpeg"
+                          hidden
+                        />
+                        <ButtonImage htmlFor="imageget">Select Files</ButtonImage>
+                      </div>
+                  }
                   <img src={file} style={{ width: 100, marginTop: 20 }} />
                 </div>
               </div>
               <Modal.Footer>
                 <SelectImage
-                  disabled={file != undefined ? false : true}
+                  disabled={file ? false : true}
                   style={{
-                    cursor: file != undefined ? "pointer" : "not-allowed",
+                    cursor: file ? "pointer" : "not-allowed",
                   }}
                   onClick={handleClose}
                 >
@@ -1306,7 +1509,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
           </>
         }
       />
-      <ButtonSubmit onClick={submitFormikFunction}>Submit</ButtonSubmit>
+      <ButtonSubmit type="button" onClick={submitFormikFunction}>Submit</ButtonSubmit>
     </div>
   );
 };

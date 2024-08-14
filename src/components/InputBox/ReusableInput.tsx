@@ -1,16 +1,21 @@
-import React, { useState, FC } from "react";
+import { useState, FC } from "react";
 import "../../App.css";
 import styled from "styled-components";
 
 interface InputProps {
   title: string;
   showCouter?: any;
-  DescriptionTitle?:string;
-  handleDescriptionTitle?:any;
-  name?:string
+  DescriptionTitle?: string;
+  handleDescriptionTitle?: any;
+  name?: string;
+  error?: any;
+  touch?: any;
+  handleBlur?: any;
 }
 
-const InputBox: FC<InputProps> = ({ title, showCouter = true,DescriptionTitle,handleDescriptionTitle,name }) => {
+const InputBox: FC<InputProps> = ({ 
+  title, 
+  showCouter = true, DescriptionTitle, handleDescriptionTitle, name, handleBlur, error, touch }) => {
   const [inputValue, setInputValue] = useState("");
   const maxLength = 50;
 
@@ -27,14 +32,20 @@ const InputBox: FC<InputProps> = ({ title, showCouter = true,DescriptionTitle,ha
           className="custom-input"
           value={DescriptionTitle}
           onChange={handleDescriptionTitle}
+          onBlur={handleBlur}
+
           maxLength={maxLength}
           name={name}
+
         />
         {showCouter && (
           <div className="char-counter">
             {DescriptionTitle?.length} / {maxLength}
           </div>
         )}
+        {touch ? (
+          <div style={{color:'red'}}>{error}</div>
+        ) : null}
       </div>
     </div>
   );
