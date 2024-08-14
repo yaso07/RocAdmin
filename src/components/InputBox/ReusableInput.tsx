@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { FC } from "react";
 import "../../App.css";
 import styled from "styled-components";
 
@@ -13,15 +13,11 @@ interface InputProps {
   handleBlur?: any;
 }
 
-const InputBox: FC<InputProps> = ({ 
-  title, 
-  showCouter = true, DescriptionTitle, handleDescriptionTitle, name, handleBlur, error, touch }) => {
-  const [inputValue, setInputValue] = useState("");
+const InputBox: FC<InputProps> = ({
+  title,
+  showCouter, DescriptionTitle, handleDescriptionTitle, name, handleBlur, error, touch }) => {
   const maxLength = 50;
 
-  const handleInputChange = (event: any) => {
-    setInputValue(event.target.value);
-  };
 
   return (
     <div className="App">
@@ -44,7 +40,7 @@ const InputBox: FC<InputProps> = ({
           </div>
         )}
         {touch ? (
-          <div style={{color:'red'}}>{error}</div>
+          <div style={{ color: 'red' }}>{error}</div>
         ) : null}
       </div>
     </div>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { formatFullDate } from "../utils/commanFun";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEventById, getEventList } from "../api/EventSlice/eventThunk";
+import { fetchEventById } from "../api/EventSlice/eventThunk";
 import ConfirmationComponent from "./ActivityDelete";
 import Loading from "./Loading";
 import { GET_ACTIVITY_LIST } from "../api/constant";
@@ -180,7 +180,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
 
                             <ResturatContainer>
                                 <ResturatWrapper>
-                                    <p style={{ fontSize: "14px", textTransform: 'capitalize' }}>{formattedValues()}</p>
+                                    <p style={{ fontSize: "16px", textTransform: 'capitalize', fontWeight:'600' }}>{formattedValues()}</p>
                                 </ResturatWrapper>
                             </ResturatContainer>
                             <ItemImageContainer>
@@ -272,14 +272,21 @@ const SingleActivitytData: React.FC<ModalProps> = ({
 
                             {data?.acf?.bus_routes != "" && (
                                 <>
-                                    {/* <AlsoSeeText>Bus Route</AlsoSeeText>
+                                    <AlsoSeeText>Bus Route</AlsoSeeText>
                                     <BulletPointWrapper style={{ marginLeft: 40 }}>
                                         {data?.acf?.bus_routes.map((item: any, index: any) => (
-                                            <li key={index} style={{ textDecoration: "underline" }}>
-                                                {formatRoute(item.label)}
+                                            <li key={index} style={{ textDecoration: "underline" }}
+                                            dangerouslySetInnerHTML={{__html: item.label}}
+                                            >
+                                                {/* {formatRoute(item.label)}
+                                                {
+                                                    console.log(item?.label
+
+                                                    )
+                                                } */}
                                             </li>
                                         ))}
-                                    </BulletPointWrapper> */}
+                                    </BulletPointWrapper>
                                 </>
                             )}
 
@@ -524,10 +531,10 @@ const WeekTimeArrange = styled.div`
 
 
 const OpningDatesContainer = styled.div`
-  padding: 16px 16px;
   margin: 0px 24px;
   border-radius: 8px;
   background: var(--White, #fff);
+  padding-bottom: 15px;
 `;
 
 const WebsiteLink = styled(Link)`

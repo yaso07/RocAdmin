@@ -37,6 +37,7 @@ import { activitySchema } from "../utils/validation";
 const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
   const dataById = useSelector((state: any) => state.event.singleEventData)
+  const isLoading = useSelector((state: any) => state.event.isLoading)
   const dispatch = useDispatch();
 
 
@@ -112,8 +113,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
   useEffect(() => {
     if (drawerType === "Edit") {
-      if (dataById?.acf?.title) {
-        setFieldValue("DescriptionTitle", dataById?.acf?.title);
+      if (JSON.stringify(dataById)) {
         setFieldValue("introDescription", dataById?.acf?.short_description);
         setFieldValue("moreInformation", dataById?.acf?.long_description);
         setFieldValue("priceFrom", dataById?.acf?.from_price); // not getting key from backend
@@ -132,28 +132,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         setFieldValue("Twitter", dataById?.acf?.social_media.twitter);
         setFieldValue("AdditionalInfo", dataById?.acf?.accessibility_additional_info); // not getting key from backend
         setFieldValue("AccessibilityURL", dataById?.acf?.accessibility_url); // not getting key from backend
-        // formData.DescriptionTitle = dataById?.acf?.title,
-        //   formData.introDescription = dataById?.acf?.short_description,
-        //   formData.moreInformation = dataById?.acf?.long_description,
-        //   formData.priceFrom = dataById?.acf?.from_price, // not getting key from backend
-        //   formData.priceTo = dataById?.acf?.price_to,
-        //   formData.DisplayName = dataById?.acf?.display_name, // not getting key from backend
-        //   formData.EmailAddress = dataById?.acf?.email_address,
-        //   formData.Prefix = dataById?.acf?.telephone_number?.prefix,
-        //   formData.Telephone = dataById?.acf?.telephone_number?.number,
-        //   formData.Website = dataById?.acf?.website,
-        //   formData.PlaceName = dataById?.acf?.address?.place_name,
-        //   formData.AddressLine = dataById?.acf?.address?.address_line_1,
-        //   formData.AddressLineOptional = dataById?.acf?.address?.address_line_2,
-        //   formData.Postcode = dataById?.acf?.address?.postcode,
-        //   formData.Facebook = dataById?.acf?.social_media.facebook,
-        //   formData.Instagram = dataById?.acf?.social_media.instagram,
-        //   formData.Twitter = dataById?.acf?.social_media.twitter,
-        //   formData.AdditionalInfo = dataById?.acf?.accessibility_additional_info, // not getting key from backend
-        //   formData.AccessibilityURL = dataById?.acf?.accessibility_url // not getting key from backend
-        // setFormData({ ...formData })
+        setFieldValue("DescriptionTitle", dataById?.acf?.title);
         setSelectedActivity({ label: dataById?.acf?.type?.label, value: dataById?.acf?.type?.value });
-
         setFieldValue("activityType", dataById?.acf?.type?.value)
         const weekDay: any = []
         for (const key in dataById?.acf?.opening_hours) {
@@ -176,16 +156,37 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
           Seasonality: dataById?.acf?.seasonality,
           WeekDays: weekDay,
         })
-        setFieldValue("subTypeActivity", dataById?.acf?.sub_type)
-        setFieldValue("Location", dataById?.acf?.location)
-        setFieldValue("KeyFacilities", dataById?.acf?.key_facilities)
-        setFieldValue("BusRoutes", dataById?.acf?.booking_information)
-        setFieldValue("Seasonality", dataById?.acf?.seasonality)
+
+        const setTYpe = dataById?.acf?.sub_type.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("subTypeActivity", setTYpe)
+        const setLocation = dataById?.acf?.location.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("Location", setLocation)
+        const setKeyFacilities = dataById?.acf?.key_facilities.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("KeyFacilities", setKeyFacilities)
+        const setBusRoutes = dataById?.acf?.bus_routes.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("BusRoutes", setBusRoutes)
+        const setSeasonality = dataById?.acf?.seasonality.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("Seasonality", setSeasonality)
         setTimeState({ ...dataById?.acf?.opening_hours })
         setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
         const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
         setFile(image[0].url)
-        setFieldValue("file", image[0].url)
+        setFieldValue("file", image[0]?.url)
       }
     } else {
       resetForm()
@@ -213,7 +214,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       setSelectedOption({ label: "", value: "" });
     }
 
-  }, [dataById?.acf?.title, drawerType])
+  }, [JSON.stringify(dataById), drawerType])
 
 
 
@@ -241,16 +242,15 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     });
   };
 
-  const handleTimeChangehour =
-    (day: string, type: "opens" | "closes") => (time: string) => {
-      setTimeState((prevState) => ({
-        ...prevState,
-        [day]: {
-          ...prevState[day],
-          [type]: time,
-        },
-      }));
-    };
+  const handleTimeChangehour = (day: string, type: "opens" | "closes") => (time: string) => {
+    setTimeState((prevState) => ({
+      ...prevState,
+      [day]: {
+        ...prevState[day],
+        [type]: time,
+      },
+    }));
+  };
 
 
 
@@ -350,7 +350,6 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     checked: boolean,
     title?: any
   ) => {
-    console.log("category", category, value, checked, title)
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
         ? [...prevSelectedItems[category], { label: title, value }]
@@ -377,7 +376,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         );
       }
 
-    } else if ((category as string) === "Location") {
+    } 
+    else if ((category as string) === "Location") {
       if (checked) {
         setFieldValue(nameValue, [
           ...values.Location,
@@ -448,7 +448,6 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
   const submitFormikFunction = (e: any) => {
     e.preventDefault();
     handleSubmit()
-
   };
 
 
@@ -650,17 +649,17 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     return (
                       <div style={{ marginBottom: 10 }} key={index}>
                         <Checkbox
-                          title={item.title}
-                          value={item.value}
+                          title={item?.title}
+                          value={item?.value}
                           isChecked={values.subTypeActivity.some(
-                            (items: any) => items.value === item.value
+                            (items: any) => items?.value === item?.value
                           )}
                           onCheckboxChange={(value, checked) =>
                             handleCheckboxChange2(
                               subTypeAct,
                               value,
                               checked,
-                              item.title
+                              item?.title
                             )
                           }
                         />
@@ -679,17 +678,17 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     return (
                       <div style={{ marginBottom: 10 }} key={index}>
                         <Checkbox
-                          title={item.title}
-                          value={item.value}
+                          title={item?.title}
+                          value={item?.value}
                           isChecked={values.Location.some(
-                            (items: any) => items.value === item.value
+                            (items: any) => items?.value === item?.value
                           )}
                           onCheckboxChange={(value, checked) =>
                             handleCheckboxChange2(
                               "Location",
                               value,
                               checked,
-                              item.title
+                              item?.title
                             )
                           }
                         />
@@ -708,17 +707,17 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     return (
                       <div style={{ marginBottom: 10 }} key={index}>
                         <Checkbox
-                          title={item.title}
-                          value={item.value}
+                          title={item?.title}
+                          value={item?.value}
                           isChecked={values.KeyFacilities.some(
-                            (items: any) => items.value === item.value
+                            (items: any) => items?.value === item?.value
                           )}
                           onCheckboxChange={(value, checked) =>
                             handleCheckboxChange2(
                               "KeyFacilities",
                               value,
                               checked,
-                              item.title
+                              item?.title
                             )
                           }
                         />
@@ -809,17 +808,17 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   return (
                     <div style={{ marginBottom: 10 }} key={index}>
                       <Checkbox
-                        title={item.title}
-                        value={item.value}
+                        title={item?.title}
+                        value={item?.value}
                         isChecked={selectedItems.Booking.some(
-                          (items) => items.value === item.value
+                          (items) => items?.value === item?.value
                         )}
                         onCheckboxChange={(value, checked) =>
                           handleCheckboxChange2(
                             "Booking",
                             value,
                             checked,
-                            item.title
+                            item?.title
                           )
                         }
                       />
@@ -884,8 +883,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     onChange={handleChangeCode}
                   >
                     {countryCodes.map((item, index) => (
-                      <option key={index} value={item.code}>
-                        {item.code}
+                      <option key={index} value={item?.code}>
+                        {item?.code}
                       </option>
                     ))}
                   </Select>
@@ -1038,14 +1037,14 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     <div key={index}>
                       <input
                         type="radio"
-                        id={item.value}
+                        id={item?.value}
                         name="location"
-                        value={item.value}
+                        value={item?.value}
                         onChange={handleChangeRadio}
-                        checked={selectedOption.value === item.value}
+                        checked={selectedOption?.value === item?.value}
                         style={{ marginRight: 10 }}
                       />
-                      <label>{item.label}</label>
+                      <label>{item?.label}</label>
                     </div>
                   );
                 })}
@@ -1086,17 +1085,17 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   return (
                     <div style={{ marginBottom: 10 }} key={index}>
                       <Checkbox
-                        title={item.title}
-                        value={item.value}
+                        title={item?.title}
+                        value={item?.value}
                         isChecked={values.Seasonality.some(
-                          (items: any) => items.value === item.value
+                          (items: any) => items?.value === item?.value
                         )}
                         onCheckboxChange={(value, checked) =>
                           handleCheckboxChange2(
                             "Seasonality",
                             value,
                             checked,
-                            item.title
+                            item?.title
                           )
                         }
                       />
@@ -1115,22 +1114,22 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 }}
               >
                 {BusRoutesData.map((item, index) => {
-                  const { mainTitle, italicText } = parseTitle(item.title);
+                  const { mainTitle, italicText } = parseTitle(item?.title);
                   return (
                     <div style={{ marginBottom: 10 }} key={index}>
                       {item.title != "" && (
                         <Checkbox
                           title={mainTitle}
-                          value={item.value}
+                          value={item?.value}
                           isChecked={values.BusRoutes.some(
-                            (items: any) => items.value === item.value
+                            (items: any) => items?.value === item?.value
                           )}
                           onCheckboxChange={(value, checked) =>
                             handleCheckboxChange2(
                               "BusRoutes",
                               value,
                               checked,
-                              item.title
+                              item?.title
                             )
                           }
                         />
@@ -1305,17 +1304,17 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   return (
                     <div key={index}>
                       <Checkbox
-                        title={item.title}
-                        value={item.value}
+                        title={item?.title}
+                        value={item?.value}
                         isChecked={selectedItems.Accessibility.some(
-                          (items) => items.value === item.value
+                          (items) => items?.value === item?.value
                         )}
                         onCheckboxChange={(value, checked) =>
                           handleCheckboxChange2(
                             "Accessibility",
                             value,
                             checked,
-                            item.title
+                            item?.title
                           )
                         }
                       />
@@ -1509,7 +1508,12 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
           </>
         }
       />
-      <ButtonSubmit type="button" onClick={submitFormikFunction}>Submit</ButtonSubmit>
+      {
+        isLoading ?
+          <ButtonSubmit type="button" >Loading...</ButtonSubmit> :
+          <ButtonSubmit type="button" onClick={submitFormikFunction}>Submit</ButtonSubmit>
+
+      }
     </div>
   );
 };

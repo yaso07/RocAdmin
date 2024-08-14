@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { FC } from "react";
 import "./input.css";
 import styled from "styled-components";
 
@@ -23,12 +23,7 @@ const TextField: FC<InputProps> = ({
   value,
   onchange,name, handleBlur, error, touch
 }) => {
-  const [textValue, setTextValue] = useState("");
-  //   const maxLength = 250;
 
-  const handleTextChange = (event: any) => {
-    setTextValue(event.target.value);
-  };
 
   return (
     <div className="App">
