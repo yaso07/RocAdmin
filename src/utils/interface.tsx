@@ -6,7 +6,7 @@ export interface Acf {
     location: { label: any; value: any }[];
     key_facilities: { label: any; value: any }[];
     sub_type: any;
-    from_price: string;
+    price_from: string;
     price_to: string;
     url: any;
     map_location: any;

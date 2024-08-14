@@ -488,7 +488,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         location: eventLocationArray,
         key_facilities: keyFeature,
         url: file,
-        from_price: values.priceFrom,
+        price_from: values.priceFrom,
         price_to: values.priceTo,
         booking_information: BookingEvent,
         display_name: values.DisplayName,
