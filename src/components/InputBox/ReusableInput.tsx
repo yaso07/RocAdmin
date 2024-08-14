@@ -1,22 +1,23 @@
-import React, { useState, FC } from "react";
+import { FC } from "react";
 import "../../App.css";
 import styled from "styled-components";
 
 interface InputProps {
   title: string;
   showCouter?: any;
-  DescriptionTitle?:string;
-  handleDescriptionTitle?:any;
-  name?:string
+  DescriptionTitle?: string;
+  handleDescriptionTitle?: any;
+  name?: string;
 }
 
-const InputBox: FC<InputProps> = ({ title, showCouter = true,DescriptionTitle,handleDescriptionTitle,name }) => {
-  const [inputValue, setInputValue] = useState("");
+const InputBox: FC<InputProps> = ({
+  title,
+  showCouter = true,
+  DescriptionTitle,
+  handleDescriptionTitle,
+  name,
+}) => {
   const maxLength = 50;
-
-  const handleInputChange = (event: any) => {
-    setInputValue(event.target.value);
-  };
 
   return (
     <div className="App">

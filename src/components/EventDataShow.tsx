@@ -1,14 +1,9 @@
-import { formDataType } from "../types/event";
 import Accordion from "../components/Accordion/Accordion";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import {
-  createEvent,
-  getEventList,
-  updateEvent,
-} from "../api/EventSlice/eventThunk";
+import { useEffect, useState } from "react";
+import { createEvent } from "../api/EventSlice/eventThunk";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import moment from "moment";
+
 import ReusableInput from "./InputBox/ReusableInput";
 import TextField from "./InputBox/TextField";
 import Checkbox from "./InputBox/Checkbox";
@@ -20,8 +15,19 @@ import { formatDate } from "../types/date";
 // import Modal from "@mui/material/Modal";
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { createSelector } from 'reselect';
-import { AccessibilityData, BookingData, BusRoutesData, countryCodes, keyfacilityData, locationData, ParishData, SeasonalityData, typesData, WeeklyDaysData } from "../utils/data";
+import { createSelector } from "reselect";
+import {
+  AccessibilityData,
+  BookingData,
+  BusRoutesData,
+  countryCodes,
+  keyfacilityData,
+  locationData,
+  ParishData,
+  SeasonalityData,
+  typesData,
+  WeeklyDaysData,
+} from "../utils/data";
 
 interface Acf {
   title: string;
@@ -74,25 +80,6 @@ interface FinalObject {
   data_type: string;
   type: string;
   manual: boolean;
-}
-
-interface Props {
-  isOpen: any;
-  setIsDrawerOpen: any;
-  setDrawerType: any;
-  drawerType: string;
-}
-
-type TransformedType = {
-  label: string;
-  value: string;
-};
-
-interface DateTime {
-  id: number;
-  date: any;
-  start_time: string;
-  end_time: string;
 }
 
 interface SelectedItems {
@@ -156,14 +143,14 @@ const EventDataShow = () => {
       value: item.value,
     }));
 
-    const MonthDays = selectedItems.MonthDays?.map(day => day.value);
-    const WeekDays = selectedItems.WeekDays?.map(day => day.value);
+    const MonthDays = selectedItems.MonthDays?.map((day) => day.value);
+    const WeekDays = selectedItems.WeekDays?.map((day) => day.value);
 
     const formatDateData = dateTimeComponents.map((item: any) => ({
       date: formatDate(item.selectedDate),
       start_time: item.customStartTime,
-      end_time: item.customEndTime
-    }))
+      end_time: item.customEndTime,
+    }));
 
     const finalObject: FinalObject = {
       acf: {
@@ -217,20 +204,20 @@ const EventDataShow = () => {
       finalObject.acf.start_time = timeState.startTimeMonth;
       finalObject.acf.end_time = timeState.endTimeMonth;
       finalObject.acf.daysOfWeek = MonthDays;
-      finalObject.acf.eventType = "monthly"
+      finalObject.acf.eventType = "monthly";
     } else if (selectedOptionEvent === "option2") {
       finalObject.acf.event_dates_start = formatDate(dateState.startDateWeekly);
       finalObject.acf.event_dates_end = formatDate(dateState.endDateWeekly);
       finalObject.acf.start_time = timeState.startTimeWeekly;
       finalObject.acf.end_time = timeState.endTimeWeekly;
       finalObject.acf.daysOfWeek = WeekDays;
-      finalObject.acf.eventType = "weekly"
+      finalObject.acf.eventType = "weekly";
     } else if (selectedOptionEvent === "option1") {
       finalObject.acf.event_dates_start = formatDate(dateState.startDateDaily);
       finalObject.acf.event_dates_end = formatDate(dateState.endDateDaily);
       finalObject.acf.start_time = timeState.startTimeDaily;
       finalObject.acf.end_time = timeState.endTimeDaily;
-      finalObject.acf.eventType = "daily"
+      finalObject.acf.eventType = "daily";
     }
     console.log(finalObject, "finalObject");
     dispatch(createEvent(finalObject) as any);
@@ -266,7 +253,7 @@ const EventDataShow = () => {
       Seasonality: [],
       BusRoutes: [],
       Accessibility: [],
-    })
+    });
     setDateState({
       startDateMonth: "",
       endDateMonth: "",
@@ -274,20 +261,20 @@ const EventDataShow = () => {
       endDateWeekly: "",
       startDateDaily: "",
       endDateDaily: "",
-    })
+    });
     setDateTimeComponents([
       {
         selectedDate: undefined,
         customStartTime: undefined,
         customEndTime: undefined,
       },
-    ])
-    setSelectedCode("")
+    ]);
+    setSelectedCode("");
     setLocation({
       latitude: "",
       longitude: "",
-    })
-    setFile(undefined)
+    });
+    setFile(undefined);
     setSelectedOption({ label: "", value: "" });
     setTimeState({
       startTimeMonth: "",
@@ -296,36 +283,32 @@ const EventDataShow = () => {
       endTimeWeekly: "",
       startTimeDaily: "",
       endTimeDaily: "",
-    })
+    });
   };
 
   const SingleEventData = useSelector(selectSingleEventData);
 
   const [formData, setFormData] = useState({
-    DescriptionTitle: SingleEventData?.acf?.title || '',
-    introDescription: SingleEventData?.acf?.short_description || '',
-    moreInformation: SingleEventData?.acf?.long_description || '',
-    priceFrom: SingleEventData?.acf?.from_price || '',
-    priceTo: SingleEventData?.acf?.price_to || '',
-    DisplayName: SingleEventData?.acf?.display_name || '',
-    EmailAddress: SingleEventData?.acf?.email_address || '',
-    Prefix: SingleEventData?.acf?.telephone_number?.prefix || '',
-    Telephone: SingleEventData?.acf?.telephone_number?.number || '',
-    Website: SingleEventData?.acf?.website || '',
-    PlaceName: SingleEventData?.acf?.address?.place_name || '',
-    AddressLine: SingleEventData?.acf?.address?.address_line_1 || '',
-    AddressLineOptional: SingleEventData?.acf?.address?.address_line_2 || '',
-    Postcode: SingleEventData?.acf?.address?.postcode || '',
-    Facebook: SingleEventData?.acf?.social_media?.facebook || '',
-    Instagram: SingleEventData?.acf?.social_media?.instagram || '',
-    Twitter: SingleEventData?.acf?.social_media?.twitter || '',
-    AdditionalInfo: SingleEventData?.acf?.accessibility_additional_info || '',
-    AccessibilityURL: SingleEventData?.acf?.accessibility_url || '',
+    DescriptionTitle: SingleEventData?.acf?.title || "",
+    introDescription: SingleEventData?.acf?.short_description || "",
+    moreInformation: SingleEventData?.acf?.long_description || "",
+    priceFrom: SingleEventData?.acf?.from_price || "",
+    priceTo: SingleEventData?.acf?.price_to || "",
+    DisplayName: SingleEventData?.acf?.display_name || "",
+    EmailAddress: SingleEventData?.acf?.email_address || "",
+    Prefix: SingleEventData?.acf?.telephone_number?.prefix || "",
+    Telephone: SingleEventData?.acf?.telephone_number?.number || "",
+    Website: SingleEventData?.acf?.website || "",
+    PlaceName: SingleEventData?.acf?.address?.place_name || "",
+    AddressLine: SingleEventData?.acf?.address?.address_line_1 || "",
+    AddressLineOptional: SingleEventData?.acf?.address?.address_line_2 || "",
+    Postcode: SingleEventData?.acf?.address?.postcode || "",
+    Facebook: SingleEventData?.acf?.social_media?.facebook || "",
+    Instagram: SingleEventData?.acf?.social_media?.instagram || "",
+    Twitter: SingleEventData?.acf?.social_media?.twitter || "",
+    AdditionalInfo: SingleEventData?.acf?.accessibility_additional_info || "",
+    AccessibilityURL: SingleEventData?.acf?.accessibility_url || "",
   });
-
-
-
-
 
   const [selectedOptionEvent, setSelectedOptionEvent] = useState("");
 
@@ -350,9 +333,7 @@ const EventDataShow = () => {
       ...prevData,
       [name]: value,
     }));
-  }
-
-
+  };
 
   //   const { isOpen, toggle } = useModal();
 
@@ -366,7 +347,7 @@ const EventDataShow = () => {
   });
 
   const handleDateChange = (field: any) => (date: any) => {
-    setDateState((prevState:any) => ({
+    setDateState((prevState: any) => ({
       ...prevState,
       [field]: date,
     }));
@@ -395,7 +376,6 @@ const EventDataShow = () => {
       customEndTime: undefined,
     },
   ]);
-
 
   const addDateTimeComponent = () => {
     setDateTimeComponents([
@@ -444,8 +424,6 @@ const EventDataShow = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
-
   const [selectedOption, setSelectedOption] = useState({
     label: "",
     value: "",
@@ -459,19 +437,11 @@ const EventDataShow = () => {
     setSelectedOption({ label: selectedLabel, value: event.target.value });
   };
 
-  
-
-
-  
   const [selectedCode, setSelectedCode] = useState("");
 
   const handleChangeCode = (event: any) => {
     setSelectedCode(event.target.value);
   };
-
-
-
-
 
   // const [selectedOpt, setSelectedOpt] = useState<{
   //   label: string;
@@ -504,44 +474,15 @@ const EventDataShow = () => {
     Accessibility: [],
   });
 
-  const [DatesDays, setDateDays] = useState<{
-    WeekDays: string[];
-    MonthDays: string[];
-  }>({
-    WeekDays: [],
-    MonthDays: [],
-  });
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = e.target;
-
-    setDateDays((prevState) => {
-      const key = name as keyof typeof prevState;
-      const newDays = checked
-        ? [...prevState[key], value]
-        : prevState[key].filter((day) => day !== value);
-
-      return {
-        ...prevState,
-        [key]: newDays,
-      };
-    });
-  };
-
-
-
   const handleCheckboxChange2 = (
     category: Category,
     value: string,
     checked: boolean,
-    label?:any
+    label?: any
   ) => {
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
-        ? [
-          ...prevSelectedItems[category],
-          { label: label, value },
-        ]
+        ? [...prevSelectedItems[category], { label: label, value }]
         : prevSelectedItems[category].filter((item) => item.value !== value);
 
       return {
@@ -589,7 +530,6 @@ const EventDataShow = () => {
 
   const [file, setFile] = useState();
   async function handleChange(e: any) {
-
     const file = e.target.files?.[0];
     const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
     if (file) {
@@ -598,25 +538,24 @@ const EventDataShow = () => {
       const res = await axios.post(url, formData);
 
       setFile(res?.data);
-      //  setFile(URL.createObjectURL(e.target.files[0]) as any);    
+      //  setFile(URL.createObjectURL(e.target.files[0]) as any);
     }
   }
 
-useEffect(()=>{
-  if(file){
-    handleClose()
-  }
-},[file])
+  useEffect(() => {
+    if (file) {
+      handleClose();
+    }
+  }, [file]);
 
-function parseTitle(title: string) {
-  const [mainTitle, italicPart] = title.split('<br>');
-  const italicText = italicPart?.match(/<i>(.*?)<\/i>/)?.[1];
-  return {
+  function parseTitle(title: string) {
+    const [mainTitle, italicPart] = title.split("<br>");
+    const italicText = italicPart?.match(/<i>(.*?)<\/i>/)?.[1];
+    return {
       mainTitle,
-      italicText
-  };
-}
-
+      italicText,
+    };
+  }
 
   // try {
   //   setLoder(true);
@@ -689,7 +628,12 @@ function parseTitle(title: string) {
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("Type", value, checked,item.title)
+                            handleCheckboxChange2(
+                              "Type",
+                              value,
+                              checked,
+                              item.title
+                            )
                           }
                         />
                       </div>
@@ -710,7 +654,12 @@ function parseTitle(title: string) {
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("Location", value, checked,item.title)
+                            handleCheckboxChange2(
+                              "Location",
+                              value,
+                              checked,
+                              item.title
+                            )
                           }
                         />
                       </div>
@@ -745,10 +694,10 @@ function parseTitle(title: string) {
                 </div>
               </div>
               <div>
-                <TitleText>
-                  Event dates *
+                <TitleText>Event dates *</TitleText>
+                <TitleText style={{ marginTop: 20 }}>
+                  How often does this occur?
                 </TitleText>
-                <TitleText style={{ marginTop: 20 }}>How often does this occur?</TitleText>
                 <TitleTextMain style={{ marginTop: 20 }}>
                   You can manually add, remove and amend dates once they've been
                   generated via the below.
@@ -802,8 +751,7 @@ function parseTitle(title: string) {
                       display: "flex",
                       alignItems: "center",
                       marginTop: 20,
-                    }}
-                  >
+                    }}>
                     <PriceInputText>£</PriceInputText>
                     <input
                       type="number"
@@ -821,8 +769,7 @@ function parseTitle(title: string) {
                       display: "flex",
                       alignItems: "center",
                       marginTop: 20,
-                    }}
-                  >
+                    }}>
                     <PriceInputText>£</PriceInputText>
                     <input
                       type="number"
@@ -841,9 +788,8 @@ function parseTitle(title: string) {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr 1fr",
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 {BookingData.map((item, index) => {
                   return (
                     <div style={{ marginBottom: 10 }} key={index}>
@@ -854,7 +800,12 @@ function parseTitle(title: string) {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Booking", value, checked,item.title)
+                          handleCheckboxChange2(
+                            "Booking",
+                            value,
+                            checked,
+                            item.title
+                          )
                         }
                       />
                     </div>
@@ -894,13 +845,14 @@ function parseTitle(title: string) {
               </TitleTextMain>
               <div style={{ display: "flex", gap: 24, marginTop: 20 }}>
                 <div style={{ width: 140 }}>
-                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Area Code</h6>
+                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>
+                    Area Code
+                  </h6>
                   <Select
                     id="country-code"
                     name="country-code"
                     value={selectedCode}
-                    onChange={handleChangeCode}
-                  >
+                    onChange={handleChangeCode}>
                     {countryCodes.map((item, index) => (
                       <option key={index} value={item.code}>
                         {item.code}
@@ -909,7 +861,9 @@ function parseTitle(title: string) {
                   </Select>
                 </div>
                 <div style={{ width: 120 }}>
-                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Prefix</h6>
+                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>
+                    Prefix
+                  </h6>
                   <div className="input-wrapper">
                     <input
                       type="number"
@@ -921,7 +875,9 @@ function parseTitle(title: string) {
                   </div>
                 </div>
                 <div style={{ width: "100%" }}>
-                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Telephone</h6>
+                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>
+                    Telephone
+                  </h6>
                   <input
                     type="text"
                     className="custom-inputInfo"
@@ -949,9 +905,8 @@ function parseTitle(title: string) {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 <AddressInfo>Place name</AddressInfo>
                 <input
                   type="text"
@@ -968,8 +923,7 @@ function parseTitle(title: string) {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Address line 1</AddressInfo>
                 <input
                   type="text"
@@ -986,8 +940,7 @@ function parseTitle(title: string) {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Address line 2</AddressInfo>
                 <input
                   type="text"
@@ -1004,8 +957,7 @@ function parseTitle(title: string) {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Postcode</AddressInfo>
                 <input
                   type="text"
@@ -1023,9 +975,8 @@ function parseTitle(title: string) {
                   gridTemplateColumns: "1fr 1fr",
                   gridGap: 10,
                   marginBottom: 20,
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 {ParishData.map((item, index) => {
                   return (
                     <div key={index}>
@@ -1049,7 +1000,13 @@ function parseTitle(title: string) {
                   Search for your address or click on the map to manually place
                   a marker.
                 </TitleTextMain>
-                <div style={{ display: "flex", gap: 20, marginBottom: 20, marginTop: 20 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 20,
+                    marginBottom: 20,
+                    marginTop: 20,
+                  }}>
                   <input
                     type="number"
                     className="custom-inputInfo"
@@ -1073,9 +1030,8 @@ function parseTitle(title: string) {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 {SeasonalityData.map((item, index) => {
                   return (
                     <div style={{ marginBottom: 10 }} key={index}>
@@ -1086,7 +1042,12 @@ function parseTitle(title: string) {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Seasonality", value, checked,item.title)
+                          handleCheckboxChange2(
+                            "Seasonality",
+                            value,
+                            checked,
+                            item.title
+                          )
                         }
                       />
                     </div>
@@ -1098,9 +1059,8 @@ function parseTitle(title: string) {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 {BusRoutesData.map((item, index) => {
                   const { mainTitle, italicText } = parseTitle(item.title);
                   return (
@@ -1113,7 +1073,12 @@ function parseTitle(title: string) {
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("BusRoutes", value, checked,item.title)
+                            handleCheckboxChange2(
+                              "BusRoutes",
+                              value,
+                              checked,
+                              item.title
+                            )
                           }
                         />
                       )}
@@ -1134,8 +1099,7 @@ function parseTitle(title: string) {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Facebook</AddressInfo>
                 <InputBoxWithImage
                   value={formData.Facebook}
@@ -1149,8 +1113,7 @@ function parseTitle(title: string) {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Instagram</AddressInfo>
                 <InputBoxWithImage
                   value={formData.Instagram}
@@ -1164,8 +1127,7 @@ function parseTitle(title: string) {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Twitter</AddressInfo>
                 <InputBoxWithImage
                   value={formData.Twitter}
@@ -1199,8 +1161,7 @@ function parseTitle(title: string) {
                   fontSize: "1em",
                   fontWeight: 500,
                   marginBottom: 10,
-                }}
-              >
+                }}>
                 Accessibility
               </p>
               <p
@@ -1208,8 +1169,7 @@ function parseTitle(title: string) {
                   fontSize: ".875em",
                   color: "#757575",
                   marginTop: 20,
-                }}
-              >
+                }}>
                 To help users of jersey.com find the information they need,
                 select the most accurate filters from the list below.
               </p>
@@ -1218,9 +1178,8 @@ function parseTitle(title: string) {
                   display: "flex",
                   flexDirection: "column",
                   gap: 20,
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 {AccessibilityData.map((item, index) => {
                   return (
                     <div key={index}>
@@ -1231,7 +1190,12 @@ function parseTitle(title: string) {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Accessibility", value, checked,item.title)
+                          handleCheckboxChange2(
+                            "Accessibility",
+                            value,
+                            checked,
+                            item.title
+                          )
                         }
                       />
                     </div>
@@ -1251,8 +1215,7 @@ function parseTitle(title: string) {
                   fontSize: "1em",
                   fontWeight: 500,
                   marginBottom: 10,
-                }}
-              >
+                }}>
                 Accessibility URL
               </p>
               <p
@@ -1260,8 +1223,7 @@ function parseTitle(title: string) {
                   fontSize: ".875em",
                   color: "#757575",
                   marginTop: 20,
-                }}
-              >
+                }}>
                 It is recommended that you have an accessibility page on your
                 website, include a link here.
               </p>
@@ -1284,8 +1246,7 @@ function parseTitle(title: string) {
                   fontSize: 17,
                   fontWeight: "600",
                   margin: "20px 0px",
-                }}
-              >
+                }}>
                 Images
               </p>
               <ImageInfoText>
@@ -1317,8 +1278,7 @@ function parseTitle(title: string) {
                     fontSize: 17,
                     fontWeight: "600",
                     margin: "20px 0px",
-                  }}
-                >
+                  }}>
                   Header image *
                 </p>
                 <div
@@ -1327,9 +1287,14 @@ function parseTitle(title: string) {
                     borderLeft: "1px solid #ccc",
                     borderRight: "1px solid #ccc",
                     height: 300,
-                    marginTop: 20
-                  }}
-                >   <img src={file} style={{ width: 100, marginTop: 20, marginLeft: 20 }} /></div>
+                    marginTop: 20,
+                  }}>
+                  {" "}
+                  <img
+                    src={file}
+                    style={{ width: 100, marginTop: 20, marginLeft: 20 }}
+                  />
+                </div>
                 <div
                   style={{
                     border: "1px solid #ccc",
@@ -1337,8 +1302,7 @@ function parseTitle(title: string) {
                     justifyContent: "space-between",
                     alignItems: "center",
                     padding: 10,
-                  }}
-                >
+                  }}>
                   <ButtonText onClick={handleShow}>Add Image</ButtonText>
                   <MaximumImageValue>
                     Maximum number of images:{" "}
@@ -1353,8 +1317,7 @@ function parseTitle(title: string) {
               animation={false}
               size="xl"
               aria-labelledby="contained-modal-title-vcenter"
-              centered
-            >
+              centered>
               <Modal.Header closeButton>
                 <Modal.Title>Add Image to Gallery</Modal.Title>
               </Modal.Header>
@@ -1364,16 +1327,14 @@ function parseTitle(title: string) {
                   justifyContent: "center",
                   alignItems: "center",
                   height: "50vh",
-                }}
-              >
+                }}>
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    alignItems: "center"
-                  }}
-                >
+                    alignItems: "center",
+                  }}>
                   <div style={{ textAlign: "center" }}>
                     <DropImage>Drop files to upload</DropImage>
                     <p>or</p>
@@ -1394,8 +1355,7 @@ function parseTitle(title: string) {
                   style={{
                     cursor: file != undefined ? "pointer" : "not-allowed",
                   }}
-                  onClick={handleClose}
-                >
+                  onClick={handleClose}>
                   Select
                 </SelectImage>
               </Modal.Footer>
@@ -1403,7 +1363,7 @@ function parseTitle(title: string) {
           </>
         }
       />
-          <ButtonSubmit onClick={submitFormikFunction}>Submit</ButtonSubmit>
+      <ButtonSubmit onClick={submitFormikFunction}>Submit</ButtonSubmit>
     </div>
   );
 };
@@ -1481,63 +1441,6 @@ const Select = styled.select`
   accent-color: var(--brand-primary);
 `;
 
-const ModalWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-
-const ModalMainContainer = styled.div`
-  display: block;
-  background: white;
-  width: 462px;
-  height: 421px;
-  overflow: auto;
-  border-radius: 1rem;
-  ::-webkit-scrollbar {
-    display: none;
-  }
-  @media screen and (max-width: 500px) {
-    width: 100%;
-  }
-`;
-
-const TokenModalContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 40px;
-  flex-direction: column;
-  outline: none;
-  box-shadow: none;
-  border-radius: 10px;
-
-  /* @media screen and (max-width: 877px) {
-    width: 95%;
-  } */
-
-  img {
-    height: 118px;
-  }
-
-  h1 {
-    font-size: ${({ theme }) => theme.fontSize.largeText};
-    margin-bottom: 16px;
-    margin-top: 34px;
-  }
-
-  p {
-    font-size: ${({ theme }) => theme.fontSize.normal};
-    color: ${({ theme }) => theme.colors.lightGrey};
-    margin-bottom: 34px;
-  }
-
-  @media screen and (max-width: 350px) {
-    padding: 40px 30px 50px 30px;
-  }
-`;
-
 const DropImage = styled.p`
   font-size: 20px;
   line-height: 1.4;
@@ -1579,5 +1482,4 @@ const ButtonSubmit = styled.button`
   color: #fff;
   margin-top: 20px;
   border-radius: 5px;
-
-`
+`;

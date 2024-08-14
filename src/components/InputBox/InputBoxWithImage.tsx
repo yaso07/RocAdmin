@@ -1,14 +1,13 @@
-import React, { useState,FC } from 'react';
-import fallbackimage from '../../assets/fallbackimage.png'
-
+import { useState, FC } from "react";
+import fallbackimage from "../../assets/fallbackimage.png";
 
 interface InputProps {
-  value?:string;
-  onchange?:any;
-  name?:string
+  value?: string;
+  onchange?: any;
+  name?: string;
 }
 
-const SearchInput: FC<InputProps>  = ({value,onchange,name}) => {
+const SearchInput: FC<InputProps> = ({ value, onchange, name }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => setIsFocused(true);
@@ -18,12 +17,11 @@ const SearchInput: FC<InputProps>  = ({value,onchange,name}) => {
     <div
       style={{
         ...styles.container,
-        borderColor: isFocused ? '#4965a7' : '#ccc', 
-        marginTop:20
+        borderColor: isFocused ? "#4965a7" : "#ccc",
+        marginTop: 20,
         // Change border color on focus
-      }}
-    >
-        <img src={fallbackimage} style={styles.icon} alt="" />
+      }}>
+      <img src={fallbackimage} style={styles.icon} alt="" />
       <input
         type="text"
         value={value}
@@ -39,24 +37,24 @@ const SearchInput: FC<InputProps>  = ({value,onchange,name}) => {
 
 const styles = {
   container: {
-    display: 'flex',
-    alignItems: 'center',
-    border: '1px solid #ccc',
-    borderRadius: '5px',
-    padding: '5px 10px',
-    transition: 'border-color 0.3s', // Smooth transition for border color
-    width:"100%"
+    display: "flex",
+    alignItems: "center",
+    border: "1px solid #ccc",
+    borderRadius: "5px",
+    padding: "5px 10px",
+    transition: "border-color 0.3s", // Smooth transition for border color
+    width: "100%",
   },
   icon: {
-    marginRight: '10px',
-    color: '#888',
-    width:"20px",
-    height:"20px"
+    marginRight: "10px",
+    color: "#888",
+    width: "20px",
+    height: "20px",
   },
   input: {
-    border: 'none',
-    outline: 'none',
-    width: '100%',
+    border: "none",
+    outline: "none",
+    width: "100%",
   },
 };
 

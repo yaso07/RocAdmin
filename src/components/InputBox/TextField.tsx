@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { FC } from "react";
 import "./input.css";
 import styled from "styled-components";
 
@@ -7,9 +7,9 @@ interface InputProps {
   description: string;
   maxLength?: any;
   letterValueShow?: boolean;
-  value?:string;
-  onchange?:any;
-  name?:string
+  value?: string;
+  onchange?: any;
+  name?: string;
 }
 
 const TextField: FC<InputProps> = ({
@@ -18,14 +18,10 @@ const TextField: FC<InputProps> = ({
   maxLength,
   letterValueShow = true,
   value,
-  onchange,name
+  onchange,
+  name,
 }) => {
-  const [textValue, setTextValue] = useState("");
   //   const maxLength = 250;
-
-  const handleTextChange = (event: any) => {
-    setTextValue(event.target.value);
-  };
 
   return (
     <div className="App">
@@ -36,8 +32,7 @@ const TextField: FC<InputProps> = ({
             fontSize: ".875em",
             color: "#757575",
             margin: "20px 0px",
-          }}
-        >
+          }}>
           {description}
         </p>
         <textarea
@@ -47,7 +42,7 @@ const TextField: FC<InputProps> = ({
           onChange={onchange}
           maxLength={maxLength}
           name={name}
-          style={{marginTop:20}}
+          style={{ marginTop: 20 }}
         />
         {letterValueShow && (
           <div className="char-counterTextarea">
@@ -60,7 +55,6 @@ const TextField: FC<InputProps> = ({
 };
 
 export default TextField;
-
 
 const TitleText = styled.p`
   display: block;
