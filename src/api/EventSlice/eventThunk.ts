@@ -125,7 +125,7 @@ export const fetchEventById = createAsyncThunk('event/fetchById', async (data: a
       return error
     }
   } else {
-    return data
+    return data.id
   }
 })
 
@@ -144,7 +144,9 @@ export const updateEvent = createAsyncThunk('updateEventStatus',
     )
     return status?.id
   })
-// ================================ UPDATE EVENT DATA ====================================================
+
+  
+// ================================ UPDATE ACTIVITY DATA ====================================================
 export const updateActivity = createAsyncThunk('updateActivityStatus',
   async (obj: any) => {
     const token = JSON.parse(getUser()).token;

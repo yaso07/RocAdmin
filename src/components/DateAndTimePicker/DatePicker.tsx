@@ -6,12 +6,13 @@ import "./time.css"
 interface InputProps {
   value?:any;
   onchange?:any;
-  name?:string
+  name?:string;
+  today?: any;
 }
 
-const DateTimePicker: React.FC<InputProps> = ({value,onchange}) => {
+const DateTimePicker: React.FC<InputProps> = ({value,onchange, today}) => {
 
-  const today = new Date();
+  
 
   return (
     <div>

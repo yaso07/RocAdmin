@@ -1,9 +1,7 @@
-import { formDataType } from "../types/event";
 import Accordion from "../components/Accordion/Accordion";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   createEvent,
-  getEventList,
   updateEvent,
 } from "../api/EventSlice/eventThunk";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,8 +18,10 @@ import { formatDate } from "../types/date";
 // import Modal from "@mui/material/Modal";
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { createSelector } from 'reselect';
 import { AccessibilityData, BookingData, BusRoutesData, countryCodes, keyfacilityData, locationData, ParishData, SeasonalityData, typesData, WeeklyDaysData } from "../utils/data";
+import { useFormik } from "formik";
+import { eventsSchema } from "../utils/validation";
+import { checkEndData, eventDateValidation } from "../utils/commanFun";
 
 interface Acf {
   title: string;
@@ -77,23 +77,12 @@ interface FinalObject {
 }
 
 interface Props {
-  isOpen: any;
-  setIsDrawerOpen: any;
-  setDrawerType: any;
-  drawerType: string;
+  isOpen?: any;
+  setIsDrawerOpen?: any;
+  setDrawerType?: any;
+  drawerType?: string;
 }
 
-type TransformedType = {
-  label: string;
-  value: string;
-};
-
-interface DateTime {
-  id: number;
-  date: any;
-  start_time: string;
-  end_time: string;
-}
 
 interface SelectedItems {
   Type: { label: string; value: string }[];
@@ -118,232 +107,278 @@ type Category =
   | "BusRoutes"
   | "Accessibility";
 
-const selectSingleEventData = createSelector(
-  (state: any) => state.event.singleEventData,
-  (singleEventData) => singleEventData || { acf: {} }
-);
+// const selectSingleEventData = createSelector(
+//   (state: any) => state.event.singleEventData,
+//   (singleEventData) => singleEventData || { acf: {} }
+// );
+const EventDataShow = ({ drawerType }: Props) => {
+  const [isDateValid, setIsDateValid] = useState<any>(null);
+  const isLoading = useSelector((state: any) => state.event.isLoading)
+  const dataById = useSelector((state: any) => state.event.singleEventData)
+  // const SingleEventData = useSelector(selectSingleEventData);
 
-const EventDataShow = () => {
   const dispatch = useDispatch();
 
-  const submitFormikFunction = () => {
-    const keyFeature = selectedItems.KeyFacilities.map((item: any) => ({
-      label: item.label,
-      value: item.value,
-    }));
-    const BookingEvent = selectedItems.Booking.map((item: any) => ({
-      label: item.label,
-      value: item.value,
-    }));
-    const eventTypeArray = selectedItems.Type.map((item: any) => ({
-      label: item.label,
-      value: item.value,
-    }));
-    const eventLocationArray = selectedItems.Location.map((item: any) => ({
-      label: item.label,
-      value: item.value,
-    }));
-    const seasonalityArray = selectedItems.Seasonality.map((item: any) => ({
-      label: item.label,
-      value: item.value,
-    }));
-    const busRouteArray = selectedItems.BusRoutes.map((item: any) => ({
-      label: item.label,
-      value: item.value,
-    }));
-    const accessibilityArray = selectedItems.Accessibility.map((item: any) => ({
-      label: item.label,
-      value: item.value,
-    }));
 
-    const MonthDays = selectedItems.MonthDays?.map(day => day.value);
-    const WeekDays = selectedItems.WeekDays?.map(day => day.value);
+  const currentTime = moment(new Date()).format("HH:mm");
+  const currentDate = new Date();
 
-    const formatDateData = dateTimeComponents.map((item: any) => ({
-      date: formatDate(item.selectedDate),
-      start_time: item.customStartTime,
-      end_time: item.customEndTime
-    }))
+  const initialFormValues = {
+    DescriptionTitle: "",
+    introDescription: "",
+    moreInformation: "",
+    priceFrom: "",
+    priceTo: "",
+    DisplayName: "",
+    EmailAddress: "",
+    Prefix: "",
+    Telephone: "",
+    Website: "",
+    PlaceName: "",
+    AddressLine: "",
+    AddressLineOptional: "",
+    Postcode: "",
+    Facebook: "",
+    Instagram: "",
+    Twitter: "",
+    AdditionalInfo: "",
+    AccessibilityURL: "",
+    file: "",
+    Type: [],
+    // subTypeActivity: [],
+    Location: [],
+    KeyFacilities: [],
+    Seasonality: [],
+    BusRoutes: [],
+  }
 
-    const finalObject: FinalObject = {
-      acf: {
-        title: formData.DescriptionTitle,
-        short_description: formData.introDescription,
-        long_description: formData.moreInformation,
-        type: eventTypeArray,
-        location: eventLocationArray,
-        key_facilities: keyFeature,
-        url: file,
-        from_price: formData.priceFrom,
-        price_to: formData.priceTo,
-        booking_information: BookingEvent,
-        display_name: formData.DisplayName,
-        email_address: formData.EmailAddress,
-        map_location: { lat: +location.latitude, lng: +location.longitude },
-        telephone_number: {
-          area_code: selectedCode,
-          prefix: formData.Prefix,
-          number: formData.Telephone,
-        },
-        website: formData.Website,
-        address: {
-          place_name: formData.PlaceName,
-          address_line_1: formData.AddressLine,
-          address_line_2: formData.AddressLineOptional,
-          postcode: formData.Postcode,
-        },
-        parish: selectedOption,
-        seasonality: seasonalityArray,
-        bus_routes: busRouteArray,
-        social_media: {
-          facebook: formData.Facebook,
-          instagram: formData.Instagram,
-          twitter: formData.Twitter,
-        },
-        accessibility: accessibilityArray,
-        accessibility_additional_info: formData.AdditionalInfo,
-        accessibility_url: formData.AccessibilityURL,
-      },
-      data_type: "jersey",
-      type: "events",
-      manual: true,
-    };
-    if (selectedOptionEvent === "option4") {
-      finalObject.acf.customDates = formatDateData;
-      finalObject.acf.eventType = "custom";
-    } else if (selectedOptionEvent === "option3") {
-      finalObject.acf.event_dates_start = formatDate(dateState.startDateMonth);
-      finalObject.acf.event_dates_end = formatDate(dateState.endDateMonth);
-      finalObject.acf.start_time = timeState.startTimeMonth;
-      finalObject.acf.end_time = timeState.endTimeMonth;
-      finalObject.acf.daysOfWeek = MonthDays;
-      finalObject.acf.eventType = "monthly"
-    } else if (selectedOptionEvent === "option2") {
-      finalObject.acf.event_dates_start = formatDate(dateState.startDateWeekly);
-      finalObject.acf.event_dates_end = formatDate(dateState.endDateWeekly);
-      finalObject.acf.start_time = timeState.startTimeWeekly;
-      finalObject.acf.end_time = timeState.endTimeWeekly;
-      finalObject.acf.daysOfWeek = WeekDays;
-      finalObject.acf.eventType = "weekly"
-    } else if (selectedOptionEvent === "option1") {
-      finalObject.acf.event_dates_start = formatDate(dateState.startDateDaily);
-      finalObject.acf.event_dates_end = formatDate(dateState.endDateDaily);
-      finalObject.acf.start_time = timeState.startTimeDaily;
-      finalObject.acf.end_time = timeState.endTimeDaily;
-      finalObject.acf.eventType = "daily"
-    }
-    console.log(finalObject, "finalObject");
-    dispatch(createEvent(finalObject) as any);
 
-    setFormData({
-      DescriptionTitle: "",
-      introDescription: "",
-      moreInformation: "",
-      priceFrom: "",
-      priceTo: "",
-      DisplayName: "",
-      EmailAddress: "",
-      Prefix: "",
-      Telephone: "",
-      Website: "",
-      PlaceName: "",
-      AddressLine: "",
-      AddressLineOptional: "",
-      Postcode: "",
-      Facebook: "",
-      Instagram: "",
-      Twitter: "",
-      AdditionalInfo: "",
-      AccessibilityURL: "",
-    });
-    setSelectedItems({
-      Type: [],
-      Location: [],
-      KeyFacilities: [],
-      Booking: [],
-      WeekDays: [],
-      MonthDays: [],
-      Seasonality: [],
-      BusRoutes: [],
-      Accessibility: [],
-    })
-    setDateState({
-      startDateMonth: "",
-      endDateMonth: "",
-      startDateWeekly: "",
-      endDateWeekly: "",
-      startDateDaily: "",
-      endDateDaily: "",
-    })
-    setDateTimeComponents([
-      {
-        selectedDate: undefined,
-        customStartTime: undefined,
-        customEndTime: undefined,
-      },
-    ])
-    setSelectedCode("")
-    setLocation({
-      latitude: "",
-      longitude: "",
-    })
-    setFile(undefined)
-    setSelectedOption({ label: "", value: "" });
-    setTimeState({
-      startTimeMonth: "",
-      endTimeMonth: "",
-      startTimeWeekly: "",
-      endTimeWeekly: "",
-      startTimeDaily: "",
-      endTimeDaily: "",
-    })
-  };
-
-  const SingleEventData = useSelector(selectSingleEventData);
-
-  const [formData, setFormData] = useState({
-    DescriptionTitle: SingleEventData?.acf?.title || '',
-    introDescription: SingleEventData?.acf?.short_description || '',
-    moreInformation: SingleEventData?.acf?.long_description || '',
-    priceFrom: SingleEventData?.acf?.from_price || '',
-    priceTo: SingleEventData?.acf?.price_to || '',
-    DisplayName: SingleEventData?.acf?.display_name || '',
-    EmailAddress: SingleEventData?.acf?.email_address || '',
-    Prefix: SingleEventData?.acf?.telephone_number?.prefix || '',
-    Telephone: SingleEventData?.acf?.telephone_number?.number || '',
-    Website: SingleEventData?.acf?.website || '',
-    PlaceName: SingleEventData?.acf?.address?.place_name || '',
-    AddressLine: SingleEventData?.acf?.address?.address_line_1 || '',
-    AddressLineOptional: SingleEventData?.acf?.address?.address_line_2 || '',
-    Postcode: SingleEventData?.acf?.address?.postcode || '',
-    Facebook: SingleEventData?.acf?.social_media?.facebook || '',
-    Instagram: SingleEventData?.acf?.social_media?.instagram || '',
-    Twitter: SingleEventData?.acf?.social_media?.twitter || '',
-    AdditionalInfo: SingleEventData?.acf?.accessibility_additional_info || '',
-    AccessibilityURL: SingleEventData?.acf?.accessibility_url || '',
+  const { handleChange, handleSubmit, setFieldValue, handleBlur, resetForm, values, errors, touched } = useFormik({
+    initialValues: initialFormValues,
+    validationSchema: eventsSchema,
+    onSubmit: () => finalEventSubmition(),
   });
 
 
 
 
 
+  // const [formData, setFormData] = useState({
+  //   DescriptionTitle: SingleEventData?.acf?.title || '',
+  //   introDescription: SingleEventData?.acf?.short_description || '',
+  //   moreInformation: SingleEventData?.acf?.long_description || '',
+  //   priceFrom: SingleEventData?.acf?.from_price || '',
+  //   priceTo: SingleEventData?.acf?.price_to || '',
+  //   DisplayName: SingleEventData?.acf?.display_name || '',
+  //   EmailAddress: SingleEventData?.acf?.email_address || '',
+  //   Prefix: SingleEventData?.acf?.telephone_number?.prefix || '',
+  //   Telephone: SingleEventData?.acf?.telephone_number?.number || '',
+  //   Website: SingleEventData?.acf?.website || '',
+  //   PlaceName: SingleEventData?.acf?.address?.place_name || '',
+  //   AddressLine: SingleEventData?.acf?.address?.address_line_1 || '',
+  //   AddressLineOptional: SingleEventData?.acf?.address?.address_line_2 || '',
+  //   Postcode: SingleEventData?.acf?.address?.postcode || '',
+  //   Facebook: SingleEventData?.acf?.social_media?.facebook || '',
+  //   Instagram: SingleEventData?.acf?.social_media?.instagram || '',
+  //   Twitter: SingleEventData?.acf?.social_media?.twitter || '',
+  //   AdditionalInfo: SingleEventData?.acf?.accessibility_additional_info || '',
+  //   AccessibilityURL: SingleEventData?.acf?.accessibility_url || '',
+  // });
   const [selectedOptionEvent, setSelectedOptionEvent] = useState("");
+  const [location, setLocation] = useState<any>({
+    latitude: "",
+    longitude: "",
+  });
+  const [dateState, setDateState] = useState<any>({
+    startDateMonth: "",
+    endDateMonth: "",
+    startDateWeekly: "",
+    endDateWeekly: "",
+    startDateDaily: "",
+    endDateDaily: "",
+  });
+
+  const [timeState, setTimeState] = useState({
+    startTimeMonth: "",
+    endTimeMonth: "",
+    startTimeWeekly: "",
+    endTimeWeekly: "",
+    startTimeDaily: "",
+    endTimeDaily: "",
+  });
+  const [dateTimeComponents, setDateTimeComponents] = useState([
+    {
+      selectedDate: currentDate,
+      customStartTime: currentTime,
+      customEndTime: currentTime,
+    },
+  ]);
+  const [show, setShow] = useState(false);
+  const [selectedOption, setSelectedOption] = useState({
+    label: "",
+    value: "",
+  });
+  const [selectedCode, setSelectedCode] = useState("");
+  const [selectedItems, setSelectedItems] = useState<SelectedItems>({
+    Type: [],
+    Location: [],
+    KeyFacilities: [],
+    Booking: [],
+    WeekDays: [],
+    MonthDays: [],
+    Seasonality: [],
+    BusRoutes: [],
+    Accessibility: [],
+  });
+  const [file, setFile] = useState("");
+
+
+
+
+  useEffect(() => {
+    if (drawerType === "Edit") {
+      console.log("dkddkddkdk", dataById)
+      if (JSON.stringify(dataById)) {
+        setFieldValue("introDescription", dataById?.acf?.short_description);
+        setFieldValue("moreInformation", dataById?.acf?.long_description);
+        setFieldValue("priceFrom", dataById?.acf?.from_price); // not getting key from backend
+        setFieldValue("priceTo", dataById?.acf?.price_to);
+        setFieldValue("DisplayName", dataById?.acf?.display_name); // not getting key from backend
+        setFieldValue("EmailAddress", dataById?.acf?.email_address);
+        setFieldValue("Prefix", dataById?.acf?.telephone_number?.prefix);
+        setFieldValue("Telephone", dataById?.acf?.telephone_number?.number);
+        setFieldValue("Website", dataById?.acf?.website);
+        setFieldValue("PlaceName", dataById?.acf?.address?.place_name);
+        setFieldValue("AddressLine", dataById?.acf?.address?.address_line_1);
+        setFieldValue("AddressLineOptional", dataById?.acf?.address?.address_line_2);
+        setFieldValue("Postcode", dataById?.acf?.address?.postcode);
+        setFieldValue("Facebook", dataById?.acf?.social_media.facebook);
+        setFieldValue("Instagram", dataById?.acf?.social_media.instagram);
+        setFieldValue("Twitter", dataById?.acf?.social_media.twitter);
+        setFieldValue("AdditionalInfo", dataById?.acf?.accessibility_additional_info); // not getting key from backend
+        setFieldValue("AccessibilityURL", dataById?.acf?.accessibility_url); // not getting key from backend
+        setFieldValue("DescriptionTitle", dataById?.acf?.title);
+
+        // const weekDay: any = []
+        // for (const key in dataById?.acf?.opening_hours) {
+        //   if (dataById?.acf?.opening_hours.hasOwnProperty(key)) {
+        //     if (dataById?.acf?.opening_hours[key].is_open == 1) {
+        //       weekDay.push({ value: key })
+        //     }
+        //   }
+        // }
+
+        setSelectedItems({
+          ...selectedItems,
+          Type: dataById?.acf?.type,
+          Location: dataById?.acf?.location,
+          KeyFacilities: dataById?.acf?.key_facilities,
+          Booking: dataById?.acf?.booking_information,
+          Accessibility: dataById?.acf?.accessibility,
+          BusRoutes: dataById?.acf?.bus_routes,
+          Seasonality: dataById?.acf?.seasonality,
+          // WeekDays: weekDay,
+        })
+
+        const setTYpe = dataById?.acf?.type.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("Type", setTYpe)
+        const setLocation = dataById?.acf?.location.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("Location", setLocation)
+        const setKeyFacilities = dataById?.acf?.key_facilities.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("KeyFacilities", setKeyFacilities)
+        const setBusRoutes = dataById?.acf?.bus_routes.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("BusRoutes", setBusRoutes)
+        const setSeasonality = dataById?.acf?.seasonality.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("Seasonality", setSeasonality)
+        setTimeState({ ...dataById?.acf?.opening_hours })
+        setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
+        const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
+        setFile(image[0].url)
+        setFieldValue("file", image[0]?.url)
+        if (dataById?.acf?.eventType === "custom") {
+          setSelectedOptionEvent("option4")
+          const formatDateData = dataById?.acf?.event_dates.map((item: any) => ({
+            selectedDate: formatDate(item.date),
+            customStartTime: item.start_time,
+            customEndTime: item.end_time
+          }))
+          setDateTimeComponents([...formatDateData])
+        } else if (dataById?.acf?.eventType === "monthly") {
+          // setDateState()
+          setSelectedOptionEvent("option3")
+          timeState.startTimeMonth = dataById?.acf?.start_time;
+          timeState.endTimeMonth = dataById?.acf?.end_time;
+          setTimeState({ ...timeState })
+          dateState.startDateMonth = dataById?.acf?.event_dates_start;
+          dateState.endDateMonth = dataById?.acf?.event_dates_end;
+          setDateState({ ...dateState })
+        } else if (dataById?.acf?.eventType === "weekly") {
+          setSelectedOptionEvent("option2")
+          timeState.startTimeWeekly = dataById?.acf?.start_time;
+          timeState.endTimeWeekly = dataById?.acf?.end_time;
+          setTimeState({ ...timeState })
+          dateState.startDateWeekly = dataById?.acf?.event_dates_start;
+          dateState.endDateWeekly = dataById?.acf?.event_dates_end;
+          setDateState({ ...dateState })
+
+        } else if (dataById?.acf?.eventType === "daily") {
+          setSelectedOptionEvent("option1")
+          timeState.startTimeDaily = dataById?.acf?.start_time;
+          timeState.endTimeDaily = dataById?.acf?.end_time;
+          setTimeState({ ...timeState })
+          dateState.startDateDaily = dataById?.acf?.event_dates_start;
+          dateState.endDateDaily = dataById?.acf?.event_dates_end;
+          setDateState({ ...dateState })
+        }
+      }
+    } else {
+      resetForm()
+      setSelectedItems({
+        Type: [],
+        Location: [],
+        KeyFacilities: [],
+        Booking: [],
+        WeekDays: [],
+        MonthDays: [],
+        Seasonality: [],
+        BusRoutes: [],
+        Accessibility: [],
+      });
+      // setTimeState({});
+      setSelectedCode("");
+      setLocation({
+        latitude: "",
+        longitude: "",
+      });
+      setFile("");
+      setSelectedOption({ label: "", value: "" });
+    }
+
+  }, [JSON.stringify(dataById), drawerType])
+
 
   const handleChangeEvent = (event: any) => {
     setSelectedOptionEvent(event.target.value);
   };
 
-  const [location, setLocation] = useState<any>({
-    latitude: "",
-    longitude: "",
-  });
 
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(({ coords }) => {
-  //     const { latitude, longitude } = coords;
-  //     setLocation({ latitude: latitude, longitude: longitude });
-  //   });
-  // }, []);
+
+
   const onchangelocation = (e: any) => {
     const { name, value } = e.target;
     setLocation((prevData: any) => ({
@@ -354,32 +389,17 @@ const EventDataShow = () => {
 
 
 
-  //   const { isOpen, toggle } = useModal();
-
-  const [dateState, setDateState] = useState<any>({
-    startDateMonth: "",
-    endDateMonth: "",
-    startDateWeekly: "",
-    endDateWeekly: "",
-    startDateDaily: "",
-    endDateDaily: "",
-  });
-
   const handleDateChange = (field: any) => (date: any) => {
-    setDateState((prevState:any) => ({
-      ...prevState,
-      [field]: date,
-    }));
+
+    // setDateState((prevState: any) => ({
+    //   ...prevState,
+    //   [field]: checkEndData(date, field),
+    //   // [field]: date,
+    // }));
+    checkEndData(date, field, setDateState, dateState)
+
   };
 
-  const [timeState, setTimeState] = useState({
-    startTimeMonth: "",
-    endTimeMonth: "",
-    startTimeWeekly: "",
-    endTimeWeekly: "",
-    startTimeDaily: "",
-    endTimeDaily: "",
-  });
 
   const handleTimeChange = (field: any) => (date: any) => {
     setTimeState((prevState) => ({
@@ -388,22 +408,16 @@ const EventDataShow = () => {
     }));
   };
 
-  const [dateTimeComponents, setDateTimeComponents] = useState([
-    {
-      selectedDate: undefined,
-      customStartTime: undefined,
-      customEndTime: undefined,
-    },
-  ]);
+
 
 
   const addDateTimeComponent = () => {
     setDateTimeComponents([
       ...dateTimeComponents,
       {
-        selectedDate: undefined,
-        customStartTime: undefined,
-        customEndTime: undefined,
+        selectedDate: currentDate,
+        customStartTime: currentTime,
+        customEndTime: currentTime,
       },
     ]);
   };
@@ -431,25 +445,15 @@ const EventDataShow = () => {
     setDateTimeComponents(newComponents);
   };
 
-  const handleTextFieldChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
 
-  const [show, setShow] = useState(false);
+
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
 
 
-  const [selectedOption, setSelectedOption] = useState({
-    label: "",
-    value: "",
-  });
+
 
   const handleChangeRadio = (event: any) => {
     const selectedItem = ParishData.find(
@@ -459,11 +463,10 @@ const EventDataShow = () => {
     setSelectedOption({ label: selectedLabel, value: event.target.value });
   };
 
-  
 
 
-  
-  const [selectedCode, setSelectedCode] = useState("");
+
+
 
   const handleChangeCode = (event: any) => {
     setSelectedCode(event.target.value);
@@ -473,60 +476,10 @@ const EventDataShow = () => {
 
 
 
-  // const [selectedOpt, setSelectedOpt] = useState<{
-  //   label: string;
-  //   value: string;
-  // } | null>(null);
 
-  // const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const selectedValue = event.target.value;
-  //   const selected = ParishData.find(
-  //     (option) => option.value === selectedValue
-  //   );
-  //   setSelectedOpt(selected || null);
-  // };
 
-  // const [selectedValue, setSelectedValue] = useState('');
 
-  // const handleChangeRadio = (event:any) => {
-  //   setSelectedValue(event.target.value);
-  // };
-
-  const [selectedItems, setSelectedItems] = useState<SelectedItems>({
-    Type: [],
-    Location: [],
-    KeyFacilities: [],
-    Booking: [],
-    WeekDays: [],
-    MonthDays: [],
-    Seasonality: [],
-    BusRoutes: [],
-    Accessibility: [],
-  });
-
-  const [DatesDays, setDateDays] = useState<{
-    WeekDays: string[];
-    MonthDays: string[];
-  }>({
-    WeekDays: [],
-    MonthDays: [],
-  });
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = e.target;
-
-    setDateDays((prevState) => {
-      const key = name as keyof typeof prevState;
-      const newDays = checked
-        ? [...prevState[key], value]
-        : prevState[key].filter((day) => day !== value);
-
-      return {
-        ...prevState,
-        [key]: newDays,
-      };
-    });
-  };
+ 
 
 
 
@@ -534,7 +487,7 @@ const EventDataShow = () => {
     category: Category,
     value: string,
     checked: boolean,
-    label?:any
+    label?: any
   ) => {
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
@@ -549,46 +502,78 @@ const EventDataShow = () => {
         [category]: updatedCategory,
       };
     });
+
+
+    if (category === "Type") {
+      if (checked) {
+        setFieldValue(category, [
+          ...values.Type,
+          { value, title: label },
+        ]);
+      } else {
+        setFieldValue(
+          category,
+          values.Type.filter((item: any) => item.value !== value)
+        );
+      }
+
+    }
+    else if (category === "Location") {
+      if (checked) {
+        setFieldValue(category, [
+          ...values.Location,
+          { value, title: label },
+        ]);
+      } else {
+        setFieldValue(
+          category,
+          values.Location.filter((item: any) => item.value !== value)
+        );
+      }
+    } else if (category === "KeyFacilities") {
+      if (checked) {
+        setFieldValue(category, [
+          ...values.KeyFacilities,
+          { value, title: label },
+        ]);
+      } else {
+        setFieldValue(
+          category,
+          values.KeyFacilities.filter((item: any) => item.value !== value)
+        );
+      }
+    } else if (category === "Seasonality") {
+      if (checked) {
+        setFieldValue(category, [
+          ...values.Seasonality,
+          { value, title: label },
+        ]);
+      } else {
+        setFieldValue(
+          category,
+          values.Seasonality.filter((item: any) => item.value !== value)
+        );
+      }
+    } else if (category === "BusRoutes") {
+      if (checked) {
+        setFieldValue(category, [
+          ...values.BusRoutes,
+          { value, title: label },
+        ]);
+      } else {
+        setFieldValue(
+          category,
+          values.BusRoutes.filter((item: any) => item.value !== value)
+        );
+      }
+    }
+
   };
 
-  //   const [loader, setLoader] = useState(false);
-  //   const [selectedImage, setSelectedImage] = useState(null);
 
-  //   const handleImageUpload = async (event:any) => {
-  //     const file = event.target.files?.[0];
-  //     const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
-  //     if (file) {
-  //       try {
-  //         setLoader(true);
-  //         const formData = new FormData();
-  //         formData.append("image", file);
-  //         const res = await axios.post(url, formData);
-  //         if (res.status === 200) {
-  //           const imageArray = [
-  //             {
-  //               alt_text: "",
-  //               original_filename: file.name,
-  //               public_id: "",
-  //               url: res?.data,
-  //             },
-  //           ];
-  //           // Assume `setFieldValue` is a prop or available in your context
-  //           setFieldValue("header_image_data", JSON.stringify(imageArray));
-  //           const reader = new FileReader();
-  //           reader.onloadend = () => {
-  //             setSelectedImage(reader.result);
-  //           };
-  //           reader.readAsDataURL(file);
-  //         }
-  //         setLoader(false);
-  //       } catch (error) {
-  //         setLoader(false);
-  //       }
-  //     }
-  //   };
 
-  const [file, setFile] = useState();
-  async function handleChange(e: any) {
+
+  async function handleFileChange(e: any) {
 
     const file = e.target.files?.[0];
     const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
@@ -598,54 +583,218 @@ const EventDataShow = () => {
       const res = await axios.post(url, formData);
 
       setFile(res?.data);
+      setFieldValue("file", res?.data)
       //  setFile(URL.createObjectURL(e.target.files[0]) as any);    
     }
   }
 
-useEffect(()=>{
-  if(file){
-    handleClose()
-  }
-},[file])
+  useEffect(() => {
+    if (file) {
+      handleClose()
+    }
+  }, [file])
 
-function parseTitle(title: string) {
-  const [mainTitle, italicPart] = title.split('<br>');
-  const italicText = italicPart?.match(/<i>(.*?)<\/i>/)?.[1];
-  return {
+  function parseTitle(title: string) {
+    const [mainTitle, italicPart] = title.split('<br>');
+    const italicText = italicPart?.match(/<i>(.*?)<\/i>/)?.[1];
+    return {
       mainTitle,
       italicText
+    };
+  }
+
+
+
+
+  const submitFormikFunction = (e: any) => {
+    e.preventDefault()
+    handleSubmit()
   };
-}
 
 
-  // try {
-  //   setLoder(true);
-  //   const formData = new FormData();
-  //   formData.append("image", file);
 
-  //   if (res.status == 200) {
-  //     const imageArray = [
-  //       {
-  //         alt_text: "",
-  //         original_filename: file.name,
-  //         public_id: "",
-  //         url: res?.data,
-  //       },
-  //     ];
-  //     setFieldValue("header_image_data", JSON.stringify(imageArray));
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setSelectedImage(reader.result);
-  //     };
-  //     reader.readAsDataURL(file);
-  //     setLoder(false);
-  //   } else {
-  //     setLoder(false);
-  //   }
-  // } catch (error) {
-  //   setLoder(false);
-  // }
-  // const MonthDays = selectedItems.MonthDays.map(day => day.value);
+  useEffect(() => {
+    if (isDateValid !== null && selectedOptionEvent) {
+      const MonthDays = selectedItems.MonthDays?.map(day => day.value);
+      const WeekDays = selectedItems.WeekDays?.map(day => day.value);
+
+      const formatDateData = dateTimeComponents.map((item: any) => ({
+        date: formatDate(item.selectedDate),
+        start_time: item.customStartTime,
+        end_time: item.customEndTime
+      }))
+      if (selectedOptionEvent === "option4") {
+        eventDateValidation(selectedOptionEvent, formatDateData, setIsDateValid)
+      } else if (selectedOptionEvent === "option3") {
+        eventDateValidation(selectedOptionEvent, MonthDays, setIsDateValid, dateState, timeState,)
+      } else if (selectedOptionEvent === "option2") {
+        eventDateValidation(selectedOptionEvent, WeekDays, setIsDateValid, dateState, timeState)
+      } else if (selectedOptionEvent === "option1") {
+        eventDateValidation(selectedOptionEvent, dateState, setIsDateValid, timeState)
+      }
+    }
+
+  }, [selectedOptionEvent,
+    selectedItems.MonthDays.length,
+    selectedItems.WeekDays.length,
+    dateState.startDateDaily,
+    dateState.startDateMonth,
+    dateState.startDateWeekly,
+    dateState.endDateDaily,
+    dateState.endDateMonth,
+    dateState.endDateWeekly,
+    timeState.startTimeDaily,
+    timeState.startTimeWeekly,
+    timeState.startTimeMonth,
+    timeState.endTimeDaily,
+    timeState.endTimeWeekly,
+    timeState.endTimeMonth,
+    isDateValid
+  ])
+
+
+
+  const finalEventSubmition = () => {
+    
+    const MonthDays = selectedItems.MonthDays?.map(day => day.value);
+    const WeekDays = selectedItems.WeekDays?.map(day => day.value);
+
+    const formatDateData = dateTimeComponents.map((item: any) => ({
+      date: formatDate(item.selectedDate),
+      start_time: item.customStartTime,
+      end_time: item.customEndTime
+    }))
+
+    const finalObject: FinalObject = {
+      acf: {
+        title: values.DescriptionTitle,
+        short_description: values.introDescription,
+        long_description: values.moreInformation,
+        type: selectedItems.Type,
+        location: selectedItems.Location,
+        key_facilities: selectedItems.KeyFacilities,
+        url: file,
+        from_price: values.priceFrom,
+        price_to: values.priceTo,
+        booking_information: selectedItems.Booking,
+        display_name: values.DisplayName,
+        email_address: values.EmailAddress,
+        map_location: { lat: +location.latitude, lng: +location.longitude },
+        telephone_number: {
+          area_code: selectedCode,
+          prefix: values.Prefix,
+          number: values.Telephone,
+        },
+        website: values.Website,
+        address: {
+          place_name: values.PlaceName,
+          address_line_1: values.AddressLine,
+          address_line_2: values.AddressLineOptional,
+          postcode: values.Postcode,
+        },
+        parish: selectedOption,
+        seasonality: selectedItems.Seasonality,
+        bus_routes: selectedItems.BusRoutes,
+        social_media: {
+          facebook: values.Facebook,
+          instagram: values.Instagram,
+          twitter: values.Twitter,
+        },
+        accessibility: selectedItems.Accessibility,
+        accessibility_additional_info: values.AdditionalInfo,
+        accessibility_url: values.AccessibilityURL,
+      },
+      data_type: "jersey",
+      type: "events",
+      manual: true,
+    };
+    if (selectedOptionEvent === "option4") {
+      finalObject.acf.customDates = formatDateData;
+      finalObject.acf.eventType = "custom";
+      eventDateValidation(selectedOptionEvent, formatDateData, setIsDateValid)
+    } else if (selectedOptionEvent === "option3") {
+      finalObject.acf.event_dates_start = formatDate(dateState.startDateMonth);
+      finalObject.acf.event_dates_end = formatDate(dateState.endDateMonth);
+      finalObject.acf.start_time = timeState.startTimeMonth;
+      finalObject.acf.end_time = timeState.endTimeMonth;
+      finalObject.acf.daysOfWeek = MonthDays;
+      finalObject.acf.eventType = "monthly"
+      eventDateValidation(selectedOptionEvent, MonthDays, setIsDateValid, dateState, timeState,)
+    } else if (selectedOptionEvent === "option2") {
+      finalObject.acf.event_dates_start = formatDate(dateState.startDateWeekly);
+      finalObject.acf.event_dates_end = formatDate(dateState.endDateWeekly);
+      finalObject.acf.start_time = timeState.startTimeWeekly;
+      finalObject.acf.end_time = timeState.endTimeWeekly;
+      finalObject.acf.daysOfWeek = WeekDays;
+      finalObject.acf.eventType = "weekly"
+      eventDateValidation(selectedOptionEvent, WeekDays, setIsDateValid, dateState, timeState)
+    } else if (selectedOptionEvent === "option1") {
+      finalObject.acf.event_dates_start = formatDate(dateState.startDateDaily);
+      finalObject.acf.event_dates_end = formatDate(dateState.endDateDaily);
+      finalObject.acf.start_time = timeState.startTimeDaily;
+      finalObject.acf.end_time = timeState.endTimeDaily;
+      finalObject.acf.eventType = "daily"
+      eventDateValidation(selectedOptionEvent, dateState, setIsDateValid, timeState)
+    }
+    // console.log(finalObject, "finalObject");
+    if (isDateValid === null) {
+      setIsDateValid(true)
+    }
+
+    
+    // return
+    if (drawerType === "Edit") {
+      const status = { id: dataById?._id, finalObject }
+      dispatch(updateEvent(status) as any)
+    } else {
+      dispatch(createEvent(finalObject) as any);
+
+    }
+    resetForm();
+    setSelectedItems({
+      Type: [],
+      Location: [],
+      KeyFacilities: [],
+      Booking: [],
+      WeekDays: [],
+      MonthDays: [],
+      Seasonality: [],
+      BusRoutes: [],
+      Accessibility: [],
+    })
+    setDateState({
+      startDateMonth: "",
+      endDateMonth: "",
+      startDateWeekly: "",
+      endDateWeekly: "",
+      startDateDaily: "",
+      endDateDaily: "",
+    })
+    setDateTimeComponents([
+      {
+        selectedDate: currentDate,
+        customStartTime: currentTime,
+        customEndTime: currentTime,
+      },
+    ])
+    setSelectedCode("")
+    setLocation({
+      latitude: "",
+      longitude: "",
+    })
+    setFile("")
+    setSelectedOption({ label: "", value: "" });
+    setTimeState({
+      startTimeMonth: "",
+      endTimeMonth: "",
+      startTimeWeekly: "",
+      endTimeWeekly: "",
+      startTimeDaily: "",
+      endTimeDaily: "",
+    })
+  }
+
+
 
   return (
     <div>
@@ -655,28 +804,63 @@ function parseTitle(title: string) {
           <>
             <div>
               <ReusableInput
-                title="Title*"
-                DescriptionTitle={formData.DescriptionTitle}
-                handleDescriptionTitle={handleTextFieldChange}
+                title="Title *"
                 name="DescriptionTitle"
+                showCouter={true}
+                DescriptionTitle={values.DescriptionTitle}
+                handleDescriptionTitle={handleChange}
+                error={errors.DescriptionTitle}
+                touch={touched.DescriptionTitle && errors.DescriptionTitle}
+                {...{ handleBlur }}
+
               />
               <TextField
                 title="Introductory Description *"
                 description="This will be used for the What’s On printed guide. It will also be used on the website where a short, preview piece of copy may be required to introduce your listing."
                 maxLength="350"
-                value={formData.introDescription}
                 name="introDescription"
-                onchange={handleTextFieldChange}
+                value={values.introDescription}
+                onchange={handleChange}
+                handleBlur={handleBlur}
+                error={errors.introDescription}
+                touch={touched.introDescription && errors.introDescription}
               />
               <TextField
                 title="More Information *"
                 description="This is the main piece of copy within the body of your listing."
                 maxLength="750"
-                value={formData.moreInformation}
                 name="moreInformation"
-                onchange={handleTextFieldChange}
+                value={values.moreInformation}
+                handleBlur={handleBlur}
+                onchange={handleChange}
+                error={errors.moreInformation}
+                touch={touched.moreInformation && errors.moreInformation}
               />
               <div style={{ marginTop: 20 }}>
+                <TitleText>Type *</TitleText>
+                <div className="checkboxContainer">
+                  {typesData.map((item, index) => {
+                    return (
+                      <div style={{ marginBottom: 10 }} key={index}>
+                        <Checkbox
+                          title={item.title}
+                          value={item.value}
+                          isChecked={values.Type.some(
+                            (items: any) => items.value === item.value
+                          )}
+                          onCheckboxChange={(value, checked) =>
+                            handleCheckboxChange2("Type", value, checked, item.title)
+                          }
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                {errors.Type && touched.Type ? (
+                  <div style={{ color: 'red' }}>{errors.Type}</div>
+                ) : null}
+              </div>
+              {/* <div style={{ marginTop: 20 }}>
                 <TitleText>Type *</TitleText>
                 <div className="checkboxContainer">
                   {typesData.map((item, index) => {
@@ -689,17 +873,38 @@ function parseTitle(title: string) {
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("Type", value, checked,item.title)
+                            handleCheckboxChange2("Type", value, checked, item.title)
                           }
                         />
                       </div>
                     );
                   })}
                 </div>
-              </div>
+              </div> */}
               <div style={{ marginTop: 20 }}>
                 <TitleText>Location *</TitleText>
                 <div className="checkboxContainer">
+                  {locationData.map((item, index) => {
+                    return (
+                      <div style={{ marginBottom: 10 }} key={index}>
+                        <Checkbox
+                          title={item.title}
+                          value={item.value}
+                          isChecked={values.Location.some(
+                            (items: any) => items.value === item.value
+                          )}
+                          onCheckboxChange={(value, checked) =>
+                            handleCheckboxChange2("Location", value, checked, item.title)
+                          }
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                {errors.Location && touched.Location ? (
+                  <div style={{ color: 'red' }}>{errors.Location}</div>
+                ) : null}
+                {/* <div className="checkboxContainer">
                   {locationData.map((item, index) => {
                     return (
                       <div style={{ marginBottom: 10 }} key={index}>
@@ -710,13 +915,13 @@ function parseTitle(title: string) {
                             (items) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("Location", value, checked,item.title)
+                            handleCheckboxChange2("Location", value, checked, item.title)
                           }
                         />
                       </div>
                     );
                   })}
-                </div>
+                </div> */}
               </div>
               <div style={{ marginTop: 20, marginBottom: 20 }}>
                 <TitleText>Key facilities *</TitleText>
@@ -727,8 +932,8 @@ function parseTitle(title: string) {
                         <Checkbox
                           title={item.title}
                           value={item.value}
-                          isChecked={selectedItems.KeyFacilities.some(
-                            (items) => items.value === item.value
+                          isChecked={values.KeyFacilities.some(
+                            (items: any) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
                             handleCheckboxChange2(
@@ -743,6 +948,9 @@ function parseTitle(title: string) {
                     );
                   })}
                 </div>
+                {errors.KeyFacilities && touched.KeyFacilities ? (
+                  <div style={{ color: 'red' }}>{errors.KeyFacilities}</div>
+                ) : null}
               </div>
               <div>
                 <TitleText>
@@ -785,6 +993,9 @@ function parseTitle(title: string) {
                   selectedOption={selectedOptionEvent}
                 />
               </div>
+              {isDateValid ? (
+                <div style={{ color: 'red' }}>Please select event date</div>
+              ) : null}
               <div>
                 <TitleText style={{ margin: "20px 0px" }}>
                   Price from / to
@@ -808,11 +1019,16 @@ function parseTitle(title: string) {
                     <input
                       type="number"
                       className="custom-inputPrice"
-                      value={formData.priceFrom}
-                      onChange={handleTextFieldChange}
+                      value={values.priceFrom}
+                      // onChange={handleTextFieldChange}
                       name="priceFrom"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
                     />
                   </div>
+                  {(touched.priceFrom && errors.priceFrom) ? (
+                    <div style={{ color: 'red' }}>{errors.priceFrom}</div>
+                  ) : null}
                 </div>
                 <div>
                   <TitleText>Price to</TitleText>
@@ -827,11 +1043,15 @@ function parseTitle(title: string) {
                     <input
                       type="number"
                       className="custom-inputPrice"
-                      value={formData.priceTo}
-                      onChange={handleTextFieldChange}
                       name="priceTo"
+                      value={values.priceTo}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
                     />
                   </div>
+                  {(touched.priceTo && errors.priceTo) ? (
+                    <div style={{ color: 'red' }}>{errors.priceTo}</div>
+                  ) : null}
                 </div>
               </InputContainer>
               <TitleText style={{ margin: "20px 0px" }}>
@@ -854,7 +1074,7 @@ function parseTitle(title: string) {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Booking", value, checked,item.title)
+                          handleCheckboxChange2("Booking", value, checked, item.title)
                         }
                       />
                     </div>
@@ -873,18 +1093,24 @@ function parseTitle(title: string) {
             <div>
               <ReusableInput
                 title="Display name*"
-                showCouter={false}
-                DescriptionTitle={formData.DisplayName}
-                handleDescriptionTitle={handleTextFieldChange}
                 name="DisplayName"
+                showCouter={false}
+                DescriptionTitle={values.DisplayName}
+                handleDescriptionTitle={handleChange}
+                error={errors.DisplayName}
+                touch={touched.DisplayName && errors.DisplayName}
+                {...{ handleBlur }}
               />
               <div style={{ margin: "20px 0px" }}>
                 <ReusableInput
                   title="Email address *"
-                  showCouter={false}
-                  DescriptionTitle={formData.EmailAddress}
-                  handleDescriptionTitle={handleTextFieldChange}
                   name="EmailAddress"
+                  showCouter={false}
+                  DescriptionTitle={values.EmailAddress}
+                  handleDescriptionTitle={handleChange}
+                  handleBlur={handleBlur}
+                  error={errors.EmailAddress}
+                  touch={touched.EmailAddress && errors.EmailAddress}
                 />
               </div>
               <TitleText>Telephone number</TitleText>
@@ -913,9 +1139,9 @@ function parseTitle(title: string) {
                   <div className="input-wrapper">
                     <input
                       type="number"
-                      value={formData.Prefix}
+                      value={values.Prefix}
                       name="Prefix"
-                      onChange={handleTextFieldChange}
+                      onChange={handleChange}
                       className="parentheses-input"
                     />
                   </div>
@@ -926,9 +1152,9 @@ function parseTitle(title: string) {
                     type="text"
                     className="custom-inputInfo"
                     placeholder="153400000"
-                    value={formData.Telephone}
+                    value={values.Telephone}
                     name="Telephone"
-                    onChange={handleTextFieldChange}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -938,9 +1164,12 @@ function parseTitle(title: string) {
                 https://jersey.test.
               </TitleTextMain>
               <InputBoxWithImage
-                value={formData.Website}
+                value={values.Website}
                 name="Website"
-                onchange={handleTextFieldChange}
+                onchange={handleChange}
+                handleBlur={handleBlur}
+                error={errors.Website}
+                touch={touched.Website && errors.Website}
               />
               <TitleText style={{ marginTop: 20 }}>Address</TitleText>
               <div
@@ -957,9 +1186,10 @@ function parseTitle(title: string) {
                   type="text"
                   className="custom-inputInfo"
                   placeholder="Place name"
-                  value={formData.PlaceName}
                   name="PlaceName"
-                  onChange={handleTextFieldChange}
+                  value={values.PlaceName}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                 />
               </div>
               <div
@@ -975,9 +1205,10 @@ function parseTitle(title: string) {
                   type="text"
                   className="custom-inputInfo"
                   placeholder="Address line 1"
-                  value={formData.AddressLine}
                   name="AddressLine"
-                  onChange={handleTextFieldChange}
+                  value={values.AddressLine}
+                  // onBlur={handleBlur}
+                  onChange={handleChange}
                 />
               </div>
               <div
@@ -993,9 +1224,9 @@ function parseTitle(title: string) {
                   type="text"
                   className="custom-inputInfo"
                   placeholder="Address line 2"
-                  value={formData.AddressLineOptional}
                   name="AddressLineOptional"
-                  onChange={handleTextFieldChange}
+                  value={values.AddressLineOptional}
+                  onChange={handleChange}
                 />
               </div>
               <div
@@ -1010,10 +1241,11 @@ function parseTitle(title: string) {
                 <input
                   type="text"
                   className="custom-inputInfo"
-                  placeholder="Postcode"
-                  value={formData.Postcode}
                   name="Postcode"
-                  onChange={handleTextFieldChange}
+                  placeholder="Postcode"
+                  value={values.Postcode}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                 />
               </div>
               <TitleText>Parish</TitleText>
@@ -1082,17 +1314,20 @@ function parseTitle(title: string) {
                       <Checkbox
                         title={item.title}
                         value={item.value}
-                        isChecked={selectedItems.Seasonality.some(
-                          (items) => items.value === item.value
+                        isChecked={values.Seasonality.some(
+                          (items: any) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Seasonality", value, checked,item.title)
+                          handleCheckboxChange2("Seasonality", value, checked, item.title)
                         }
                       />
                     </div>
                   );
                 })}
               </div>
+              {errors.Seasonality && touched.Seasonality ? (
+                <div style={{ color: 'red' }}>{errors.Seasonality}</div>
+              ) : null}
               <TitleText style={{ marginTop: 20 }}>Bus routes *</TitleText>
               <div
                 style={{
@@ -1109,11 +1344,11 @@ function parseTitle(title: string) {
                         <Checkbox
                           title={mainTitle}
                           value={item.value}
-                          isChecked={selectedItems.BusRoutes.some(
-                            (items) => items.value === item.value
+                          isChecked={values.BusRoutes.some(
+                            (items: any) => items.value === item.value
                           )}
                           onCheckboxChange={(value, checked) =>
-                            handleCheckboxChange2("BusRoutes", value, checked,item.title)
+                            handleCheckboxChange2("BusRoutes", value, checked, item.title)
                           }
                         />
                       )}
@@ -1123,6 +1358,9 @@ function parseTitle(title: string) {
                   );
                 })}
               </div>
+              {errors.BusRoutes && touched.BusRoutes ? (
+                <div style={{ color: 'red' }}>{errors.BusRoutes}</div>
+              ) : null}
               <TitleText style={{ marginTop: 20 }}>Social media</TitleText>
               <TitleTextMain style={{ marginTop: 20 }}>
                 Please provide the full URL for your social media platforms. For
@@ -1138,9 +1376,12 @@ function parseTitle(title: string) {
               >
                 <AddressInfo>Facebook</AddressInfo>
                 <InputBoxWithImage
-                  value={formData.Facebook}
+                  value={values.Facebook}
                   name="Facebook"
-                  onchange={handleTextFieldChange}
+                  onchange={handleChange}
+                  handleBlur={handleBlur}
+                  error={errors.Facebook}
+                  touch={touched.Facebook && errors.Facebook}
                 />
               </div>
               <div
@@ -1153,9 +1394,12 @@ function parseTitle(title: string) {
               >
                 <AddressInfo>Instagram</AddressInfo>
                 <InputBoxWithImage
-                  value={formData.Instagram}
+                  value={values.Instagram}
                   name="Instagram"
-                  onchange={handleTextFieldChange}
+                  onchange={handleChange}
+                  handleBlur={handleBlur}
+                  error={errors.Instagram}
+                  touch={touched.Instagram && errors.Instagram}
                 />
               </div>
               <div
@@ -1168,9 +1412,12 @@ function parseTitle(title: string) {
               >
                 <AddressInfo>Twitter</AddressInfo>
                 <InputBoxWithImage
-                  value={formData.Twitter}
+                  value={values.Twitter}
                   name="Twitter"
-                  onchange={handleTextFieldChange}
+                  onchange={handleChange}
+                  handleBlur={handleBlur}
+                  error={errors.Twitter}
+                  touch={touched.Twitter && errors.Twitter}
                 />
               </div>
               {/* <TitleText>Tripadvisor</TitleText>
@@ -1231,7 +1478,7 @@ function parseTitle(title: string) {
                           (items) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
-                          handleCheckboxChange2("Accessibility", value, checked,item.title)
+                          handleCheckboxChange2("Accessibility", value, checked, item.title)
                         }
                       />
                     </div>
@@ -1242,9 +1489,9 @@ function parseTitle(title: string) {
                 title="Additional information"
                 description="Explain a little more about the accessibility of your business and encourage users to contact you directly for further assistance."
                 letterValueShow={false}
-                value={formData.AdditionalInfo}
+                value={values.AdditionalInfo}
                 name="AdditionalInfo"
-                onchange={handleTextFieldChange}
+                onchange={handleChange}
               />
               <p
                 style={{
@@ -1266,9 +1513,12 @@ function parseTitle(title: string) {
                 website, include a link here.
               </p>
               <InputBoxWithImage
-                value={formData.AccessibilityURL}
+                value={values.AccessibilityURL}
                 name="AccessibilityURL"
-                onchange={handleTextFieldChange}
+                onchange={handleChange}
+                handleBlur={handleBlur}
+                error={errors.AccessibilityURL}
+                touch={touched.AccessibilityURL && errors.AccessibilityURL}
               />
             </div>
           </>
@@ -1346,6 +1596,9 @@ function parseTitle(title: string) {
                   </MaximumImageValue>
                 </div>
               </div>
+              {errors.file && touched.file ? (
+                <div style={{ color: 'red' }}>{errors.file}</div>
+              ) : null}
             </div>
             <Modal
               show={show}
@@ -1380,7 +1633,10 @@ function parseTitle(title: string) {
                     <input
                       type="file"
                       id="imageget"
-                      onChange={handleChange}
+                      name="file"
+                      onChange={handleFileChange}
+                      onBlur={handleBlur}
+                      accept="image/png, image/jpeg"
                       hidden
                     />
                     <ButtonImage htmlFor="imageget">Select Files</ButtonImage>
@@ -1403,7 +1659,12 @@ function parseTitle(title: string) {
           </>
         }
       />
-          <ButtonSubmit onClick={submitFormikFunction}>Submit</ButtonSubmit>
+      {
+        isLoading ?
+          <ButtonSubmit type="button" >Loading...</ButtonSubmit> :
+          <ButtonSubmit type="button" onClick={submitFormikFunction}>Submit</ButtonSubmit>
+
+      }
     </div>
   );
 };

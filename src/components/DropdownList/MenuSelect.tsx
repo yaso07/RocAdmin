@@ -45,6 +45,7 @@ const MenuField: FC<InputProps> = ({
   // const handleChange = (event: any) => {
   //   setSelectedOption(event.target.value);
   // };
+  const today = new Date();
 
   const renderContent = () => {
     switch (selectedOption) {
@@ -73,6 +74,7 @@ const MenuField: FC<InputProps> = ({
               <div>
                 <TitleText>Start Date</TitleText>
                 <DatePicker
+                  today={today}
                   value={dateState.startDateDaily}
                   onchange={(date: any) => setDateState("startDateDaily")(date)}
                 />
@@ -80,6 +82,7 @@ const MenuField: FC<InputProps> = ({
               <div>
                 <TitleText>End Date</TitleText>
                 <DatePicker
+                  today={dateState?.startDateDaily ? dateState?.startDateDaily : today}
                   value={dateState.endDateDaily}
                   onchange={(date: any) => setDateState("endDateDaily")(date)}
                 />
@@ -103,7 +106,7 @@ const MenuField: FC<InputProps> = ({
                         (items: any) => items.value === item.value
                       )}
                       onCheckboxChange={(value, checked) =>
-                        handleCheckboxChange("WeekDays", value, checked,item.title)
+                        handleCheckboxChange("WeekDays", value, checked, item.title)
                       }
                     />
                   </div>
@@ -134,6 +137,7 @@ const MenuField: FC<InputProps> = ({
               <div>
                 <TitleText>Start Date</TitleText>
                 <DatePicker
+                  today={today}
                   value={dateState.startDateWeekly}
                   onchange={(date: any) =>
                     setDateState("startDateWeekly")(date)
@@ -143,6 +147,7 @@ const MenuField: FC<InputProps> = ({
               <div>
                 <TitleText>End Date</TitleText>
                 <DatePicker
+                  today={dateState?.startDateWeekly ? dateState?.startDateWeekly : today}
                   value={dateState.endDateWeekly}
                   onchange={(date: any) => setDateState("endDateWeekly")(date)}
                 />
@@ -156,7 +161,7 @@ const MenuField: FC<InputProps> = ({
           <div>
             <TitleText>On which days the week:</TitleText>
             <div>
-            {WeeklyDaysData.map((item: any, index: any) => {
+              {WeeklyDaysData.map((item: any, index: any) => {
                 return (
                   <div style={{ marginBottom: 10 }} key={index}>
                     <Checkbox
@@ -166,7 +171,7 @@ const MenuField: FC<InputProps> = ({
                         (items: any) => items.value === item.value
                       )}
                       onCheckboxChange={(value, checked) =>
-                        handleCheckboxChange("MonthDays", value, checked,item.title)
+                        handleCheckboxChange("MonthDays", value, checked, item.title)
                       }
                     />
                   </div>
@@ -195,6 +200,7 @@ const MenuField: FC<InputProps> = ({
               <div>
                 <TitleText>Start Date</TitleText>
                 <DatePicker
+                  today={today}
                   value={dateState.startDateMonth}
                   onchange={(date: any) => setDateState("startDateMonth")(date)}
                 />
@@ -202,6 +208,7 @@ const MenuField: FC<InputProps> = ({
               <div>
                 <TitleText>End Date</TitleText>
                 <DatePicker
+                  today={dateState?.startDateMonth ? dateState?.startDateMonth : today}
                   value={dateState.endDateMonth}
                   onchange={(date: any) => setDateState("endDateMonth")(date)}
                 />
@@ -218,6 +225,7 @@ const MenuField: FC<InputProps> = ({
               {dateTimeComponents.map((component: any, index: any) => (
                 <CustomContainer key={index}>
                   <DatePicker
+                    today={today}
                     value={component.selectedDate}
                     onchange={(date: any) => setSelectedDate(index, date)}
                   />
@@ -231,7 +239,7 @@ const MenuField: FC<InputProps> = ({
                       value={component.customEndTime}
                       onChange={(time) => setCustomEndTime(index, time)}
                     />
-                    <button onClick={()=>removeDateTimeComponent(index)}>(X)</button>
+                    <button onClick={() => removeDateTimeComponent(index)}>(X)</button>
                   </CustomTimeWraaper>
                 </CustomContainer>
               ))}
