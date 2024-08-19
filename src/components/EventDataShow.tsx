@@ -134,7 +134,7 @@ const EventDataShow = ({ drawerType }: Props) => {
     EmailAddress: "",
     Prefix: "",
     Telephone: "",
-    areaCode:"+1",
+    areaCode: "+1",
     Website: "",
     PlaceName: "",
     AddressLine: "",
@@ -147,11 +147,15 @@ const EventDataShow = ({ drawerType }: Props) => {
     AccessibilityURL: "",
     file: "",
     Type: [],
-    // subTypeActivity: [],
     Location: [],
     KeyFacilities: [],
     Seasonality: [],
     BusRoutes: [],
+    Booking: [],
+    Accessibility: [],
+    Parish: "",
+    latitude: "",
+    longitude: "",
   }
 
 
@@ -198,7 +202,6 @@ const EventDataShow = ({ drawerType }: Props) => {
     label: "",
     value: "",
   });
-  const [selectedCode, setSelectedCode] = useState("");
   const [selectedItems, setSelectedItems] = useState<SelectedItems>({
     Type: [],
     Location: [],
@@ -250,8 +253,8 @@ const EventDataShow = ({ drawerType }: Props) => {
           Seasonality: dataById?.acf?.seasonality,
         })
         location.latitude = dataById?.acf?.map_location?.lat,
-        location.longitude = dataById?.acf?.map_location?.lng
-        setLocation({...location})
+          location.longitude = dataById?.acf?.map_location?.lng
+        setLocation({ ...location })
         const setTYpe = dataById?.acf?.type.map((item: any) => ({
           title: item.label,
           value: item.value,
@@ -267,6 +270,16 @@ const EventDataShow = ({ drawerType }: Props) => {
           value: item.value,
         }));
         setFieldValue("KeyFacilities", setKeyFacilities)
+        const setBookings = dataById?.acf?.booking_information.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("Booking", setBookings)
+        const setAccessibilitys = dataById?.acf?.accessibility.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("Accessibility", setAccessibilitys)
         const setBusRoutes = dataById?.acf?.bus_routes.map((item: any) => ({
           title: item.label,
           value: item.value,
@@ -279,6 +292,7 @@ const EventDataShow = ({ drawerType }: Props) => {
         setFieldValue("Seasonality", setSeasonality)
         setTimeState({ ...dataById?.acf?.opening_hours })
         setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
+        setFieldValue("Parish", dataById?.acf?.parish?.value)
         const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
         setFile(image[0].url)
         setFieldValue("file", image[0]?.url)
@@ -299,6 +313,12 @@ const EventDataShow = ({ drawerType }: Props) => {
           dateState.startDateMonth = dataById?.acf?.event_dates_start;
           dateState.endDateMonth = dataById?.acf?.event_dates_end;
           setDateState({ ...dateState })
+          dataById?.acf?.daysOfWeek.map((val: string) =>{
+            selectedItems?.MonthDays.push({label: val, value: val})
+            setSelectedItems({
+              ...selectedItems 
+            })
+          })
         } else if (dataById?.acf?.eventType === "weekly") {
           setSelectedOptionEvent("option2")
           timeState.startTimeWeekly = dataById?.acf?.start_time;
@@ -307,6 +327,13 @@ const EventDataShow = ({ drawerType }: Props) => {
           dateState.startDateWeekly = dataById?.acf?.event_dates_start;
           dateState.endDateWeekly = dataById?.acf?.event_dates_end;
           setDateState({ ...dateState })
+          dataById?.acf?.daysOfWeek.map((val: string) =>{
+            selectedItems?.WeekDays.push({label: val, value: val})
+            setSelectedItems({
+              ...selectedItems 
+            })
+          })
+          
 
         } else if (dataById?.acf?.eventType === "daily") {
           setSelectedOptionEvent("option1")
@@ -332,7 +359,6 @@ const EventDataShow = ({ drawerType }: Props) => {
         Accessibility: [],
       });
       // setTimeState({});
-      setSelectedCode("");
       setLocation({
         latitude: "",
         longitude: "",
@@ -374,6 +400,7 @@ const EventDataShow = ({ drawerType }: Props) => {
       ...prevData,
       [name]: value,
     }));
+    setFieldValue(name, value)
   }
 
 
@@ -450,27 +477,14 @@ const EventDataShow = ({ drawerType }: Props) => {
     );
     const selectedLabel = selectedItem ? selectedItem.label : ""; // Default to an empty string if undefined
     setSelectedOption({ label: selectedLabel, value: event.target.value });
+    setFieldValue("Parish", event.target.value)
   };
-
-
-
 
 
 
   const handleChangeCode = (event: any) => {
-    setSelectedCode(event.target.value);
     setFieldValue("areaCode", event.target.value)
   };
-
-
-
-
-
-
-
-
-
-
 
 
   const handleCheckboxChange2 = (
@@ -556,6 +570,30 @@ const EventDataShow = ({ drawerType }: Props) => {
           values.BusRoutes.filter((item: any) => item.value !== value)
         );
       }
+    } else if (category === "Booking") {
+      if (checked) {
+        setFieldValue(category, [
+          ...values.Booking,
+          { value, title: label },
+        ]);
+      } else {
+        setFieldValue(
+          category,
+          values.Booking.filter((item: any) => item.value !== value)
+        );
+      }
+    } else if (category === "Accessibility") {
+      if (checked) {
+        setFieldValue(category, [
+          ...values.Accessibility,
+          { value, title: label },
+        ]);
+      } else {
+        setFieldValue(
+          category,
+          values.Accessibility.filter((item: any) => item.value !== value)
+        );
+      }
     }
 
   };
@@ -584,7 +622,7 @@ const EventDataShow = ({ drawerType }: Props) => {
       } catch (error) {
         setLoading(false)
       }
-      
+
     }
   }
 
@@ -605,12 +643,10 @@ const EventDataShow = ({ drawerType }: Props) => {
 
 
 
-
   const submitFormikFunction = (e: any) => {
-    e.preventDefault()
-    handleSubmit()
+    e.preventDefault();
+    handleSubmit();
   };
-
 
 
   useEffect(() => {
@@ -651,7 +687,6 @@ const EventDataShow = ({ drawerType }: Props) => {
     timeState.endTimeMonth,
     isDateValid
   ])
-
 
 
   const finalEventSubmition = () => {
@@ -740,58 +775,101 @@ const EventDataShow = ({ drawerType }: Props) => {
     if (isDateValid === null) {
       setIsDateValid(true)
     }
-
-
-    // return
-    if (drawerType === "Edit") {
-      const status = { id: dataById?._id, finalObject }
-      dispatch(updateEvent(status) as any)
-    } else {
-      dispatch(createEvent(finalObject) as any);
-
+    
+    
+    if (isDateValid === false) {
+      if (drawerType === "Edit") {
+        const status = { id: dataById?._id, finalObject }
+        dispatch(updateEvent(status) as any)
+        resetForm();
+        setSelectedItems({
+          Type: [],
+          Location: [],
+          KeyFacilities: [],
+          Booking: [],
+          WeekDays: [],
+          MonthDays: [],
+          Seasonality: [],
+          BusRoutes: [],
+          Accessibility: [],
+        })
+        setDateState({
+          startDateMonth: "",
+          endDateMonth: "",
+          startDateWeekly: "",
+          endDateWeekly: "",
+          startDateDaily: "",
+          endDateDaily: "",
+        })
+        setDateTimeComponents([
+          {
+            selectedDate: currentDate,
+            customStartTime: currentTime,
+            customEndTime: currentTime,
+          },
+        ])
+        setLocation({
+          latitude: "",
+          longitude: "",
+        })
+        setFile("")
+        setSelectedOption({ label: "", value: "" });
+        setTimeState({
+          startTimeMonth: "",
+          endTimeMonth: "",
+          startTimeWeekly: "",
+          endTimeWeekly: "",
+          startTimeDaily: "",
+          endTimeDaily: "",
+        })
+        setFile("")
+      } else {
+        dispatch(createEvent(finalObject) as any);
+        resetForm();
+        setSelectedItems({
+          Type: [],
+          Location: [],
+          KeyFacilities: [],
+          Booking: [],
+          WeekDays: [],
+          MonthDays: [],
+          Seasonality: [],
+          BusRoutes: [],
+          Accessibility: [],
+        })
+        setDateState({
+          startDateMonth: "",
+          endDateMonth: "",
+          startDateWeekly: "",
+          endDateWeekly: "",
+          startDateDaily: "",
+          endDateDaily: "",
+        })
+        setDateTimeComponents([
+          {
+            selectedDate: currentDate,
+            customStartTime: currentTime,
+            customEndTime: currentTime,
+          },
+        ])
+        setLocation({
+          latitude: "",
+          longitude: "",
+        })
+        setFile("")
+        setSelectedOption({ label: "", value: "" });
+        setTimeState({
+          startTimeMonth: "",
+          endTimeMonth: "",
+          startTimeWeekly: "",
+          endTimeWeekly: "",
+          startTimeDaily: "",
+          endTimeDaily: "",
+        })
+        setFile("")
+      }
     }
-    resetForm();
-    setSelectedItems({
-      Type: [],
-      Location: [],
-      KeyFacilities: [],
-      Booking: [],
-      WeekDays: [],
-      MonthDays: [],
-      Seasonality: [],
-      BusRoutes: [],
-      Accessibility: [],
-    })
-    setDateState({
-      startDateMonth: "",
-      endDateMonth: "",
-      startDateWeekly: "",
-      endDateWeekly: "",
-      startDateDaily: "",
-      endDateDaily: "",
-    })
-    setDateTimeComponents([
-      {
-        selectedDate: currentDate,
-        customStartTime: currentTime,
-        customEndTime: currentTime,
-      },
-    ])
-    setSelectedCode("")
-    setLocation({
-      latitude: "",
-      longitude: "",
-    })
-    setFile("")
-    setSelectedOption({ label: "", value: "" });
-    setTimeState({
-      startTimeMonth: "",
-      endTimeMonth: "",
-      startTimeWeekly: "",
-      endTimeWeekly: "",
-      startTimeDaily: "",
-      endTimeDaily: "",
-    })
+
   }
 
 
@@ -1055,7 +1133,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                 </div>
               </InputContainer>
               <TitleText style={{ margin: "20px 0px" }}>
-                Booking information
+                Booking information *
               </TitleText>
               <div
                 style={{
@@ -1070,8 +1148,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                       <Checkbox
                         title={item.title}
                         value={item.value}
-                        isChecked={selectedItems.Booking.some(
-                          (items) => items.value === item.value
+                        isChecked={values.Booking.some(
+                          (items: any) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
                           handleCheckboxChange2("Booking", value, checked, item.title)
@@ -1081,6 +1159,9 @@ const EventDataShow = ({ drawerType }: Props) => {
                   );
                 })}
               </div>
+              {(touched.Booking && errors.Booking) ? (
+                <div style={{ color: 'red' }}>{errors.Booking}</div>
+              ) : null}
             </div>
           </>
         }
@@ -1113,7 +1194,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   touch={touched.EmailAddress && errors.EmailAddress}
                 />
               </div>
-              <TitleText>Telephone number</TitleText>
+              <TitleText>Telephone number *</TitleText>
               <TitleTextMain style={{ marginTop: 20 }}>
                 Please provide your full telephone number, including area code.
                 For example: +44 (0) 1534 859000.
@@ -1141,21 +1222,30 @@ const EventDataShow = ({ drawerType }: Props) => {
                       type="number"
                       value={values.Prefix}
                       name="Prefix"
-                      onChange={handleChange}
+                      // onChange={handleChange}
                       className="parentheses-input"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
                     />
                   </div>
+                  {(touched.Prefix && errors.Prefix) ? (
+                    <div style={{ color: 'red' }}>{errors.Prefix}</div>
+                  ) : null}
                 </div>
                 <div style={{ width: "100%" }}>
                   <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Telephone</h6>
                   <input
-                    type="text"
+                    type="number"
                     className="custom-inputInfo"
                     placeholder="153400000"
                     value={values.Telephone}
                     name="Telephone"
                     onChange={handleChange}
+                    onBlur={handleBlur}
                   />
+                  {(touched.Telephone && errors.Telephone) ? (
+                    <div style={{ color: 'red' }}>{errors.Telephone}</div>
+                  ) : null}
                 </div>
               </div>
               <TitleText>Website *</TitleText>
@@ -1182,15 +1272,21 @@ const EventDataShow = ({ drawerType }: Props) => {
                 }}
               >
                 <AddressInfo>Place name</AddressInfo>
-                <input
-                  type="text"
-                  className="custom-inputInfo"
-                  placeholder="Place name"
-                  name="PlaceName"
-                  value={values.PlaceName}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <div style={{ width: '100%' }} >
+
+                  <input
+                    type="text"
+                    className="custom-inputInfo"
+                    placeholder="Place name"
+                    name="PlaceName"
+                    value={values.PlaceName}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {(touched.PlaceName && errors.PlaceName) ? (
+                    <div style={{ color: 'red' }}>{errors.PlaceName}</div>
+                  ) : null}
+                </div>
               </div>
               <div
                 style={{
@@ -1201,15 +1297,20 @@ const EventDataShow = ({ drawerType }: Props) => {
                 }}
               >
                 <AddressInfo>Address line 1</AddressInfo>
-                <input
-                  type="text"
-                  className="custom-inputInfo"
-                  placeholder="Address line 1"
-                  name="AddressLine"
-                  value={values.AddressLine}
-                  // onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <div style={{ width: '100%' }} >
+                  <input
+                    type="text"
+                    className="custom-inputInfo"
+                    placeholder="Address line 1"
+                    name="AddressLine"
+                    value={values.AddressLine}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {(touched.AddressLine && errors.AddressLine) ? (
+                    <div style={{ color: 'red' }}>{errors.AddressLine}</div>
+                  ) : null}
+                </div>
               </div>
               <div
                 style={{
@@ -1220,6 +1321,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                 }}
               >
                 <AddressInfo>Address line 2</AddressInfo>
+
+
                 <input
                   type="text"
                   className="custom-inputInfo"
@@ -1238,17 +1341,22 @@ const EventDataShow = ({ drawerType }: Props) => {
                 }}
               >
                 <AddressInfo>Postcode</AddressInfo>
-                <input
-                  type="text"
-                  className="custom-inputInfo"
-                  name="Postcode"
-                  placeholder="Postcode"
-                  value={values.Postcode}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                />
+                <div style={{ width: '100%' }} >
+                  <input
+                    type="text"
+                    className="custom-inputInfo"
+                    name="Postcode"
+                    placeholder="Postcode"
+                    value={values.Postcode}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {(touched.Postcode && errors.Postcode) ? (
+                    <div style={{ color: 'red' }}>{errors.Postcode}</div>
+                  ) : null}
+                </div>
               </div>
-              <TitleText>Parish</TitleText>
+              <TitleText>Parish *</TitleText>
               <div
                 style={{
                   display: "grid",
@@ -1264,9 +1372,11 @@ const EventDataShow = ({ drawerType }: Props) => {
                       <input
                         type="radio"
                         id={item.value}
-                        name="location"
+                        name="Parish"
+                        // value={values.Parish}
                         value={item.value}
                         onChange={handleChangeRadio}
+                        onBlur={handleBlur}
                         checked={selectedOption.value === item.value}
                         style={{ marginRight: 10 }}
                       />
@@ -1275,29 +1385,46 @@ const EventDataShow = ({ drawerType }: Props) => {
                   );
                 })}
               </div>
+              {(touched.Parish && errors.Parish) ? (
+                <div style={{ color: 'red' }}>{errors.Parish}</div>
+              ) : null}
               <div>
-                <TitleText>Map location</TitleText>
+                <TitleText>Map location *</TitleText>
                 <TitleTextMain style={{ marginTop: 20 }}>
                   Search for your address or click on the map to manually place
                   a marker.
                 </TitleTextMain>
                 <div style={{ display: "flex", gap: 20, marginBottom: 20, marginTop: 20 }}>
-                  <input
-                    type="number"
-                    className="custom-inputInfo"
-                    placeholder="Latitude"
-                    value={location?.latitude}
-                    name="latitude"
-                    onChange={onchangelocation}
-                  />
-                  <input
-                    type="number"
-                    className="custom-inputInfo"
-                    placeholder="Longitude"
-                    value={location.longitude}
-                    name="longitude"
-                    onChange={onchangelocation}
-                  />
+                  <div style={{ width: '100%' }}>
+                    <input
+                      type="number"
+                      className="custom-inputInfo"
+                      placeholder="Latitude"
+                      value={values?.latitude}
+                      name="latitude"
+                      onChange={onchangelocation}
+                      onBlur={handleBlur}
+                    />
+
+                    {(touched.latitude && errors.latitude) ? (
+                      <div style={{ color: 'red' }}>{errors.latitude}</div>
+                    ) : null}
+                  </div>
+                  <div style={{ width: '100%' }}>
+
+                    <input
+                      type="number"
+                      className="custom-inputInfo"
+                      placeholder="Longitude"
+                      value={values.longitude}
+                      name="longitude"
+                      onChange={onchangelocation}
+                      onBlur={handleBlur}
+                    />
+                    {(touched.longitude && errors.longitude) ? (
+                      <div style={{ color: 'red' }}>{errors.longitude}</div>
+                    ) : null}
+                  </div>
                 </div>
               </div>
               <TitleText>Seasonality *</TitleText>
@@ -1448,7 +1575,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   marginBottom: 10,
                 }}
               >
-                Accessibility
+                Accessibility *
               </p>
               <p
                 style={{
@@ -1474,8 +1601,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                       <Checkbox
                         title={item.title}
                         value={item.value}
-                        isChecked={selectedItems.Accessibility.some(
-                          (items) => items.value === item.value
+                        isChecked={values.Accessibility.some(
+                          (items: any) => items.value === item.value
                         )}
                         onCheckboxChange={(value, checked) =>
                           handleCheckboxChange2("Accessibility", value, checked, item.title)
@@ -1485,6 +1612,9 @@ const EventDataShow = ({ drawerType }: Props) => {
                   );
                 })}
               </div>
+              {(touched.Accessibility && errors.Accessibility) ? (
+                <div style={{ color: 'red' }}>{errors.Accessibility}</div>
+              ) : null}
               <TextField
                 title="Additional information"
                 description="Explain a little more about the accessibility of your business and encourage users to contact you directly for further assistance."
@@ -1629,20 +1759,20 @@ const EventDataShow = ({ drawerType }: Props) => {
                 >
                   {
                     loading ? <p>Uploading...</p> :
-                  <div style={{ textAlign: "center" }}>
-                    <DropImage>Drop files to upload</DropImage>
-                    <p>or</p>
-                    <input
-                      type="file"
-                      id="imageget"
-                      name="file"
-                      onChange={handleFileChange}
-                      onBlur={handleBlur}
-                      accept="image/png, image/jpeg"
-                      hidden
-                    />
-                    <ButtonImage htmlFor="imageget">Select Files</ButtonImage>
-                  </div>
+                      <div style={{ textAlign: "center" }}>
+                        <DropImage>Drop files to upload</DropImage>
+                        <p>or</p>
+                        <input
+                          type="file"
+                          id="imageget"
+                          name="file"
+                          onChange={handleFileChange}
+                          onBlur={handleBlur}
+                          accept="image/png, image/jpeg"
+                          hidden
+                        />
+                        <ButtonImage htmlFor="imageget">Select Files</ButtonImage>
+                      </div>
                   }
                   <img src={file} style={{ width: 100, marginTop: 20 }} />
                 </div>
@@ -1748,40 +1878,40 @@ const Select = styled.select`
 
 
 
-const TokenModalContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 40px;
-  flex-direction: column;
-  outline: none;
-  box-shadow: none;
-  border-radius: 10px;
+// const TokenModalContainer = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   padding: 40px 40px;
+//   flex-direction: column;
+//   outline: none;
+//   box-shadow: none;
+//   border-radius: 10px;
 
-  /* @media screen and (max-width: 877px) {
-    width: 95%;
-  } */
+//   /* @media screen and (max-width: 877px) {
+//     width: 95%;
+//   } */
 
-  img {
-    height: 118px;
-  }
+//   img {
+//     height: 118px;
+//   }
 
-  h1 {
-    font-size: ${({ theme }) => theme.fontSize.largeText};
-    margin-bottom: 16px;
-    margin-top: 34px;
-  }
+//   h1 {
+//     font-size: ${({ theme }) => theme.fontSize.largeText};
+//     margin-bottom: 16px;
+//     margin-top: 34px;
+//   }
 
-  p {
-    font-size: ${({ theme }) => theme.fontSize.normal};
-    color: ${({ theme }) => theme.colors.lightGrey};
-    margin-bottom: 34px;
-  }
+//   p {
+//     font-size: ${({ theme }) => theme.fontSize.normal};
+//     color: ${({ theme }) => theme.colors.lightGrey};
+//     margin-bottom: 34px;
+//   }
 
-  @media screen and (max-width: 350px) {
-    padding: 40px 30px 50px 30px;
-  }
-`;
+//   @media screen and (max-width: 350px) {
+//     padding: 40px 30px 50px 30px;
+//   }
+// `;
 
 const DropImage = styled.p`
   font-size: 20px;
