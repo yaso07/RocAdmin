@@ -1,5 +1,5 @@
 import Accordion from "../components/Accordion/Accordion";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { createActivity, getActivityList, updateActivity } from "../api/EventSlice/eventThunk";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -30,6 +30,7 @@ import { updateOpenHours } from "../utils/commanFun";
 import { Category, FinalObject, Props, SelectedItems, TimeState } from "../utils/interface";
 import { useFormik } from "formik";
 import { activitySchema } from "../utils/validation";
+import moment from "moment";
 // import { formDataType } from "../types/event";
 
 
@@ -40,7 +41,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
   const isLoading = useSelector((state: any) => state.event.isLoading)
   const dispatch = useDispatch();
 
-
+  const currentTime = moment(new Date()).format("HH:mm");
   const [timeState, setTimeState] = useState<TimeState>({});
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false)
@@ -101,6 +102,12 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     KeyFacilities: [],
     Seasonality: [],
     BusRoutes: [],
+    Booking: [],
+    Accessibility: [],
+    WeekDays: [],
+    Parish: "",
+    latitude: "",
+    longitude: "",
   }
 
   const { handleChange, handleSubmit, setFieldValue, handleBlur, resetForm, values, errors, touched } = useFormik({
@@ -145,7 +152,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
             }
           }
         }
-
+        setFieldValue("WeekDays", weekDay)
         setSelectedItems({
           ...selectedItems,
           subTypeOutdoor: dataById?.acf?.sub_type,
@@ -159,8 +166,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
           WeekDays: weekDay,
         })
         location.latitude = dataById?.acf?.map_location?.lat,
-        location.longitude = dataById?.acf?.map_location?.lng
-        setLocation({...location})
+          location.longitude = dataById?.acf?.map_location?.lng
+        setLocation({ ...location })
 
         const setTYpe = dataById?.acf?.sub_type.map((item: any) => ({
           title: item.label,
@@ -177,6 +184,16 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
           value: item.value,
         }));
         setFieldValue("KeyFacilities", setKeyFacilities)
+        const setBookings = dataById?.acf?.booking_information.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("Booking", setBookings)
+        const setAccessibilitys = dataById?.acf?.accessibility.map((item: any) => ({
+          title: item.label,
+          value: item.value,
+        }));
+        setFieldValue("Accessibility", setAccessibilitys)
         const setBusRoutes = dataById?.acf?.bus_routes.map((item: any) => ({
           title: item.label,
           value: item.value,
@@ -189,6 +206,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         setFieldValue("Seasonality", setSeasonality)
         setTimeState({ ...dataById?.acf?.opening_hours })
         setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
+        setFieldValue("Parish", dataById?.acf?.parish?.value)
         const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
         setFile(image[0].url)
         setFieldValue("file", image[0]?.url)
@@ -229,24 +247,30 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     value: string,
     checked: boolean
   ) => {
-    console.log(category)
     setSelectedItems((prevState: any) => {
       const newWeekDays = checked
-        ? [...prevState.WeekDays, { value }]
-        : prevState.WeekDays.filter((item: any) => item.value !== value);
+      ? [...prevState.WeekDays, { value }]
+      : prevState.WeekDays.filter((item: any) => item.value !== value);
       return { ...prevState, WeekDays: newWeekDays };
     });
-
+    if(checked){
+      setFieldValue(category, [{value}])
+    } else {
+      setFieldValue(category, values.WeekDays.filter((item: any) => item.value !== value))
+    }
     setTimeState((prevState: any) => {
       return {
         ...prevState,
         [value]: {
           is_open: checked ? "1" : "0",
+          opens: currentTime,
+          closes: currentTime
         },
       };
     });
   };
-
+  
+  console.log(values.WeekDays)
   const handleTimeChangehour = (day: string, type: "opens" | "closes") => (time: string) => {
     setTimeState((prevState) => ({
       ...prevState,
@@ -274,6 +298,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       ...prevData,
       [name]: value,
     }));
+    setFieldValue(name, value)
   };
 
 
@@ -343,6 +368,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     );
     const selectedLabel = selectedItem ? selectedItem.label : ""; // Default to an empty string if undefined
     setSelectedOption({ label: selectedLabel, value: event.target.value });
+    setFieldValue("Parish", event.target.value)
   };
 
 
@@ -429,9 +455,33 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
           values.BusRoutes.filter((item: any) => item.value !== value)
         );
       }
+    } else if (category === "Booking") {
+      if (checked) {
+        setFieldValue(category, [
+          ...values.Booking,
+          { value, title },
+        ]);
+      } else {
+        setFieldValue(
+          category,
+          values.Booking.filter((item: any) => item.value !== value)
+        );
+      }
+    } else if (category === "Accessibility") {
+      if (checked) {
+        setFieldValue(category, [
+          ...values.Accessibility,
+          { value, title },
+        ]);
+      } else {
+        setFieldValue(
+          category,
+          values.Accessibility.filter((item: any) => item.value !== value)
+        );
+      }
     }
   };
-  const subTypeValue = 
+  const subTypeValue =
     selectedActivity?.label === "Outdoor activities"
       ? selectedItems?.subTypeOutdoor
       : selectedItems?.subTypeIutdoor;
@@ -538,34 +588,58 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
       dispatch(updateActivity(obj) as any);
       dispatch(getActivityList() as any)
+      resetForm()
+      setSelectedItems({
+        Type: [],
+        subTypeOutdoor: [],
+        subTypeIutdoor: [],
+        Location: [],
+        KeyFacilities: [],
+        Booking: [],
+        WeekDays: [],
+        MonthDays: [],
+        Seasonality: [],
+        BusRoutes: [],
+        Accessibility: [],
+      });
+      setTimeState({});
+      setSelectedCode("");
+      setSelectedActivity({ label: "", value: "" });
+      setLocation({
+        latitude: "",
+        longitude: "",
+      });
+      setFile("");
+      setSelectedOption({ label: "", value: "" });
     } else {
       const obj = { finalObject, setIsDrawerOpen };
       dispatch(createActivity(obj) as any);
       dispatch(getActivityList() as any)
+      resetForm()
+      setSelectedItems({
+        Type: [],
+        subTypeOutdoor: [],
+        subTypeIutdoor: [],
+        Location: [],
+        KeyFacilities: [],
+        Booking: [],
+        WeekDays: [],
+        MonthDays: [],
+        Seasonality: [],
+        BusRoutes: [],
+        Accessibility: [],
+      });
+      setTimeState({});
+      setSelectedCode("");
+      setSelectedActivity({ label: "", value: "" });
+      setLocation({
+        latitude: "",
+        longitude: "",
+      });
+      setFile("");
+      setSelectedOption({ label: "", value: "" });
     }
-    resetForm()
-    setSelectedItems({
-      Type: [],
-      subTypeOutdoor: [],
-      subTypeIutdoor: [],
-      Location: [],
-      KeyFacilities: [],
-      Booking: [],
-      WeekDays: [],
-      MonthDays: [],
-      Seasonality: [],
-      BusRoutes: [],
-      Accessibility: [],
-    });
-    setTimeState({});
-    setSelectedCode("");
-    setSelectedActivity({ label: "", value: "" });
-    setLocation({
-      latitude: "",
-      longitude: "",
-    });
-    setFile("");
-    setSelectedOption({ label: "", value: "" });
+
   }
 
   return (
@@ -805,7 +879,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 </div>
               </InputContainer>
               <TitleText style={{ margin: "20px 0px" }}>
-                Booking information
+                Booking information *
               </TitleText>
               <div
                 style={{
@@ -819,8 +893,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                       <Checkbox
                         title={item?.title}
                         value={item?.value}
-                        isChecked={selectedItems.Booking.some(
-                          (items) => items?.value === item?.value
+                        isChecked={values.Booking.some(
+                          (items: any) => items?.value === item?.value
                         )}
                         onCheckboxChange={(value, checked) =>
                           handleCheckboxChange2(
@@ -835,6 +909,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   );
                 })}
               </div>
+              {(touched.Booking && errors.Booking) ? (
+                <div style={{ color: 'red' }}>{errors.Booking}</div>
+              ) : null}
             </div>
           </>
         }
@@ -875,7 +952,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 // handleDescriptionTitle={handleTextFieldChange}
                 />
               </div>
-              <TitleText>Telephone number</TitleText>
+              <TitleText>Telephone number *</TitleText>
               <TitleTextMain>
                 Please provide your full telephone number, including area code.
                 For example: +44 (0) 1534 859000.
@@ -908,9 +985,13 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                       value={values.Prefix}
                       name="Prefix"
                       onChange={handleChange}
+                      onBlur={handleBlur}
                       className="parentheses-input"
                     />
                   </div>
+                  {(touched.Prefix && errors.Prefix) ? (
+                    <div style={{ color: 'red' }}>{errors.Prefix}</div>
+                  ) : null}
                 </div>
                 <div style={{ width: "100%" }}>
                   <h6 style={{ fontWeight: "normal", marginBottom: 20 }}>
@@ -923,6 +1004,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     value={values.Telephone}
                     name="Telephone"
                     onChange={handleChange}
+                    onBlur={handleBlur}
                   />
                   {(touched.Telephone && errors.Telephone) ? (
                     <div style={{ color: 'red' }}>{errors.Telephone}</div>
@@ -942,29 +1024,32 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 error={errors.Website}
                 touch={touched.Website && errors.Website}
               />
-              <TitleText style={{ marginTop: 20 }}>Address</TitleText>
+              <TitleText style={{ marginTop: 20 }}>Address *</TitleText>
               <div
                 style={{
                   display: "flex",
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
+                  marginTop: 20
                 }}
               >
                 <AddressInfo>Place name</AddressInfo>
-                <input
-                  type="text"
-                  className="custom-inputInfo"
-                  placeholder="Place name"
-                  name="PlaceName"
-                  value={values.PlaceName}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                // onChange={handleTextFieldChange}
-                />
-                {(touched.PlaceName && errors.PlaceName) ? (
-                  <div style={{ color: 'red' }}>{errors.PlaceName}</div>
-                ) : null}
+                <div style={{ width: '100%' }} >
+
+                  <input
+                    type="text"
+                    className="custom-inputInfo"
+                    placeholder="Place name"
+                    name="PlaceName"
+                    value={values.PlaceName}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {(touched.PlaceName && errors.PlaceName) ? (
+                    <div style={{ color: 'red' }}>{errors.PlaceName}</div>
+                  ) : null}
+                </div>
               </div>
               <div
                 style={{
@@ -975,20 +1060,20 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 }}
               >
                 <AddressInfo>Address line 1</AddressInfo>
-                <input
-                  type="text"
-                  className="custom-inputInfo"
-                  placeholder="Address line 1"
-                  name="AddressLine"
-                  value={values.AddressLine}
-                  // onBlur={handleBlur}
-                  onChange={handleChange}
-
-                // onChange={handleTextFieldChange}
-                />
-                {/* {(touched.AddressLine && errors.AddressLine) ? (
-                  <div style={{ color: 'red' }}>{errors.AddressLine}</div>
-                ) : null} */}
+                <div style={{ width: '100%' }} >
+                  <input
+                    type="text"
+                    className="custom-inputInfo"
+                    placeholder="Address line 1"
+                    name="AddressLine"
+                    value={values.AddressLine}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {(touched.AddressLine && errors.AddressLine) ? (
+                    <div style={{ color: 'red' }}>{errors.AddressLine}</div>
+                  ) : null}
+                </div>
               </div>
               <div
                 style={{
@@ -999,6 +1084,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 }}
               >
                 <AddressInfo>Address line 2</AddressInfo>
+
+
                 <input
                   type="text"
                   className="custom-inputInfo"
@@ -1006,7 +1093,6 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   name="AddressLineOptional"
                   value={values.AddressLineOptional}
                   onChange={handleChange}
-                // onChange={handleTextFieldChange}
                 />
               </div>
               <div
@@ -1018,19 +1104,20 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 }}
               >
                 <AddressInfo>Postcode</AddressInfo>
-                <input
-                  type="text"
-                  className="custom-inputInfo"
-                  name="Postcode"
-                  placeholder="Postcode"
-                  value={values.Postcode}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                // onChange={handleTextFieldChange}
-                />
-                {/* {(touched.Postcode && errors.Postcode) ? (
-                  <div style={{ color: 'red' }}>{errors.Postcode}</div>
-                ) : null} */}
+                <div style={{ width: '100%' }} >
+                  <input
+                    type="text"
+                    className="custom-inputInfo"
+                    name="Postcode"
+                    placeholder="Postcode"
+                    value={values.Postcode}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                  />
+                  {(touched.Postcode && errors.Postcode) ? (
+                    <div style={{ color: 'red' }}>{errors.Postcode}</div>
+                  ) : null}
+                </div>
               </div>
               <TitleText>Parish</TitleText>
               <div
@@ -1058,29 +1145,46 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   );
                 })}
               </div>
+              {(touched.Parish && errors.Parish) ? (
+                <div style={{ color: 'red' }}>{errors.Parish}</div>
+              ) : null}
               <div>
-                <TitleText>Map location</TitleText>
-                <TitleTextMain>
+                <TitleText>Map location *</TitleText>
+                <TitleTextMain style={{ marginTop: 20 }}>
                   Search for your address or click on the map to manually place
                   a marker.
                 </TitleTextMain>
-                <div style={{ display: "flex", gap: 20, marginBottom: 20 }}>
-                  <input
-                    type="number"
-                    className="custom-inputInfo"
-                    placeholder="Latitude"
-                    value={location?.latitude}
-                    name="latitude"
-                    onChange={onchangelocation}
-                  />
-                  <input
-                    type="number"
-                    className="custom-inputInfo"
-                    placeholder="Longitude"
-                    value={location.longitude}
-                    name="longitude"
-                    onChange={onchangelocation}
-                  />
+                <div style={{ display: "flex", gap: 20, marginBottom: 20, marginTop: 20 }}>
+                  <div style={{ width: '100%' }}>
+                    <input
+                      type="number"
+                      className="custom-inputInfo"
+                      placeholder="Latitude"
+                      value={values?.latitude}
+                      name="latitude"
+                      onChange={onchangelocation}
+                      onBlur={handleBlur}
+                    />
+
+                    {(touched.latitude && errors.latitude) ? (
+                      <div style={{ color: 'red' }}>{errors.latitude}</div>
+                    ) : null}
+                  </div>
+                  <div style={{ width: '100%' }}>
+
+                    <input
+                      type="number"
+                      className="custom-inputInfo"
+                      placeholder="Longitude"
+                      value={values.longitude}
+                      name="longitude"
+                      onChange={onchangelocation}
+                      onBlur={handleBlur}
+                    />
+                    {(touched.longitude && errors.longitude) ? (
+                      <div style={{ color: 'red' }}>{errors.longitude}</div>
+                    ) : null}
+                  </div>
                 </div>
               </div>
               <TitleText>Seasonality *</TitleText>
@@ -1202,6 +1306,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   </div>
                 );
               })}
+              {errors.WeekDays && touched.WeekDays ? (
+                <div style={{ color: 'red' }}>{errors.WeekDays}</div>
+              ) : null}
               <TitleText style={{ marginTop: 20 }}>Social media</TitleText>
               <TitleTextMain>
                 Please provide the full URL for your social media platforms. For
@@ -1289,7 +1396,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   marginBottom: 10,
                 }}
               >
-                Accessibility
+                Accessibility *
               </p>
               <p
                 style={{
@@ -1315,8 +1422,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                       <Checkbox
                         title={item?.title}
                         value={item?.value}
-                        isChecked={selectedItems.Accessibility.some(
-                          (items) => items?.value === item?.value
+                        isChecked={values.Accessibility.some(
+                          (items: any) => items?.value === item?.value
                         )}
                         onCheckboxChange={(value, checked) =>
                           handleCheckboxChange2(
@@ -1331,6 +1438,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   );
                 })}
               </div>
+              {(touched.Accessibility && errors.Accessibility) ? (
+                <div style={{ color: 'red' }}>{errors.Accessibility}</div>
+              ) : null}
               <TextField
                 title="Additional information"
                 description="Explain a little more about the accessibility of your business and encourage users to contact you directly for further assistance."

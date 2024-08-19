@@ -292,7 +292,7 @@ const EventDataShow = ({ drawerType }: Props) => {
         setFieldValue("Seasonality", setSeasonality)
         setTimeState({ ...dataById?.acf?.opening_hours })
         setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
-        setFieldValue("Parish", dataById?.acf?.parish?.value)
+        setFieldValue("Parish", dataById?.acf?.parish?.value);
         const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
         setFile(image[0].url)
         setFieldValue("file", image[0]?.url)
@@ -1204,7 +1204,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Area Code</h6>
                   <Select
                     id="country-code"
-                    name="country-code"
+                    name="areaCode"
                     value={values.areaCode}
                     onChange={handleChangeCode}
                   >
@@ -1261,7 +1261,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                 error={errors.Website}
                 touch={touched.Website && errors.Website}
               />
-              <TitleText style={{ marginTop: 20 }}>Address</TitleText>
+              <TitleText style={{ marginTop: 20 }}>Address *</TitleText>
               <div
                 style={{
                   display: "flex",
