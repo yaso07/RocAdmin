@@ -82,6 +82,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     DisplayName: "",
     EmailAddress: "",
     Prefix: "",
+    areaCode: "+1",
     Telephone: "",
     Website: "",
     PlaceName: "",
@@ -121,6 +122,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         setFieldValue("DisplayName", dataById?.acf?.display_name); // not getting key from backend
         setFieldValue("EmailAddress", dataById?.acf?.email_address);
         setFieldValue("Prefix", dataById?.acf?.telephone_number?.prefix);
+        setFieldValue("areaCode", dataById?.acf?.telephone_number?.area_code);
         setFieldValue("Telephone", dataById?.acf?.telephone_number?.number);
         setFieldValue("Website", dataById?.acf?.website);
         setFieldValue("PlaceName", dataById?.acf?.address?.place_name);
@@ -278,6 +280,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
   const handleChangeCode = (event: any) => {
     setSelectedCode(event.target.value);
+    setFieldValue("areaCode", event.target.value)
   };
 
 
@@ -884,8 +887,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   </h6>
                   <Select
                     id="country-code"
-                    name="country-code"
-                    value={selectedCode}
+                    name="areaCode"
+                    value={values.areaCode}
                     onChange={handleChangeCode}
                   >
                     {countryCodes.map((item, index) => (

@@ -133,6 +133,7 @@ const EventDataShow = ({ drawerType }: Props) => {
     EmailAddress: "",
     Prefix: "",
     Telephone: "",
+    areaCode:"+1",
     Website: "",
     PlaceName: "",
     AddressLine: "",
@@ -224,6 +225,7 @@ const EventDataShow = ({ drawerType }: Props) => {
         setFieldValue("DisplayName", dataById?.acf?.display_name); // not getting key from backend
         setFieldValue("EmailAddress", dataById?.acf?.email_address);
         setFieldValue("Prefix", dataById?.acf?.telephone_number?.prefix);
+        setFieldValue("areaCode", dataById?.acf?.telephone_number?.area_code);
         setFieldValue("Telephone", dataById?.acf?.telephone_number?.number);
         setFieldValue("Website", dataById?.acf?.website);
         setFieldValue("PlaceName", dataById?.acf?.address?.place_name);
@@ -440,6 +442,7 @@ const EventDataShow = ({ drawerType }: Props) => {
 
   const handleChangeCode = (event: any) => {
     setSelectedCode(event.target.value);
+    setFieldValue("areaCode", event.target.value)
   };
 
 
@@ -651,7 +654,7 @@ const EventDataShow = ({ drawerType }: Props) => {
         email_address: values.EmailAddress,
         map_location: { lat: +location.latitude, lng: +location.longitude },
         telephone_number: {
-          area_code: selectedCode,
+          area_code: values.areaCode,
           prefix: values.Prefix,
           number: values.Telephone,
         },
@@ -1094,7 +1097,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   <Select
                     id="country-code"
                     name="country-code"
-                    value={selectedCode}
+                    value={values.areaCode}
                     onChange={handleChangeCode}
                   >
                     {countryCodes.map((item, index) => (
@@ -1712,27 +1715,8 @@ const Select = styled.select`
   accent-color: var(--brand-primary);
 `;
 
-const ModalWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
 
-const ModalMainContainer = styled.div`
-  display: block;
-  background: white;
-  width: 462px;
-  height: 421px;
-  overflow: auto;
-  border-radius: 1rem;
-  ::-webkit-scrollbar {
-    display: none;
-  }
-  @media screen and (max-width: 500px) {
-    width: 100%;
-  }
-`;
+
 
 const TokenModalContainer = styled.div`
   display: flex;
