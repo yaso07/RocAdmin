@@ -115,6 +115,7 @@ const EventDataShow = ({ drawerType }: Props) => {
   const [isDateValid, setIsDateValid] = useState<any>(null);
   const isLoading = useSelector((state: any) => state.event.isLoading)
   const dataById = useSelector((state: any) => state.event.singleEventData)
+  const [loading, setLoading] = useState(false)
   // const SingleEventData = useSelector(selectSingleEventData);
 
   const dispatch = useDispatch();
@@ -216,7 +217,6 @@ const EventDataShow = ({ drawerType }: Props) => {
 
   useEffect(() => {
     if (drawerType === "Edit") {
-      console.log("dkddkddkdk", dataById)
       if (JSON.stringify(dataById)) {
         setFieldValue("introDescription", dataById?.acf?.short_description);
         setFieldValue("moreInformation", dataById?.acf?.long_description);
@@ -339,6 +339,23 @@ const EventDataShow = ({ drawerType }: Props) => {
       });
       setFile("");
       setSelectedOption({ label: "", value: "" });
+      setSelectedOptionEvent("")
+      setDateState({
+        startDateMonth: "",
+        endDateMonth: "",
+        startDateWeekly: "",
+        endDateWeekly: "",
+        startDateDaily: "",
+        endDateDaily: "",
+      })
+      setTimeState({
+        startTimeMonth: "",
+        endTimeMonth: "",
+        startTimeWeekly: "",
+        endTimeWeekly: "",
+        startTimeDaily: "",
+        endTimeDaily: "",
+      })
     }
 
   }, [JSON.stringify(dataById), drawerType])
@@ -547,17 +564,27 @@ const EventDataShow = ({ drawerType }: Props) => {
 
 
   async function handleFileChange(e: any) {
-
     const file = e.target.files?.[0];
     const url = import.meta.env.VITE_REACT_APP_API_UPLOAD_IMAGE;
     if (file) {
       const formData = new FormData();
       formData.append("image", file);
-      const res = await axios.post(url, formData);
-
-      setFile(res?.data);
-      setFieldValue("file", res?.data)
-      //  setFile(URL.createObjectURL(e.target.files[0]) as any);    
+      try {
+        setLoading(true)
+        const res = await axios.post(url, formData);
+        if (res?.status === 200) {
+          setLoading(false)
+          setFile(res?.data);
+          setFieldValue("file", res?.data)
+        } else {
+          setLoading(false)
+          setFile("");
+          setFieldValue("file", "")
+        }
+      } catch (error) {
+        setLoading(false)
+      }
+      
     }
   }
 
@@ -605,7 +632,7 @@ const EventDataShow = ({ drawerType }: Props) => {
       } else if (selectedOptionEvent === "option1") {
         eventDateValidation(selectedOptionEvent, dateState, setIsDateValid, timeState)
       }
-    }
+    } 
 
   }, [selectedOptionEvent,
     selectedItems.MonthDays.length,
@@ -1600,6 +1627,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                     alignItems: "center"
                   }}
                 >
+                  {
+                    loading ? <p>Uploading...</p> :
                   <div style={{ textAlign: "center" }}>
                     <DropImage>Drop files to upload</DropImage>
                     <p>or</p>
@@ -1614,6 +1643,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                     />
                     <ButtonImage htmlFor="imageget">Select Files</ButtonImage>
                   </div>
+                  }
                   <img src={file} style={{ width: 100, marginTop: 20 }} />
                 </div>
               </div>
@@ -1635,7 +1665,7 @@ const EventDataShow = ({ drawerType }: Props) => {
       {
         isLoading ?
           <ButtonSubmit type="button" >Loading...</ButtonSubmit> :
-          <ButtonSubmit type="button" onClick={submitFormikFunction}>Submit</ButtonSubmit>
+          <ButtonSubmit type="button" onClick={submitFormikFunction}>{drawerType === "Edit" ? "Update" : "Submit"}</ButtonSubmit>
 
       }
     </div>

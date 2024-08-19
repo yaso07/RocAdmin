@@ -1520,7 +1520,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       {
         isLoading ?
           <ButtonSubmit type="button" >Loading...</ButtonSubmit> :
-          <ButtonSubmit type="button" onClick={submitFormikFunction}>Submit</ButtonSubmit>
+          <ButtonSubmit type="button" onClick={submitFormikFunction}>{drawerType === "Edit" ? "Update" : "Submit"}</ButtonSubmit>
 
       }
     </div>
