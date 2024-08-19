@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getUser } from "../Category/user";
 import axios from "axios";
-import { CREATE_EVENT, GET_EVENT_LIST, CREATE_ACTIVITY, GET_ACTIVITY_LIST } from "../constant";
+import { CREATE_EVENT, GET_EVENT_LIST, CREATE_ACTIVITY, GET_ACTIVITY_LIST, GET_EVENT_LIST_BY_ID } from "../constant";
 import { toast } from "react-toastify";
 
 
@@ -125,7 +125,20 @@ export const fetchEventById = createAsyncThunk('event/fetchById', async (data: a
       return error
     }
   } else {
-    return data.id
+    try {
+      const res = await axios.get(
+        import.meta.env.VITE_REACT_APP_API_BASE_URL + GET_EVENT_LIST_BY_ID + '/' + data?.id,
+        {
+          headers: {
+            "x-login-token": token
+          },
+        }
+      )
+      return res?.data
+    } catch (error) {
+      return error
+    }
+    // return data.id
   }
 })
 

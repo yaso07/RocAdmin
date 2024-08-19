@@ -1,5 +1,5 @@
 import Accordion from "../components/Accordion/Accordion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createActivity, getActivityList, updateActivity } from "../api/EventSlice/eventThunk";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -47,8 +47,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
   const [selectedCode, setSelectedCode] = useState("");
   const [selectedActivity, setSelectedActivity] = useState({
-    label: "",
-    value: "",
+    label: "Indoor activities",
+    value: "indoor-activities",
   });
   const [selectedOption, setSelectedOption] = useState({
     label: "",
@@ -116,7 +116,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       if (JSON.stringify(dataById)) {
         setFieldValue("introDescription", dataById?.acf?.short_description);
         setFieldValue("moreInformation", dataById?.acf?.long_description);
-        setFieldValue("priceFrom", dataById?.acf?.from_price); // not getting key from backend
+        setFieldValue("priceFrom", dataById?.acf?.price_from); // not getting key from backend
         setFieldValue("priceTo", dataById?.acf?.price_to);
         setFieldValue("DisplayName", dataById?.acf?.display_name); // not getting key from backend
         setFieldValue("EmailAddress", dataById?.acf?.email_address);
@@ -156,17 +156,20 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
           Seasonality: dataById?.acf?.seasonality,
           WeekDays: weekDay,
         })
+        location.latitude = dataById?.acf?.map_location?.lat,
+        location.longitude = dataById?.acf?.map_location?.lng
+        setLocation({...location})
 
         const setTYpe = dataById?.acf?.sub_type.map((item: any) => ({
           title: item.label,
           value: item.value,
         }));
         setFieldValue("subTypeActivity", setTYpe)
-        const setLocation = dataById?.acf?.location.map((item: any) => ({
+        const setLocations = dataById?.acf?.location.map((item: any) => ({
           title: item.label,
           value: item.value,
         }));
-        setFieldValue("Location", setLocation)
+        setFieldValue("Location", setLocations)
         const setKeyFacilities = dataById?.acf?.key_facilities.map((item: any) => ({
           title: item.label,
           value: item.value,
@@ -205,7 +208,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       });
       setTimeState({});
       setSelectedCode("");
-      setSelectedActivity({ label: "", value: "" });
+      // setSelectedActivity({ label: "", value: "" });
       setLocation({
         latitude: "",
         longitude: "",
@@ -295,6 +298,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     selectedActivity?.label == "Outdoor activities"
       ? typesData
       : IndoretypesData;
+
   const subTypeAct =
     selectedActivity?.label == "Outdoor activities"
       ? "subTypeOutdoor"
@@ -339,10 +343,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
   };
 
 
-  const subTypeValue =
-    selectedActivity?.label === "Indoor activities"
-      ? selectedItems?.subTypeIutdoor
-      : selectedItems?.subTypeOutdoor;
+
 
   const handleCheckboxChange2 = (
     category: Category,
@@ -350,18 +351,18 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     checked: boolean,
     title?: any
   ) => {
+
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
         ? [...prevSelectedItems[category], { label: title, value }]
         : prevSelectedItems[category].filter((item) => item.value !== value);
-
       return {
         ...prevSelectedItems,
         [category]: updatedCategory,
       };
     });
 
-
+    // console.log("udteese",  category, selectedItems)
     const nameValue = ((category as string) === "subTypeOutdoor") || ((category as string) === "subTypeIutdoor") ? "subTypeActivity" : category
     if (((category as string) === "subTypeOutdoor") || ((category as string) === "subTypeIutdoor")) {
       if (checked) {
@@ -376,7 +377,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         );
       }
 
-    } 
+    }
     else if ((category as string) === "Location") {
       if (checked) {
         setFieldValue(nameValue, [
@@ -427,7 +428,13 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       }
     }
   };
+  const subTypeValue = 
+    selectedActivity?.label === "Outdoor activities"
+      ? selectedItems?.subTypeOutdoor
+      : selectedItems?.subTypeIutdoor;
 
+
+  // console.log("subTypeIutdoor", subTypeValue, selectedActivity?.label)
   function parseTitle(title: string) {
     const [mainTitle, italicPart] = title.split("<br>");
     const italicText = italicPart?.match(/<i>(.*?)<\/i>/)?.[1];
@@ -442,7 +449,6 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       handleClose();
     }
   }, [file]);
-
 
 
   const submitFormikFunction = (e: any) => {
@@ -642,7 +648,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 <div style={{ color: 'red' }}>{errors.activityType}</div>
               ) : null} */}
               <div style={{ marginTop: 20 }}>
-                <TitleText>SubType *</TitleText>
+                <TitleText>Sub Type *</TitleText>
                 <div className="checkboxContainer">
                   {subTypeActivity?.map((item: any, index) => {
 
@@ -1628,9 +1634,32 @@ const SelectImage = styled.button`
 `;
 
 const ButtonSubmit = styled.button`
-  padding: 10px;
+// padding: 10px;
   background-color: #2271b1;
-  color: #fff;
+  // color: #fff;
   margin-top: 20px;
-  border-radius: 5px;
+  // border-radius: 5px;
+
+display: inline-block;
+outline: 0;
+border: 0;
+cursor: pointer;
+will-change: box-shadow,transform;
+// background: radial-gradient( 100% 100% at 100% 0%, #89E5FF 0%, #5468FF 100% );
+box-shadow: 0px 2px 4px rgb(45 35 66 / 40%), 0px 7px 13px -3px rgb(45 35 66 / 30%), inset 0px -3px 0px rgb(58 65 111 / 50%);
+padding: 0 32px;
+border-radius: 6px;
+color: #fff;
+height: 48px;
+font-size: 18px;
+text-shadow: 0 1px 0 rgb(0 0 0 / 40%);
+transition: box-shadow 0.15s ease,transform 0.15s ease;
+&:hover {
+    box-shadow: 0px 4px 8px rgb(45 35 66 / 40%), 0px 7px 13px -3px rgb(45 35 66 / 30%), inset 0px -3px 0px #3c4fe0;
+    transform: translateY(-2px);
+}
+&:active{
+    box-shadow: inset 0px 3px 7px #3c4fe0;
+    transform: translateY(2px);
+}
 `;

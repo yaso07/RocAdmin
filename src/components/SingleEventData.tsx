@@ -37,8 +37,8 @@ const SingleEventData: React.FC<ModalProps> = ({
     const error = useSelector((state: any) => state.event.error)
 
     const toggleDrawer = (id: any) => {
-        const datas = {id: data, api : GET_EVENT_LIST }
-        // const data = {id: id, api : GET_EVENT_LIST }
+        // const datas = {id: data, api : GET_EVENT_LIST }
+        const datas = {id: id, api : GET_EVENT_LIST }
         setIsDrawerOpen(true);
         dispatch(fetchEventById(datas) as any)
         setDrawerType("Edit")

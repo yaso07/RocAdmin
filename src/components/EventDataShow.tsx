@@ -162,30 +162,8 @@ const EventDataShow = ({ drawerType }: Props) => {
 
 
 
-
-  // const [formData, setFormData] = useState({
-  //   DescriptionTitle: SingleEventData?.acf?.title || '',
-  //   introDescription: SingleEventData?.acf?.short_description || '',
-  //   moreInformation: SingleEventData?.acf?.long_description || '',
-  //   priceFrom: SingleEventData?.acf?.from_price || '',
-  //   priceTo: SingleEventData?.acf?.price_to || '',
-  //   DisplayName: SingleEventData?.acf?.display_name || '',
-  //   EmailAddress: SingleEventData?.acf?.email_address || '',
-  //   Prefix: SingleEventData?.acf?.telephone_number?.prefix || '',
-  //   Telephone: SingleEventData?.acf?.telephone_number?.number || '',
-  //   Website: SingleEventData?.acf?.website || '',
-  //   PlaceName: SingleEventData?.acf?.address?.place_name || '',
-  //   AddressLine: SingleEventData?.acf?.address?.address_line_1 || '',
-  //   AddressLineOptional: SingleEventData?.acf?.address?.address_line_2 || '',
-  //   Postcode: SingleEventData?.acf?.address?.postcode || '',
-  //   Facebook: SingleEventData?.acf?.social_media?.facebook || '',
-  //   Instagram: SingleEventData?.acf?.social_media?.instagram || '',
-  //   Twitter: SingleEventData?.acf?.social_media?.twitter || '',
-  //   AdditionalInfo: SingleEventData?.acf?.accessibility_additional_info || '',
-  //   AccessibilityURL: SingleEventData?.acf?.accessibility_url || '',
-  // });
   const [selectedOptionEvent, setSelectedOptionEvent] = useState("");
-  const [location, setLocation] = useState<any>({
+  const [location, setLocation] = useState<{ latitude: string | number, longitude: string | number }>({
     latitude: "",
     longitude: "",
   });
@@ -259,15 +237,6 @@ const EventDataShow = ({ drawerType }: Props) => {
         setFieldValue("AccessibilityURL", dataById?.acf?.accessibility_url); // not getting key from backend
         setFieldValue("DescriptionTitle", dataById?.acf?.title);
 
-        // const weekDay: any = []
-        // for (const key in dataById?.acf?.opening_hours) {
-        //   if (dataById?.acf?.opening_hours.hasOwnProperty(key)) {
-        //     if (dataById?.acf?.opening_hours[key].is_open == 1) {
-        //       weekDay.push({ value: key })
-        //     }
-        //   }
-        // }
-
         setSelectedItems({
           ...selectedItems,
           Type: dataById?.acf?.type,
@@ -277,19 +246,20 @@ const EventDataShow = ({ drawerType }: Props) => {
           Accessibility: dataById?.acf?.accessibility,
           BusRoutes: dataById?.acf?.bus_routes,
           Seasonality: dataById?.acf?.seasonality,
-          // WeekDays: weekDay,
         })
-
+        location.latitude = dataById?.acf?.map_location?.lat,
+        location.longitude = dataById?.acf?.map_location?.lng
+        setLocation({...location})
         const setTYpe = dataById?.acf?.type.map((item: any) => ({
           title: item.label,
           value: item.value,
         }));
         setFieldValue("Type", setTYpe)
-        const setLocation = dataById?.acf?.location.map((item: any) => ({
+        const setLocationData = dataById?.acf?.location.map((item: any) => ({
           title: item.label,
           value: item.value,
         }));
-        setFieldValue("Location", setLocation)
+        setFieldValue("Location", setLocationData)
         const setKeyFacilities = dataById?.acf?.key_facilities.map((item: any) => ({
           title: item.label,
           value: item.value,
@@ -479,7 +449,7 @@ const EventDataShow = ({ drawerType }: Props) => {
 
 
 
- 
+
 
 
 
@@ -655,7 +625,7 @@ const EventDataShow = ({ drawerType }: Props) => {
 
 
   const finalEventSubmition = () => {
-    
+
     const MonthDays = selectedItems.MonthDays?.map(day => day.value);
     const WeekDays = selectedItems.WeekDays?.map(day => day.value);
 
@@ -741,7 +711,7 @@ const EventDataShow = ({ drawerType }: Props) => {
       setIsDateValid(true)
     }
 
-    
+
     // return
     if (drawerType === "Edit") {
       const status = { id: dataById?._id, finalObject }
@@ -1835,10 +1805,32 @@ const SelectImage = styled.button`
 `;
 
 const ButtonSubmit = styled.button`
-  padding: 10px;
+  // padding: 10px;
   background-color: #2271b1;
-  color: #fff;
+  // color: #fff;
   margin-top: 20px;
-  border-radius: 5px;
+  // border-radius: 5px;
 
+display: inline-block;
+outline: 0;
+border: 0;
+cursor: pointer;
+will-change: box-shadow,transform;
+// background: radial-gradient( 100% 100% at 100% 0%, #89E5FF 0%, #5468FF 100% );
+box-shadow: 0px 2px 4px rgb(45 35 66 / 40%), 0px 7px 13px -3px rgb(45 35 66 / 30%), inset 0px -3px 0px rgb(58 65 111 / 50%);
+padding: 0 32px;
+border-radius: 6px;
+color: #fff;
+height: 48px;
+font-size: 18px;
+text-shadow: 0 1px 0 rgb(0 0 0 / 40%);
+transition: box-shadow 0.15s ease,transform 0.15s ease;
+&:hover {
+    box-shadow: 0px 4px 8px rgb(45 35 66 / 40%), 0px 7px 13px -3px rgb(45 35 66 / 30%), inset 0px -3px 0px #3c4fe0;
+    transform: translateY(-2px);
+}
+&:active{
+    box-shadow: inset 0px 3px 7px #3c4fe0;
+    transform: translateY(2px);
+}
 `

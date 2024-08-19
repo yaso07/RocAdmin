@@ -49,7 +49,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
       <div className="p-2 flex flex-col gap-y-3 border-r border-gray-300">
         <button
           onClick={() => toggleDrawer("add")}
-          className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md transform transition-transform duration-150 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 active:bg-blue-700 active:scale-95">
+          className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md transform transition-transform duration-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 active:bg-blue-700 active:scale-95">
           {isDrawerOpen ? "Close" : "Add"} Drawer
         </button>
 
@@ -58,11 +58,13 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
             eventList.map((item: any, index: number) => {
               return (
                 <div
-                  className={`flex items-center gap-x-5 border-b border-gray-300 p-2 cursor-pointer ${selectedList === index && "bg-indigo-300"}`}
+                  className={`
+                    
+                    flex items-center gap-x-5 border-b border-gray-300 p-2 cursor-pointer ${selectedList === index && "bg-indigo-300"}`}
                   key={index}
                   onClick={() => handleEventData(index, item?.image?.url)}
                 >
-                  <div style={{ width: "90px", height: "90px" }}>
+                  <div style={{ width: "80px", height: "80px" }}>
                     <img
                       className="w-full h-full rounded-md object-fit-cover"
                       src={item?.image?.url}
