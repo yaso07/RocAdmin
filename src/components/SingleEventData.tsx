@@ -202,7 +202,6 @@ const SingleEventData: React.FC<ModalProps> = ({
                             </ItemImageContainer>
                             <ResturantDetailsContainer>
                                 {EventListData.map((item: any, index: number) => {
-
                                     return (
                                         item?.nameValue &&
                                         <ResturantDetailsWrapper key={index}>

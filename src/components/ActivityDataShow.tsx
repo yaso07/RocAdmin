@@ -169,43 +169,62 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         location.latitude = dataById?.acf?.map_location?.lat,
           location.longitude = dataById?.acf?.map_location?.lng
         setLocation({ ...location })
-          setFieldValue("latitude", dataById?.acf?.map_location?.lat)
-          setFieldValue("longitude", dataById?.acf?.map_location?.lng)
-        const setTYpe = dataById?.acf?.sub_type.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("subTypeActivity", setTYpe)
-        const setLocations = dataById?.acf?.location.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("Location", setLocations)
-        const setKeyFacilities = dataById?.acf?.key_facilities.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("KeyFacilities", setKeyFacilities)
-        const setBookings = dataById?.acf?.booking_information.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("Booking", setBookings)
-        const setAccessibilitys = dataById?.acf?.accessibility.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("Accessibility", setAccessibilitys)
-        const setBusRoutes = dataById?.acf?.bus_routes.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("BusRoutes", setBusRoutes)
-        const setSeasonality = dataById?.acf?.seasonality.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("Seasonality", setSeasonality)
+        setFieldValue("latitude", dataById?.acf?.map_location?.lat)
+        setFieldValue("longitude", dataById?.acf?.map_location?.lng)
+        if (dataById?.acf?.sub_type) {
+
+          const setTYpe = dataById?.acf?.sub_type.map((item: any) => ({
+            title: item.label,
+            value: item.value,
+          }));
+          setFieldValue("subTypeActivity", setTYpe)
+        }
+        if (dataById?.acf?.location) {
+          const setLocations = dataById?.acf?.location.map((item: any) => ({
+            title: item.label,
+            value: item.value,
+          }));
+          setFieldValue("Location", setLocations)
+        }
+        if (dataById?.acf?.key_facilities) {
+
+          const setKeyFacilities = dataById?.acf?.key_facilities.map((item: any) => ({
+            title: item.label,
+            value: item.value,
+          }));
+          setFieldValue("KeyFacilities", setKeyFacilities)
+        }
+        if (dataById?.acf?.booking_information) {
+
+          const setBookings = dataById?.acf?.booking_information.map((item: any) => ({
+            title: item.label,
+            value: item.value,
+          }));
+          setFieldValue("Booking", setBookings)
+        }
+        if (dataById?.acf?.accessibility) {
+
+          const setAccessibilitys = dataById?.acf?.accessibility.map((item: any) => ({
+            title: item.label,
+            value: item.value,
+          }));
+          setFieldValue("Accessibility", setAccessibilitys)
+        }
+        if (dataById?.acf?.bus_routes) {
+
+          const setBusRoutes = dataById?.acf?.bus_routes.map((item: any) => ({
+            title: item.label,
+            value: item.value,
+          }));
+          setFieldValue("BusRoutes", setBusRoutes)
+        }
+        if (dataById?.acf?.seasonality) {
+          const setSeasonality = dataById?.acf?.seasonality.map((item: any) => ({
+            title: item.label,
+            value: item.value,
+          }));
+          setFieldValue("Seasonality", setSeasonality)
+        }
         setTimeState({ ...dataById?.acf?.opening_hours })
         setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
         setFieldValue("Parish", dataById?.acf?.parish?.value)
@@ -251,12 +270,12 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
   ) => {
     setSelectedItems((prevState: any) => {
       const newWeekDays = checked
-      ? [...prevState.WeekDays, { value }]
-      : prevState.WeekDays.filter((item: any) => item.value !== value);
+        ? [...prevState.WeekDays, { value }]
+        : prevState.WeekDays.filter((item: any) => item.value !== value);
       return { ...prevState, WeekDays: newWeekDays };
     });
-    if(checked){
-      setFieldValue(category, [{value}])
+    if (checked) {
+      setFieldValue(category, [{ value }])
     } else {
       setFieldValue(category, values.WeekDays.filter((item: any) => item.value !== value))
     }
@@ -271,7 +290,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       };
     });
   };
-  
+
   console.log(values.WeekDays)
   const handleTimeChangehour = (day: string, type: "opens" | "closes") => (time: string) => {
     setTimeState((prevState) => ({

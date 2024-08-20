@@ -221,129 +221,27 @@ const EventDataShow = ({ drawerType }: Props) => {
   useEffect(() => {
     if (drawerType === "Edit") {
       if (JSON.stringify(dataById)) {
-        setFieldValue("introDescription", dataById?.acf?.short_description);
-        setFieldValue("moreInformation", dataById?.acf?.long_description);
-        setFieldValue("priceFrom", dataById?.acf?.from_price); // not getting key from backend
-        setFieldValue("priceTo", dataById?.acf?.price_to);
-        setFieldValue("DisplayName", dataById?.acf?.display_name); // not getting key from backend
-        setFieldValue("EmailAddress", dataById?.acf?.email_address);
-        setFieldValue("Prefix", dataById?.acf?.telephone_number?.prefix);
-        setFieldValue("areaCode", dataById?.acf?.telephone_number?.area_code);
-        setFieldValue("Telephone", dataById?.acf?.telephone_number?.number);
-        setFieldValue("Website", dataById?.acf?.website);
-        setFieldValue("PlaceName", dataById?.acf?.address?.place_name);
-        setFieldValue("AddressLine", dataById?.acf?.address?.address_line_1);
-        setFieldValue("AddressLineOptional", dataById?.acf?.address?.address_line_2);
-        setFieldValue("Postcode", dataById?.acf?.address?.postcode);
-        setFieldValue("Facebook", dataById?.acf?.social_media.facebook);
-        setFieldValue("Instagram", dataById?.acf?.social_media.instagram);
-        setFieldValue("Twitter", dataById?.acf?.social_media.twitter);
-        setFieldValue("AdditionalInfo", dataById?.acf?.accessibility_additional_info); // not getting key from backend
-        setFieldValue("AccessibilityURL", dataById?.acf?.accessibility_url); // not getting key from backend
-        setFieldValue("DescriptionTitle", dataById?.acf?.title);
-
-        setSelectedItems({
-          ...selectedItems,
-          Type: dataById?.acf?.type,
-          Location: dataById?.acf?.location,
-          KeyFacilities: dataById?.acf?.key_facilities,
-          Booking: dataById?.acf?.booking_information,
-          Accessibility: dataById?.acf?.accessibility,
-          BusRoutes: dataById?.acf?.bus_routes,
-          Seasonality: dataById?.acf?.seasonality,
-        })
-        location.latitude = dataById?.acf?.map_location?.lat,
-          location.longitude = dataById?.acf?.map_location?.lng
-        setLocation({ ...location })
-        setFieldValue("latitude", dataById?.acf?.map_location?.lat)
-        setFieldValue("longitude", dataById?.acf?.map_location?.lng)
-        const setTYpe = dataById?.acf?.type.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("Type", setTYpe)
-        const setLocationData = dataById?.acf?.location.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("Location", setLocationData)
-        const setKeyFacilities = dataById?.acf?.key_facilities.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("KeyFacilities", setKeyFacilities)
-        const setBookings = dataById?.acf?.booking_information.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("Booking", setBookings)
-        const setAccessibilitys = dataById?.acf?.accessibility.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("Accessibility", setAccessibilitys)
-        const setBusRoutes = dataById?.acf?.bus_routes.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("BusRoutes", setBusRoutes)
-        const setSeasonality = dataById?.acf?.seasonality.map((item: any) => ({
-          title: item.label,
-          value: item.value,
-        }));
-        setFieldValue("Seasonality", setSeasonality)
-        setTimeState({ ...dataById?.acf?.opening_hours })
-        setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
-        setFieldValue("Parish", dataById?.acf?.parish?.value);
-        const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
-        setFile(image[0].url)
-        setFieldValue("file", image[0]?.url)
-        if (dataById?.acf?.eventType === "custom") {
-          setSelectedOptionEvent("option4")
-          const formatDateData = dataById?.acf?.event_dates.map((item: any) => ({
-            selectedDate: formatDate(item.date),
-            customStartTime: item.start_time,
-            customEndTime: item.end_time
-          }))
-          setDateTimeComponents([...formatDateData])
-          setIsDateValid(true)
-        } else if (dataById?.acf?.eventType === "monthly") {
-          // setDateState()
-          setSelectedOptionEvent("option3")
-          timeState.startTimeMonth = dataById?.acf?.start_time;
-          timeState.endTimeMonth = dataById?.acf?.end_time;
-          setTimeState({ ...timeState })
-          dateState.startDateMonth = dataById?.acf?.event_dates_start;
-          dateState.endDateMonth = dataById?.acf?.event_dates_end;
-          setDateState({ ...dateState })
-          const newMonthDay = dataById?.acf?.daysOfWeek.map((item: any) => ({
-            label: item,
-            value: item,
-          }));
-        setSelectedItems({
-            ...selectedItems,
-            Type: dataById?.acf?.type,
-            Location: dataById?.acf?.location,
-            KeyFacilities: dataById?.acf?.key_facilities,
-            Booking: dataById?.acf?.booking_information,
-            Accessibility: dataById?.acf?.accessibility,
-            BusRoutes: dataById?.acf?.bus_routes,
-            Seasonality: dataById?.acf?.seasonality,
-            MonthDays: newMonthDay,
-          })
-          setIsDateValid(true)
-        } else if (dataById?.acf?.eventType === "weekly") {
-          setSelectedOptionEvent("option2")
-          timeState.startTimeWeekly = dataById?.acf?.start_time;
-          timeState.endTimeWeekly = dataById?.acf?.end_time;
-          setTimeState({ ...timeState })
-          dateState.startDateWeekly = dataById?.acf?.event_dates_start;
-          dateState.endDateWeekly = dataById?.acf?.event_dates_end;
-          setDateState({ ...dateState })
-          const newWeekDay = dataById?.acf?.daysOfWeek.map((item: any) => ({
-            label: item,
-            value: item,
-          }));
+        if (Object.keys(dataById).length) {
+          setFieldValue("introDescription", dataById?.acf?.short_description);
+          setFieldValue("moreInformation", dataById?.acf?.long_description);
+          setFieldValue("priceFrom", dataById?.acf?.from_price); // not getting key from backend
+          setFieldValue("priceTo", dataById?.acf?.price_to);
+          setFieldValue("DisplayName", dataById?.acf?.display_name); // not getting key from backend
+          setFieldValue("EmailAddress", dataById?.acf?.email_address);
+          setFieldValue("Prefix", dataById?.acf?.telephone_number?.prefix);
+          setFieldValue("areaCode", dataById?.acf?.telephone_number?.area_code);
+          setFieldValue("Telephone", dataById?.acf?.telephone_number?.number);
+          setFieldValue("Website", dataById?.acf?.website);
+          setFieldValue("PlaceName", dataById?.acf?.address?.place_name);
+          setFieldValue("AddressLine", dataById?.acf?.address?.address_line_1);
+          setFieldValue("AddressLineOptional", dataById?.acf?.address?.address_line_2);
+          setFieldValue("Postcode", dataById?.acf?.address?.postcode);
+          setFieldValue("Facebook", dataById?.acf?.social_media.facebook);
+          setFieldValue("Instagram", dataById?.acf?.social_media.instagram);
+          setFieldValue("Twitter", dataById?.acf?.social_media.twitter);
+          setFieldValue("AdditionalInfo", dataById?.acf?.accessibility_additional_info); // not getting key from backend
+          setFieldValue("AccessibilityURL", dataById?.acf?.accessibility_url); // not getting key from backend
+          setFieldValue("DescriptionTitle", dataById?.acf?.title);
 
           setSelectedItems({
             ...selectedItems,
@@ -354,20 +252,141 @@ const EventDataShow = ({ drawerType }: Props) => {
             Accessibility: dataById?.acf?.accessibility,
             BusRoutes: dataById?.acf?.bus_routes,
             Seasonality: dataById?.acf?.seasonality,
-            WeekDays: newWeekDay,
           })
-          setIsDateValid(true)
+          location.latitude = dataById?.acf?.map_location?.lat,
+          location.longitude = dataById?.acf?.map_location?.lng
+          setLocation({ ...location })
+          setFieldValue("latitude", dataById?.acf?.map_location?.lat)
+          setFieldValue("longitude", dataById?.acf?.map_location?.lng)
+          if(dataById?.acf?.type){
+            const typeData = dataById?.acf?.type.map((item: any) => ({
+              title: item.label,
+              value: item.value,
+            }));
+            setFieldValue("Type", typeData)
+          }
+          if(dataById?.acf?.location){
 
-        } else if (dataById?.acf?.eventType === "daily") {
-          setSelectedOptionEvent("option1")
-          timeState.startTimeDaily = dataById?.acf?.start_time;
-          timeState.endTimeDaily = dataById?.acf?.end_time;
-          setTimeState({ ...timeState })
-          dateState.startDateDaily = dataById?.acf?.event_dates_start;
-          dateState.endDateDaily = dataById?.acf?.event_dates_end;
-          setDateState({ ...dateState })
+            const setLocationData = dataById?.acf?.location.map((item: any) => ({
+              title: item.label,
+              value: item.value,
+            }));
+            setFieldValue("Location", setLocationData)
+          }
+          if(dataById?.acf?.key_facilities){
 
-          setIsDateValid(true)
+            const setKeyFacilities = dataById?.acf?.key_facilities.map((item: any) => ({
+              title: item.label,
+              value: item.value,
+            }));
+            setFieldValue("KeyFacilities", setKeyFacilities)
+          }
+          if(dataById?.acf?.booking_information){
+
+            const setBookings = dataById?.acf?.booking_information.map((item: any) => ({
+              title: item.label,
+              value: item.value,
+            }));
+            setFieldValue("Booking", setBookings)
+          }
+          if(dataById?.acf?.accessibility){
+            const setAccessibilitys = dataById?.acf?.accessibility.map((item: any) => ({
+              title: item.label,
+              value: item.value,
+            }));
+            setFieldValue("Accessibility", setAccessibilitys)
+          }
+          if(dataById?.acf?.bus_routes){
+            const setBusRoutes = dataById?.acf?.bus_routes.map((item: any) => ({
+              title: item.label,
+              value: item.value,
+            }));
+            setFieldValue("BusRoutes", setBusRoutes)
+          }
+          if(dataById?.acf?.seasonality){
+            const setSeasonality = dataById?.acf?.seasonality.map((item: any) => ({
+              title: item.label,
+              value: item.value,
+            }));
+            setFieldValue("Seasonality", setSeasonality)
+          }
+          setTimeState({ ...dataById?.acf?.opening_hours })
+          setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
+          setFieldValue("Parish", dataById?.acf?.parish?.value);
+          const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
+          setFile(image[0].url)
+          setFieldValue("file", image[0]?.url)
+          if (dataById?.acf?.eventType === "custom") {
+            setSelectedOptionEvent("option4")
+            const formatDateData = dataById?.acf?.event_dates.map((item: any) => ({
+              selectedDate: formatDate(item.date),
+              customStartTime: item.start_time,
+              customEndTime: item.end_time
+            }))
+            setDateTimeComponents([...formatDateData])
+            setIsDateValid(true)
+          } else if (dataById?.acf?.eventType === "monthly") {
+            // setDateState()
+            setSelectedOptionEvent("option3")
+            timeState.startTimeMonth = dataById?.acf?.start_time;
+            timeState.endTimeMonth = dataById?.acf?.end_time;
+            setTimeState({ ...timeState })
+            dateState.startDateMonth = dataById?.acf?.event_dates_start;
+            dateState.endDateMonth = dataById?.acf?.event_dates_end;
+            setDateState({ ...dateState })
+            const newMonthDay = dataById?.acf?.daysOfWeek.map((item: any) => ({
+              label: item,
+              value: item,
+            }));
+            setSelectedItems({
+              ...selectedItems,
+              Type: dataById?.acf?.type,
+              Location: dataById?.acf?.location,
+              KeyFacilities: dataById?.acf?.key_facilities,
+              Booking: dataById?.acf?.booking_information,
+              Accessibility: dataById?.acf?.accessibility,
+              BusRoutes: dataById?.acf?.bus_routes,
+              Seasonality: dataById?.acf?.seasonality,
+              MonthDays: newMonthDay,
+            })
+            setIsDateValid(true)
+          } else if (dataById?.acf?.eventType === "weekly") {
+            setSelectedOptionEvent("option2")
+            timeState.startTimeWeekly = dataById?.acf?.start_time;
+            timeState.endTimeWeekly = dataById?.acf?.end_time;
+            setTimeState({ ...timeState })
+            dateState.startDateWeekly = dataById?.acf?.event_dates_start;
+            dateState.endDateWeekly = dataById?.acf?.event_dates_end;
+            setDateState({ ...dateState })
+            const newWeekDay = dataById?.acf?.daysOfWeek.map((item: any) => ({
+              label: item,
+              value: item,
+            }));
+
+            setSelectedItems({
+              ...selectedItems,
+              Type: dataById?.acf?.type,
+              Location: dataById?.acf?.location,
+              KeyFacilities: dataById?.acf?.key_facilities,
+              Booking: dataById?.acf?.booking_information,
+              Accessibility: dataById?.acf?.accessibility,
+              BusRoutes: dataById?.acf?.bus_routes,
+              Seasonality: dataById?.acf?.seasonality,
+              WeekDays: newWeekDay,
+            })
+            setIsDateValid(true)
+
+          } else if (dataById?.acf?.eventType === "daily") {
+            setSelectedOptionEvent("option1")
+            timeState.startTimeDaily = dataById?.acf?.start_time;
+            timeState.endTimeDaily = dataById?.acf?.end_time;
+            setTimeState({ ...timeState })
+            dateState.startDateDaily = dataById?.acf?.event_dates_start;
+            dateState.endDateDaily = dataById?.acf?.event_dates_end;
+            setDateState({ ...dateState })
+
+            setIsDateValid(true)
+          }
         }
       }
     } else {
