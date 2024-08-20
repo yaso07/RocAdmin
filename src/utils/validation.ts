@@ -53,6 +53,8 @@ export const eventSchema = Yup.object().shape({
   //   }
   // ),
 });
+
+
 export const activitySchema = Yup.object().shape({
   DescriptionTitle: Yup.string().required('Please enter title'),
   introDescription: Yup.string().required('Please enter short description'),
@@ -111,7 +113,7 @@ export const activitySchema = Yup.object().shape({
       })
         .required(),
     ),
-    WeekDays: Yup.array()
+  WeekDays: Yup.array()
     .min(1, 'Please select at least one opening hours')
     .of(
       Yup.object().shape({
@@ -154,22 +156,22 @@ export const activitySchema = Yup.object().shape({
   Website: Yup.string().matches(
     /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
     "Please enter valid URL").required('Please Fill website URL'),
-    PlaceName: Yup.string().required('Please Fill place name'),
-    AddressLine: Yup.string().required('Please Fill address line'),
-    AddressLineOptional: Yup.string(),
-    Parish: Yup.string().required('Please Fill parish'),
-    latitude: Yup.string().required('Please Fill latitude'),
-    longitude: Yup.string().required('Please Fill longitude'),
-    Postcode: Yup.string().required('Please Fill post code'),
-    Accessibility: Yup.array()
-      .min(1, 'Please select at least one accessibility')
-      .of(
-        Yup.object().shape({
-          value: Yup.string().required(),
-          title: Yup.string().required(),
-        })
-          .required(),
-      ),
+  PlaceName: Yup.string().required('Please Fill place name'),
+  AddressLine: Yup.string().required('Please Fill address line'),
+  AddressLineOptional: Yup.string(),
+  Parish: Yup.string().required('Please Fill parish'),
+  latitude: Yup.string().required('Please Fill latitude'),
+  longitude: Yup.string().required('Please Fill longitude'),
+  Postcode: Yup.string().required('Please Fill post code'),
+  Accessibility: Yup.array()
+    .min(1, 'Please select at least one accessibility')
+    .of(
+      Yup.object().shape({
+        value: Yup.string().required(),
+        title: Yup.string().required(),
+      })
+        .required(),
+    ),
   Facebook: Yup.string().matches(
     /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
     "Please enter valid URL"),

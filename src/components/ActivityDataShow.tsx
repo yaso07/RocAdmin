@@ -168,7 +168,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         location.latitude = dataById?.acf?.map_location?.lat,
           location.longitude = dataById?.acf?.map_location?.lng
         setLocation({ ...location })
-
+          setFieldValue("latitude", dataById?.acf?.map_location?.lat)
+          setFieldValue("longitude", dataById?.acf?.map_location?.lng)
         const setTYpe = dataById?.acf?.sub_type.map((item: any) => ({
           title: item.label,
           value: item.value,
@@ -998,7 +999,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                     Telephone
                   </h6>
                   <input
-                    type="text"
+                    type="number"
                     className="custom-inputInfo"
                     placeholder="153400000"
                     value={values.Telephone}
