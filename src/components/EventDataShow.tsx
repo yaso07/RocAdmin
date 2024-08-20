@@ -258,13 +258,7 @@ const EventDataShow = ({ drawerType }: Props) => {
           setLocation({ ...location })
           setFieldValue("latitude", dataById?.acf?.map_location?.lat)
           setFieldValue("longitude", dataById?.acf?.map_location?.lng)
-          if(dataById?.acf?.type){
-            const typeData = dataById?.acf?.type.map((item: any) => ({
-              title: item.label,
-              value: item.value,
-            }));
-            setFieldValue("Type", typeData)
-          }
+
           if(dataById?.acf?.location){
 
             const setLocationData = dataById?.acf?.location.map((item: any) => ({
@@ -384,9 +378,15 @@ const EventDataShow = ({ drawerType }: Props) => {
             dateState.startDateDaily = dataById?.acf?.event_dates_start;
             dateState.endDateDaily = dataById?.acf?.event_dates_end;
             setDateState({ ...dateState })
-
             setIsDateValid(true)
           }
+        }
+        if(dataById?.acf?.type.length){
+          const typeData = dataById?.acf?.type.map((item: any) => ({
+            title: item.label,
+            value: item.value,
+          }));
+          setFieldValue("Type", typeData)
         }
       }
     } else {
