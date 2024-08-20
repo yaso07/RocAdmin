@@ -42,6 +42,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
   const dispatch = useDispatch();
 
   const currentTime = moment(new Date()).format("HH:mm");
+  const newTime = moment(currentTime, "HH:mm").add(2, 'hours').format("HH:mm");
   const [timeState, setTimeState] = useState<TimeState>({});
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false)
@@ -265,7 +266,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         [value]: {
           is_open: checked ? "1" : "0",
           opens: currentTime,
-          closes: currentTime
+          closes: newTime
         },
       };
     });
