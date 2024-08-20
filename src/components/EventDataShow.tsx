@@ -1046,7 +1046,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                 </div> */}
               </div>
               <div style={{ marginTop: 20, marginBottom: 20 }}>
-                <TitleText>Key facilities *</TitleText>
+                <TitleText>Key Features *</TitleText>
                 <div className="checkboxContainer">
                   {keyfacilityData.map((item, index) => {
                     return (
@@ -1116,7 +1116,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                 />
               </div>
               {isDateValid ? (
-                <div style={{ color: 'red' }}>Please select event date</div>
+                <div style={{ color: 'red' }}>Please select event date and time</div>
               ) : null}
               <div>
                 <TitleText style={{ margin: "20px 0px" }}>

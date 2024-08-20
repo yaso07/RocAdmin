@@ -275,7 +275,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
       return { ...prevState, WeekDays: newWeekDays };
     });
     if (checked) {
-      setFieldValue(category, [{ value }])
+      setFieldValue(category, [...values.WeekDays, { value }])
     } else {
       setFieldValue(category, values.WeekDays.filter((item: any) => item.value !== value))
     }
@@ -291,7 +291,6 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
     });
   };
 
-  console.log(values.WeekDays)
   const handleTimeChangehour = (day: string, type: "opens" | "closes") => (time: string) => {
     setTimeState((prevState) => ({
       ...prevState,
@@ -1140,7 +1139,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                   ) : null}
                 </div>
               </div>
-              <TitleText>Parish</TitleText>
+              <TitleText>Parish *</TitleText>
               <div
                 style={{
                   display: "grid",
@@ -1277,7 +1276,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
               {errors.BusRoutes && touched.BusRoutes ? (
                 <div style={{ color: 'red' }}>{errors.BusRoutes}</div>
               ) : null}
-              <TitleText style={{ marginTop: 10 }}>Opening hours</TitleText>
+              <TitleText style={{ marginTop: 10 }}>Opening hours *</TitleText>
               <TitleTextMain>
                 If you are open all day,please leave the startend date blank
               </TitleTextMain>
@@ -1344,14 +1343,21 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 }}
               >
                 <AddressInfo>Facebook</AddressInfo>
-                <InputBoxWithImage
-                  value={values.Facebook}
-                  name="Facebook"
-                  onchange={handleChange}
-                  handleBlur={handleBlur}
-                  error={errors.Facebook}
-                  touch={touched.Facebook && errors.Facebook}
-                />
+                <div style={{ width: '100%' }}>
+
+                  <InputBoxWithImage
+                    value={values.Facebook}
+                    name="Facebook"
+                    onchange={handleChange}
+                    handleBlur={handleBlur}
+                  // error={errors.Facebook}
+                  // touch={touched.Facebook && errors.Facebook}
+                  />
+
+                  {touched.Facebook && errors.Facebook ? (
+                    <div style={{ color: 'red' }}>{errors.Facebook}</div>
+                  ) : null}
+                </div>
               </div>
               <div
                 style={{
@@ -1362,14 +1368,19 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 }}
               >
                 <AddressInfo>Instagram</AddressInfo>
-                <InputBoxWithImage
-                  value={values.Instagram}
-                  name="Instagram"
-                  onchange={handleChange}
-                  handleBlur={handleBlur}
-                  error={errors.Instagram}
-                  touch={touched.Instagram && errors.Instagram}
-                />
+                <div style={{ width: '100%' }}>
+                  <InputBoxWithImage
+                    value={values.Instagram}
+                    name="Instagram"
+                    onchange={handleChange}
+                    handleBlur={handleBlur}
+                  // error={errors.Instagram}
+                  // touch={touched.Instagram && errors.Instagram}
+                  />
+                  {touched.Instagram && errors.Instagram ? (
+                    <div style={{ color: 'red' }}>{errors.Instagram}</div>
+                  ) : null}
+                </div>
               </div>
               <div
                 style={{
@@ -1380,14 +1391,19 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
                 }}
               >
                 <AddressInfo>Twitter</AddressInfo>
-                <InputBoxWithImage
-                  value={values.Twitter}
-                  name="Twitter"
-                  onchange={handleChange}
-                  handleBlur={handleBlur}
-                  error={errors.Twitter}
-                  touch={touched.Twitter && errors.Twitter}
-                />
+                <div style={{ width: '100%' }}>
+                  <InputBoxWithImage
+                    value={values.Twitter}
+                    name="Twitter"
+                    onchange={handleChange}
+                    handleBlur={handleBlur}
+                    // error={errors.Twitter}
+                    // touch={touched.Twitter && errors.Twitter}
+                  />
+                  {touched.Twitter && errors.Twitter ? (
+                    <div style={{ color: 'red' }}>{errors.Twitter}</div>
+                  ) : null}
+                </div>
               </div>
               {/* <TitleText>Tripadvisor</TitleText>
             <TitleTextMain>
