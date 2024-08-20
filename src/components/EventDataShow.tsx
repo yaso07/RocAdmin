@@ -255,6 +255,8 @@ const EventDataShow = ({ drawerType }: Props) => {
         location.latitude = dataById?.acf?.map_location?.lat,
           location.longitude = dataById?.acf?.map_location?.lng
         setLocation({ ...location })
+        setFieldValue("latitude", dataById?.acf?.map_location?.lat)
+        setFieldValue("longitude", dataById?.acf?.map_location?.lng)
         const setTYpe = dataById?.acf?.type.map((item: any) => ({
           title: item.label,
           value: item.value,
@@ -304,6 +306,7 @@ const EventDataShow = ({ drawerType }: Props) => {
             customEndTime: item.end_time
           }))
           setDateTimeComponents([...formatDateData])
+          setIsDateValid(true)
         } else if (dataById?.acf?.eventType === "monthly") {
           // setDateState()
           setSelectedOptionEvent("option3")
@@ -313,12 +316,22 @@ const EventDataShow = ({ drawerType }: Props) => {
           dateState.startDateMonth = dataById?.acf?.event_dates_start;
           dateState.endDateMonth = dataById?.acf?.event_dates_end;
           setDateState({ ...dateState })
-          dataById?.acf?.daysOfWeek.map((val: string) =>{
-            selectedItems?.MonthDays.push({label: val, value: val})
-            setSelectedItems({
-              ...selectedItems 
-            })
+          const newMonthDay = dataById?.acf?.daysOfWeek.map((item: any) => ({
+            label: item,
+            value: item,
+          }));
+        setSelectedItems({
+            ...selectedItems,
+            Type: dataById?.acf?.type,
+            Location: dataById?.acf?.location,
+            KeyFacilities: dataById?.acf?.key_facilities,
+            Booking: dataById?.acf?.booking_information,
+            Accessibility: dataById?.acf?.accessibility,
+            BusRoutes: dataById?.acf?.bus_routes,
+            Seasonality: dataById?.acf?.seasonality,
+            MonthDays: newMonthDay,
           })
+          setIsDateValid(true)
         } else if (dataById?.acf?.eventType === "weekly") {
           setSelectedOptionEvent("option2")
           timeState.startTimeWeekly = dataById?.acf?.start_time;
@@ -327,13 +340,23 @@ const EventDataShow = ({ drawerType }: Props) => {
           dateState.startDateWeekly = dataById?.acf?.event_dates_start;
           dateState.endDateWeekly = dataById?.acf?.event_dates_end;
           setDateState({ ...dateState })
-          dataById?.acf?.daysOfWeek.map((val: string) =>{
-            selectedItems?.WeekDays.push({label: val, value: val})
-            setSelectedItems({
-              ...selectedItems 
-            })
+          const newWeekDay = dataById?.acf?.daysOfWeek.map((item: any) => ({
+            label: item,
+            value: item,
+          }));
+
+          setSelectedItems({
+            ...selectedItems,
+            Type: dataById?.acf?.type,
+            Location: dataById?.acf?.location,
+            KeyFacilities: dataById?.acf?.key_facilities,
+            Booking: dataById?.acf?.booking_information,
+            Accessibility: dataById?.acf?.accessibility,
+            BusRoutes: dataById?.acf?.bus_routes,
+            Seasonality: dataById?.acf?.seasonality,
+            WeekDays: newWeekDay,
           })
-          
+          setIsDateValid(true)
 
         } else if (dataById?.acf?.eventType === "daily") {
           setSelectedOptionEvent("option1")
@@ -343,6 +366,8 @@ const EventDataShow = ({ drawerType }: Props) => {
           dateState.startDateDaily = dataById?.acf?.event_dates_start;
           dateState.endDateDaily = dataById?.acf?.event_dates_end;
           setDateState({ ...dateState })
+
+          setIsDateValid(true)
         }
       }
     } else {
@@ -668,7 +693,7 @@ const EventDataShow = ({ drawerType }: Props) => {
       } else if (selectedOptionEvent === "option1") {
         eventDateValidation(selectedOptionEvent, dateState, setIsDateValid, timeState)
       }
-    } 
+    }
 
   }, [selectedOptionEvent,
     selectedItems.MonthDays.length,
@@ -687,7 +712,6 @@ const EventDataShow = ({ drawerType }: Props) => {
     timeState.endTimeMonth,
     isDateValid
   ])
-
 
   const finalEventSubmition = () => {
 
@@ -772,11 +796,10 @@ const EventDataShow = ({ drawerType }: Props) => {
       eventDateValidation(selectedOptionEvent, dateState, setIsDateValid, timeState)
     }
     // console.log(finalObject, "finalObject");
-    if (isDateValid === null) {
-      setIsDateValid(true)
-    }
-    
-    
+    // if (isDateValid === null) {
+    //   setIsDateValid(true)
+    // }
+
     if (isDateValid === false) {
       if (drawerType === "Edit") {
         const status = { id: dataById?._id, finalObject }
@@ -868,6 +891,8 @@ const EventDataShow = ({ drawerType }: Props) => {
         })
         setFile("")
       }
+    } else {
+      setIsDateValid(true)
     }
 
   }
