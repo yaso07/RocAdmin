@@ -34,8 +34,7 @@ const TextField: FC<InputProps> = ({
             fontSize: ".875em",
             color: "#757575",
             margin: "20px 0px",
-          }}
-        >
+          }}>
           {description}
         </p>
         <textarea
@@ -46,7 +45,7 @@ const TextField: FC<InputProps> = ({
           onBlur={handleBlur}
           maxLength={maxLength}
           name={name}
-          style={{marginTop:20}}
+          style={{ marginTop: 20 }}
         />
         {letterValueShow && (
           <div className="char-counterTextarea">
@@ -62,7 +61,6 @@ const TextField: FC<InputProps> = ({
 };
 
 export default TextField;
-
 
 const TitleText = styled.p`
   display: block;

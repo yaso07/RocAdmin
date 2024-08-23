@@ -1,8 +1,8 @@
-import { FC } from "react";
 import styled from "styled-components";
 import DatePicker from "../DateAndTimePicker/DatePicker";
 import TimePicker from "../DateAndTimePicker/TimePicker";
 import Checkbox from "../InputBox/Checkbox";
+import { FC } from "react";
 
 interface InputProps {
   dateTimeComponents?: any;
@@ -38,7 +38,7 @@ const MenuField: FC<InputProps> = ({
   setCustomEndTime,
   setSelectedDate,
   selectedOption,
-  handleChange
+  handleChange,
 }) => {
   // const [selectedOption, setSelectedOption] = useState("");
 
@@ -106,7 +106,12 @@ const MenuField: FC<InputProps> = ({
                         (items: any) => items.value === item.value
                       )}
                       onCheckboxChange={(value, checked) =>
-                        handleCheckboxChange("WeekDays", value, checked, item.title)
+                        handleCheckboxChange(
+                          "WeekDays",
+                          value,
+                          checked,
+                          item.title
+                        )
                       }
                     />
                   </div>
@@ -171,7 +176,12 @@ const MenuField: FC<InputProps> = ({
                         (items: any) => items.value === item.value
                       )}
                       onCheckboxChange={(value, checked) =>
-                        handleCheckboxChange("MonthDays", value, checked, item.title)
+                        handleCheckboxChange(
+                          "MonthDays",
+                          value,
+                          checked,
+                          item.title
+                        )
                       }
                     />
                   </div>
@@ -239,7 +249,9 @@ const MenuField: FC<InputProps> = ({
                       value={component.customEndTime}
                       onChange={(time) => setCustomEndTime(index, time)}
                     />
-                    <button onClick={() => removeDateTimeComponent(index)}>(X)</button>
+                    <button onClick={() => removeDateTimeComponent(index)}>
+                      (X)
+                    </button>
                   </CustomTimeWraaper>
                 </CustomContainer>
               ))}

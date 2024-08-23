@@ -6,7 +6,7 @@ import {
 } from "../api/EventSlice/eventThunk";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import moment from "moment";
+
 import ReusableInput from "./InputBox/ReusableInput";
 import TextField from "./InputBox/TextField";
 import Checkbox from "./InputBox/Checkbox";
@@ -22,6 +22,7 @@ import { AccessibilityData, BookingData, BusRoutesData, countryCodes, keyfacilit
 import { useFormik } from "formik";
 import { eventsSchema } from "../utils/validation";
 import { checkEndData, eventDateValidation } from "../utils/commanFun";
+import moment from "moment";
 
 interface Acf {
   title: string;
@@ -539,10 +540,7 @@ const EventDataShow = ({ drawerType }: Props) => {
   ) => {
     setSelectedItems((prevSelectedItems) => {
       const updatedCategory = checked
-        ? [
-          ...prevSelectedItems[category],
-          { label: label, value },
-        ]
+        ? [...prevSelectedItems[category], { label: label, value }]
         : prevSelectedItems[category].filter((item) => item.value !== value);
 
       return {
@@ -1075,10 +1073,10 @@ const EventDataShow = ({ drawerType }: Props) => {
                 ) : null}
               </div>
               <div>
-                <TitleText>
-                  Event dates *
+                <TitleText>Event dates *</TitleText>
+                <TitleText style={{ marginTop: 20 }}>
+                  How often does this occur?
                 </TitleText>
-                <TitleText style={{ marginTop: 20 }}>How often does this occur?</TitleText>
                 <TitleTextMain style={{ marginTop: 20 }}>
                   You can manually add, remove and amend dates once they've been
                   generated via the below.
@@ -1135,8 +1133,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                       display: "flex",
                       alignItems: "center",
                       marginTop: 20,
-                    }}
-                  >
+                    }}>
                     <PriceInputText>£</PriceInputText>
                     <input
                       type="number"
@@ -1159,8 +1156,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                       display: "flex",
                       alignItems: "center",
                       marginTop: 20,
-                    }}
-                  >
+                    }}>
                     <PriceInputText>£</PriceInputText>
                     <input
                       type="number"
@@ -1183,9 +1179,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr 1fr",
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 {BookingData.map((item, index) => {
                   return (
                     <div style={{ marginBottom: 10 }} key={index}>
@@ -1245,7 +1240,9 @@ const EventDataShow = ({ drawerType }: Props) => {
               </TitleTextMain>
               <div style={{ display: "flex", gap: 24, marginTop: 20 }}>
                 <div style={{ width: 140 }}>
-                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Area Code</h6>
+                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>
+                    Area Code
+                  </h6>
                   <Select
                     id="country-code"
                     name="areaCode"
@@ -1260,7 +1257,9 @@ const EventDataShow = ({ drawerType }: Props) => {
                   </Select>
                 </div>
                 <div style={{ width: 120 }}>
-                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Prefix</h6>
+                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>
+                    Prefix
+                  </h6>
                   <div className="input-wrapper">
                     <input
                       type="number"
@@ -1277,7 +1276,9 @@ const EventDataShow = ({ drawerType }: Props) => {
                   ) : null}
                 </div>
                 <div style={{ width: "100%" }}>
-                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>Telephone</h6>
+                  <h6 style={{ marginBottom: 20, fontWeight: "normal" }}>
+                    Telephone
+                  </h6>
                   <input
                     type="number"
                     className="custom-inputInfo"
@@ -1312,9 +1313,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 <AddressInfo>Place name</AddressInfo>
                 <div style={{ width: '100%' }} >
 
@@ -1338,8 +1338,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Address line 1</AddressInfo>
                 <div style={{ width: '100%' }} >
                   <input
@@ -1362,8 +1361,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Address line 2</AddressInfo>
 
 
@@ -1382,8 +1380,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Postcode</AddressInfo>
                 <div style={{ width: '100%' }} >
                   <input
@@ -1407,9 +1404,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                   gridTemplateColumns: "1fr 1fr",
                   gridGap: 10,
                   marginBottom: 20,
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 {ParishData.map((item, index) => {
                   return (
                     <div key={index}>
@@ -1476,9 +1472,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 {SeasonalityData.map((item, index) => {
                   return (
                     <div style={{ marginBottom: 10 }} key={index}>
@@ -1504,9 +1499,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 {BusRoutesData.map((item, index) => {
                   const { mainTitle, italicText } = parseTitle(item.title);
                   return (
@@ -1543,8 +1537,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Facebook</AddressInfo>
                 <div style={{ width: '100%' }}>
 
@@ -1568,8 +1561,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Instagram</AddressInfo>
                 <div style={{ width: '100%' }}>
                   <InputBoxWithImage
@@ -1591,8 +1583,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   gap: 20,
                   alignItems: "center",
                   marginBottom: 30,
-                }}
-              >
+                }}>
                 <AddressInfo>Twitter</AddressInfo>
                 <div style={{ width: '100%' }}>
                   <InputBoxWithImage
@@ -1643,8 +1634,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   fontSize: ".875em",
                   color: "#757575",
                   marginTop: 20,
-                }}
-              >
+                }}>
                 To help users of jersey.com find the information they need,
                 select the most accurate filters from the list below.
               </p>
@@ -1653,9 +1643,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                   display: "flex",
                   flexDirection: "column",
                   gap: 20,
-                  marginTop: 20
-                }}
-              >
+                  marginTop: 20,
+                }}>
                 {AccessibilityData.map((item, index) => {
                   return (
                     <div key={index}>
@@ -1689,8 +1678,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   fontSize: "1em",
                   fontWeight: 500,
                   marginBottom: 10,
-                }}
-              >
+                }}>
                 Accessibility URL
               </p>
               <p
@@ -1698,8 +1686,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   fontSize: ".875em",
                   color: "#757575",
                   marginTop: 20,
-                }}
-              >
+                }}>
                 It is recommended that you have an accessibility page on your
                 website, include a link here.
               </p>
@@ -1725,8 +1712,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   fontSize: 17,
                   fontWeight: "600",
                   margin: "20px 0px",
-                }}
-              >
+                }}>
                 Images
               </p>
               <ImageInfoText>
@@ -1758,8 +1744,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                     fontSize: 17,
                     fontWeight: "600",
                     margin: "20px 0px",
-                  }}
-                >
+                  }}>
                   Header image *
                 </p>
                 <div
@@ -1768,9 +1753,14 @@ const EventDataShow = ({ drawerType }: Props) => {
                     borderLeft: "1px solid #ccc",
                     borderRight: "1px solid #ccc",
                     height: 300,
-                    marginTop: 20
-                  }}
-                >   <img src={file} style={{ width: 100, marginTop: 20, marginLeft: 20 }} /></div>
+                    marginTop: 20,
+                  }}>
+                  {" "}
+                  <img
+                    src={file}
+                    style={{ width: 100, marginTop: 20, marginLeft: 20 }}
+                  />
+                </div>
                 <div
                   style={{
                     border: "1px solid #ccc",
@@ -1778,8 +1768,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                     justifyContent: "space-between",
                     alignItems: "center",
                     padding: 10,
-                  }}
-                >
+                  }}>
                   <ButtonText onClick={handleShow}>Add Image</ButtonText>
                   <MaximumImageValue>
                     Maximum number of images:{" "}
@@ -1797,8 +1786,7 @@ const EventDataShow = ({ drawerType }: Props) => {
               animation={false}
               size="xl"
               aria-labelledby="contained-modal-title-vcenter"
-              centered
-            >
+              centered>
               <Modal.Header closeButton>
                 <Modal.Title>Add Image to Gallery</Modal.Title>
               </Modal.Header>
@@ -1808,8 +1796,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   justifyContent: "center",
                   alignItems: "center",
                   height: "50vh",
-                }}
-              >
+                }}>
                 <div
                   style={{
                     display: "flex",
@@ -1844,8 +1831,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   style={{
                     cursor: file != undefined ? "pointer" : "not-allowed",
                   }}
-                  onClick={handleClose}
-                >
+                  onClick={handleClose}>
                   Select
                 </SelectImage>
               </Modal.Footer>
