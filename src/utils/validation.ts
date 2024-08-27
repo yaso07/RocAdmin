@@ -123,7 +123,8 @@ export const activitySchema = Yup.object().shape({
       })
         .required(),
     ),
-  priceFrom: Yup.string().required("Please enter price from")
+  // priceFrom: Yup.string().required("Please enter price from")
+  priceFrom: Yup.string()
     .test(
       'is-positive',
       'The price must be greater than 0!',
@@ -133,7 +134,7 @@ export const activitySchema = Yup.object().shape({
         return !isNaN(number) && number > 0;
       }
     ),
-  priceTo: Yup.string().required("Please enter Price to")
+  priceTo: Yup.string()
     .test(
       'is-positive',
       'The price must be greater than the price from!',
@@ -141,7 +142,7 @@ export const activitySchema = Yup.object().shape({
         const { priceFrom } = context.parent as { priceFrom: string };
         const number = parseFloat(value);
         const fromPriceNumber = parseFloat(priceFrom);
-        return !isNaN(number) && number >= 1 && number > fromPriceNumber;
+        return !isNaN(number) && number >= 0 && number >= fromPriceNumber;
       }
     )
     .when(['priceFrom'], (priceFrom: string | any, schema: Yup.StringSchema) =>
