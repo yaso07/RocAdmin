@@ -834,7 +834,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
               </div>
               <div>
                 <TitleText style={{ margin: "20px 0px" }}>
-                  Price from / to
+                  Price from / to *
                 </TitleText>
                 <p style={{ fontSize: 15, fontWeight: "400" }}>
                   When entering costs, please don’t use any decimal places
@@ -843,7 +843,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
               </div>
               <InputContainer>
                 <div>
-                  <TitleText>Price from *</TitleText>
+                  <TitleText>Price from</TitleText>
                   <div
                     style={{
                       display: "flex",

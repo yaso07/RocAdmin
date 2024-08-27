@@ -1,7 +1,7 @@
 
 import * as Yup from "yup";
 
-
+// old one. this is not in use
 export const eventSchema = Yup.object().shape({
   title: Yup.string().required('Please enter title'),
   email_address: Yup.string().trim()
@@ -53,6 +53,8 @@ export const eventSchema = Yup.object().shape({
   //   }
   // ),
 });
+
+
 
 
 export const activitySchema = Yup.object().shape({
@@ -197,6 +199,11 @@ export const activitySchema = Yup.object().shape({
 });
 
 
+
+
+
+//  EVENT VALIATION SCHEMA
+
 export const eventsSchema = Yup.object().shape({
   DescriptionTitle: Yup.string().required('Please enter title'),
   introDescription: Yup.string().required('Please enter short description'),
@@ -254,17 +261,17 @@ export const eventsSchema = Yup.object().shape({
       })
         .required(),
     ),
-  priceFrom: Yup.string().required("Please enter price from")
+  priceFrom: Yup.string()
     .test(
       'is-positive',
       'The price must be greater than 0!',
       (value: any) => {
         // Convert the string to a number for validation
         const number = parseFloat(value);
-        return !isNaN(number) && number > 0;
+        return !isNaN(number) && number >= 0;
       }
     ),
-  priceTo: Yup.string().required("Please enter Price to")
+  priceTo: Yup.string()
     .test(
       'is-positive',
       'The price must be greater than the price from!',
@@ -272,7 +279,7 @@ export const eventsSchema = Yup.object().shape({
         const { priceFrom } = context.parent as { priceFrom: string };
         const number = parseFloat(value);
         const fromPriceNumber = parseFloat(priceFrom);
-        return !isNaN(number) && number >= 1 && number > fromPriceNumber;
+        return !isNaN(number) && number >= 0 && number >= fromPriceNumber;
       }
     )
     .when(['priceFrom'], (priceFrom: string | any, schema: Yup.StringSchema) =>
@@ -294,7 +301,7 @@ export const eventsSchema = Yup.object().shape({
     /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
     "Please enter valid URL").required('Please fill website URL'),
   PlaceName: Yup.string().required('Please fill place name'),
-  AddressLine: Yup.string().required('Please fill address line'),
+  AddressLine: Yup.string(),
   AddressLineOptional: Yup.string(),
   Parish: Yup.string().required('Please fill parish'),
   latitude: Yup.string().required('Please fill latitude'),

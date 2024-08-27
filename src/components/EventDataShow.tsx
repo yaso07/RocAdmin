@@ -128,8 +128,8 @@ const EventDataShow = ({ drawerType }: Props) => {
     DescriptionTitle: "",
     introDescription: "",
     moreInformation: "",
-    priceFrom: "",
-    priceTo: "",
+    priceFrom: "0",
+    priceTo: "0",
     DisplayName: "",
     EmailAddress: "",
     Prefix: "",
@@ -1129,7 +1129,7 @@ const EventDataShow = ({ drawerType }: Props) => {
               </div>
               <InputContainer>
                 <div>
-                  <TitleText>Price from *</TitleText>
+                  <TitleText>Price from</TitleText>
                   <div
                     style={{
                       display: "flex",
