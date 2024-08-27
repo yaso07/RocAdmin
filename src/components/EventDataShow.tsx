@@ -31,8 +31,8 @@ interface Acf {
   type: { label: any; value: any }[];
   location: { label: any; value: any }[];
   key_facilities: { label: any; value: any }[];
-  from_price: string;
-  price_to: string;
+  from_price: number;
+  price_to: number;
   url: any;
   daysOfWeek?: any;
   map_location: any;
@@ -129,8 +129,8 @@ const EventDataShow = ({ drawerType }: Props) => {
     DescriptionTitle: "",
     introDescription: "",
     moreInformation: "",
-    priceFrom: "0",
-    priceTo: "0",
+    priceFrom: 0,
+    priceTo: 0,
     DisplayName: "",
     EmailAddress: "",
     Prefix: "",
