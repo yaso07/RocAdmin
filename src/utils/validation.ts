@@ -131,7 +131,7 @@ export const activitySchema = Yup.object().shape({
       (value: any) => {
         // Convert the string to a number for validation
         const number = parseFloat(value);
-        return !isNaN(number) && number > 0;
+        return !isNaN(number) && number >= 0;
       }
     ),
   priceTo: Yup.string()
