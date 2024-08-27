@@ -62,9 +62,9 @@ const styles = {
     height: "20px"
   },
   input: {
-    border: 'none',
-    outline: 'none',
-    width: '100%',
+    border: "none",
+    outline: "none",
+    width: "100%",
   },
 };
 
