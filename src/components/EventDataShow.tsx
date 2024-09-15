@@ -255,12 +255,12 @@ const EventDataShow = ({ drawerType }: Props) => {
             Seasonality: dataById?.acf?.seasonality,
           })
           location.latitude = dataById?.acf?.map_location?.lat,
-          location.longitude = dataById?.acf?.map_location?.lng
+            location.longitude = dataById?.acf?.map_location?.lng
           setLocation({ ...location })
           setFieldValue("latitude", dataById?.acf?.map_location?.lat)
           setFieldValue("longitude", dataById?.acf?.map_location?.lng)
 
-          if(dataById?.acf?.location){
+          if (dataById?.acf?.location) {
 
             const setLocationData = dataById?.acf?.location.map((item: any) => ({
               title: item.label,
@@ -268,7 +268,7 @@ const EventDataShow = ({ drawerType }: Props) => {
             }));
             setFieldValue("Location", setLocationData)
           }
-          if(dataById?.acf?.key_facilities){
+          if (dataById?.acf?.key_facilities) {
 
             const setKeyFacilities = dataById?.acf?.key_facilities.map((item: any) => ({
               title: item.label,
@@ -276,7 +276,7 @@ const EventDataShow = ({ drawerType }: Props) => {
             }));
             setFieldValue("KeyFacilities", setKeyFacilities)
           }
-          if(dataById?.acf?.booking_information){
+          if (dataById?.acf?.booking_information) {
 
             const setBookings = dataById?.acf?.booking_information.map((item: any) => ({
               title: item.label,
@@ -284,21 +284,21 @@ const EventDataShow = ({ drawerType }: Props) => {
             }));
             setFieldValue("Booking", setBookings)
           }
-          if(dataById?.acf?.accessibility){
+          if (dataById?.acf?.accessibility) {
             const setAccessibilitys = dataById?.acf?.accessibility.map((item: any) => ({
               title: item.label,
               value: item.value,
             }));
             setFieldValue("Accessibility", setAccessibilitys)
           }
-          if(dataById?.acf?.bus_routes){
+          if (dataById?.acf?.bus_routes) {
             const setBusRoutes = dataById?.acf?.bus_routes.map((item: any) => ({
               title: item.label,
               value: item.value,
             }));
             setFieldValue("BusRoutes", setBusRoutes)
           }
-          if(dataById?.acf?.seasonality){
+          if (dataById?.acf?.seasonality) {
             const setSeasonality = dataById?.acf?.seasonality.map((item: any) => ({
               title: item.label,
               value: item.value,
@@ -382,7 +382,7 @@ const EventDataShow = ({ drawerType }: Props) => {
             setIsDateValid(true)
           }
         }
-        if(dataById?.acf?.type.length){
+        if (dataById?.acf?.type.length) {
           const typeData = dataById?.acf?.type.map((item: any) => ({
             title: item.label,
             value: item.value,
@@ -816,7 +816,8 @@ const EventDataShow = ({ drawerType }: Props) => {
     // if (isDateValid === null) {
     //   setIsDateValid(true)
     // }
-
+    // console.log("object, kkkkk", finalObject);
+    // return
     if (isDateValid === false) {
       if (drawerType === "Edit") {
         const status = { id: dataById?._id, finalObject }
@@ -1233,7 +1234,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   touch={touched.EmailAddress && errors.EmailAddress}
                 />
               </div>
-              <TitleText>Telephone number *</TitleText>
+              <TitleText>Telephone number</TitleText>
               <TitleTextMain style={{ marginTop: 20 }}>
                 Please provide your full telephone number, including area code.
                 For example: +44 (0) 1534 859000.
@@ -1494,7 +1495,7 @@ const EventDataShow = ({ drawerType }: Props) => {
               {errors.Seasonality && touched.Seasonality ? (
                 <div style={{ color: 'red' }}>{errors.Seasonality}</div>
               ) : null}
-              <TitleText style={{ marginTop: 20 }}>Bus routes *</TitleText>
+              <TitleText style={{ marginTop: 20 }}>Bus routes</TitleText>
               <div
                 style={{
                   display: "grid",
@@ -1591,8 +1592,8 @@ const EventDataShow = ({ drawerType }: Props) => {
                     name="Twitter"
                     onchange={handleChange}
                     handleBlur={handleBlur}
-                    // error={errors.Twitter}
-                    // touch={touched.Twitter && errors.Twitter}
+                  // error={errors.Twitter}
+                  // touch={touched.Twitter && errors.Twitter}
                   />
                   {touched.Twitter && errors.Twitter ? (
                     <div style={{ color: 'red' }}>{errors.Twitter}</div>
@@ -1627,7 +1628,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                   marginBottom: 10,
                 }}
               >
-                Accessibility *
+                Accessibility
               </p>
               <p
                 style={{
