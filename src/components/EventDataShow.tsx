@@ -947,7 +947,7 @@ const EventDataShow = ({ drawerType }: Props) => {
                 touch={touched.introDescription && errors.introDescription}
               />
               <TextField
-                title="More Information *"
+                title="More Information"
                 description="This is the main piece of copy within the body of your listing."
                 maxLength="750"
                 name="moreInformation"
@@ -1213,7 +1213,7 @@ const EventDataShow = ({ drawerType }: Props) => {
           <>
             <div>
               <ReusableInput
-                title="Display name*"
+                title="Display name"
                 name="DisplayName"
                 showCouter={false}
                 DescriptionTitle={values.DisplayName}
@@ -1224,7 +1224,7 @@ const EventDataShow = ({ drawerType }: Props) => {
               />
               <div style={{ margin: "20px 0px" }}>
                 <ReusableInput
-                  title="Email address *"
+                  title="Email address"
                   name="EmailAddress"
                   showCouter={false}
                   DescriptionTitle={values.EmailAddress}

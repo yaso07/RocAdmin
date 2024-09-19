@@ -208,7 +208,7 @@ export const activitySchema = Yup.object().shape({
 export const eventsSchema = Yup.object().shape({
   DescriptionTitle: Yup.string().required('Please enter title'),
   introDescription: Yup.string().required('Please enter short description'),
-  moreInformation: Yup.string().required('Please enter more description'),
+  moreInformation: Yup.string(),
   Type: Yup.array()
     .min(1, 'Please select at least one sub activity type')
     .of(
@@ -286,15 +286,10 @@ export const eventsSchema = Yup.object().shape({
         ? schema.required("Please enter Price to")
         : schema
     ),
-  DisplayName: Yup.string().required('Please enter name'),
-  EmailAddress: Yup.string().trim()
-    .matches(/^(([^<>()\[\]\\.,;:\s@"]+(.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|([a-zA-Z-0-9]+(\.[a-zA-Z]{2,})+))$/, "Invalid email address")
-    .email('Please enter valid email').required('Please enter email'),
-  Prefix: Yup.number()
-    .positive('The number must be positive')
-    .integer('The number must be an integer')
-    .max(9999, 'The number can have a maximum of 4 digits'),
-  Telephone: Yup.string().nullable().matches(/^\d*$/, 'Phone number must be a valid integer'),
+  DisplayName: Yup.string(),
+  EmailAddress: Yup.string(),
+  Prefix: Yup.number(),
+  Telephone: Yup.string(),
   Website: Yup.string().matches(
     /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
     "Please enter valid URL").required('Please fill website URL'),
@@ -312,20 +307,12 @@ export const eventsSchema = Yup.object().shape({
         title: Yup.string(),
       }),
     ),
-  Facebook: Yup.string().matches(
-    /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
-    "Please enter valid URL"),
-  Instagram: Yup.string().matches(
-    /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
-    "Please enter valid URL"),
-  Twitter: Yup.string().matches(
-    /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
-    "Please enter valid URL"),
+  Facebook: Yup.string(),
+  Instagram: Yup.string(),
+  Twitter: Yup.string(),
   AdditionalInfo: Yup.string(),
-  AccessibilityURL: Yup.string().matches(
-    /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
-    "Please enter valid URL"),
-  // file: Yup.string().required("Please select image"),
+  AccessibilityURL: Yup.string(),
+  file: Yup.string().required("Please select image"),
 });
 // export const eventsSchema = Yup.object().shape({
 //   DescriptionTitle: Yup.string().required('Please enter title'),
