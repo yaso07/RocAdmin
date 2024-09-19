@@ -286,7 +286,7 @@ export const eventsSchema = Yup.object().shape({
         ? schema.required("Please enter Price to")
         : schema
     ),
-  DisplayName: Yup.string(),
+  DisplayName: Yup.string().required('Please enter name'),
   EmailAddress: Yup.string(),
   Prefix: Yup.number(),
   Telephone: Yup.string(),

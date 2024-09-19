@@ -1213,7 +1213,7 @@ const EventDataShow = ({ drawerType }: Props) => {
           <>
             <div>
               <ReusableInput
-                title="Display name"
+                title="Display name *"
                 name="DisplayName"
                 showCouter={false}
                 DescriptionTitle={values.DisplayName}
