@@ -7,6 +7,7 @@ import { fetchEventById, getEventList } from "../api/EventSlice/eventThunk";
 import ConfirmationComponent from "./confirmationUI";
 import Loading from "./Loading";
 import { GET_EVENT_LIST } from "../api/constant";
+import { CalenderIcon, ClockIcon, CurrencyIcon, LocationIcon, MailIcon, WebsiteIcon } from "../utils/images";
 
 
 
@@ -38,7 +39,7 @@ const SingleEventData: React.FC<ModalProps> = ({
 
     const toggleDrawer = (id: any) => {
         // const datas = {id: data, api : GET_EVENT_LIST }
-        const datas = {id: id, api : GET_EVENT_LIST }
+        const datas = { id: id, api: GET_EVENT_LIST }
         setIsDrawerOpen(true);
         dispatch(fetchEventById(datas) as any)
         setDrawerType("Edit")
@@ -56,8 +57,9 @@ const SingleEventData: React.FC<ModalProps> = ({
                 )
                 : "No events",
             // name: "ssds",
-            image:
-                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fcalendar.png?alt=media&token=4dcb085b-44bc-4182-8893-27dda5f0325f",
+            image: CalenderIcon,
+            // image:
+            //     "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fcalendar.png?alt=media&token=4dcb085b-44bc-4182-8893-27dda5f0325f",
             width: 14,
             height: 24,
             nameValue: data?.acf?.event_dates ? true : false,
@@ -69,8 +71,9 @@ const SingleEventData: React.FC<ModalProps> = ({
                 </span>)
                 : "No events",
             // name: "sdsd",
-            image:
-                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fclock.png?alt=media&token=5f80c9da-b46f-4c37-8018-db55c0cfd72e",
+            // image:
+            //     "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fclock.png?alt=media&token=5f80c9da-b46f-4c37-8018-db55c0cfd72e",
+            image: ClockIcon,
             width: 16,
             height: 24,
             nameValue: data?.acf?.event_dates?.length && data?.acf?.event_dates[0].start_time ? true : false,
@@ -79,8 +82,9 @@ const SingleEventData: React.FC<ModalProps> = ({
             name: <span >
                 {`£ ${data?.acf?.price_to}`}
             </span>,
-            image:
-                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fgbp.png?alt=media&token=30f60889-d511-46d9-a8ce-30ef112929e8",
+            // image:
+            //     "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fgbp.png?alt=media&token=30f60889-d511-46d9-a8ce-30ef112929e8",
+            image: CurrencyIcon,
             width: 10,
             height: 24,
             nameValue: data?.acf?.price_to ? true : false,
@@ -92,8 +96,9 @@ const SingleEventData: React.FC<ModalProps> = ({
                     {data?.acf?.email_address}
                 </span>
             ,
-            image:
-                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fenvelope.png?alt=media&token=08ba6331-d66b-485c-b274-4d85de7f76b0",
+            // image:
+            //     "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fenvelope.png?alt=media&token=08ba6331-d66b-485c-b274-4d85de7f76b0",
+            image: MailIcon,
             width: 16,
             height: 24,
             nameValue: data?.acf?.email_address ? true : false,
@@ -102,8 +107,9 @@ const SingleEventData: React.FC<ModalProps> = ({
             name: <WebsiteLink to={data?.acf?.website ? data?.acf?.website : ""} target="_blank">
                 {data?.acf?.website}
             </WebsiteLink>,
-            image:
-                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fglobe.png?alt=media&token=0fa8a5a4-35c8-46ae-bb83-45c00d6d7328",
+            // image:
+            //     "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fglobe.png?alt=media&token=0fa8a5a4-35c8-46ae-bb83-45c00d6d7328",
+            image: WebsiteIcon,
             width: 16,
             height: 24,
             nameValue: data?.acf?.website ? true : false,
@@ -114,8 +120,9 @@ const SingleEventData: React.FC<ModalProps> = ({
                 <span >
                     {data?.acf?.address?.place_name}, {data?.acf?.address?.address_line_1}, {data?.acf?.address?.address_line_2},
                 </span>,
-            image:
-                "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Flocation-dot.png?alt=media&token=d6ea3348-daab-4b8e-acb6-977148c16e1f",
+            // image:
+            //     "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Flocation-dot.png?alt=media&token=d6ea3348-daab-4b8e-acb6-977148c16e1f",
+            image: LocationIcon,
             width: 12,
             height: 24,
             nameValue: (data?.acf?.address?.place_name || data?.acf?.address?.address_line_1 || data?.acf?.address?.address_line_2) ? true : false,
@@ -202,6 +209,7 @@ const SingleEventData: React.FC<ModalProps> = ({
                             </ItemImageContainer>
                             <ResturantDetailsContainer>
                                 {EventListData.map((item: any, index: number) => {
+                                    console.log("image -----", item.image)
                                     return (
                                         item?.nameValue &&
                                         <ResturantDetailsWrapper key={index}>
