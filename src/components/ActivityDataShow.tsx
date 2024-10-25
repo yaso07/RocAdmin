@@ -17,13 +17,13 @@ import {
   BookingData,
   BusRoutesData,
   countryCodes,
-  IndoretypesData,
+  indoorSubType,
   keyfacilityData,
-  locationData,
+  locationDataActivities,
+  outdooreSubType,
   ParishData,
   SeasonalityData,
   TypeActivityData,
-  typesData,
   WeeklyDaysData,
 } from "../utils/data";
 import { updateOpenHours } from "../utils/commanFun";
@@ -344,8 +344,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
   const subTypeActivity =
     selectedActivity?.label == "Outdoor activities"
-      ? typesData
-      : IndoretypesData;
+      ? outdooreSubType
+      : indoorSubType;
 
   const subTypeAct =
     selectedActivity?.label == "Outdoor activities"
@@ -777,7 +777,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
               <div style={{ marginTop: 20 }}>
                 <TitleText>Location *</TitleText>
                 <div className="checkboxContainer">
-                  {locationData.map((item, index) => {
+                  {locationDataActivities.map((item, index) => {
                     return (
                       <div style={{ marginBottom: 10 }} key={index}>
                         <Checkbox
