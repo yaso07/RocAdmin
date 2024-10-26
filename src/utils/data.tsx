@@ -306,40 +306,129 @@ export const BusRoutesData = [
     }
 ]
 
-export const IndoretypesData = [
+// export const IndoretypesData = [
+//     {
+//       value: "spa-health",
+//       title: "Spa & health",
+//     },
+//     {
+//       value: "fitness-leisure",
+//       title: "Fitness & leisure",
+//     },
+//     {
+//       value: "food-drink",
+//       title: "Food & drink",
+//     },
+//     {
+//       value: "history-culture",
+//       title: "History & culture",
+//     },
+//     {
+//       value: "family",
+//       title: "Family",
+//     },
+//     {
+//       value: "indoor-sports",
+//       title: "indoor-sports",
+//     },
+//     {
+//       value: "swimming",
+//       title: "Swimming",
+//     },
+//     {
+//       value: "outdoor-sports",
+//       title: "Outdoor sports",
+//     },
+//   ];
+
+
+export const OutdooreSubType = [
     {
-      value: "spa-health",
-      title: "Spa & health",
+      value: "equipment-hire",
+      title: "Equipment Hire",
     },
     {
-      value: "fitness-leisure",
-      title: "Fitness & leisure",
+      value: "active-adrenaline",
+      title: "Active & Adrenaline",
     },
     {
-      value: "food-drink",
-      title: "Food & drink",
+      value: "beaches",
+      title: "Beaches",
+    },
+    {
+      value: "nature-wildlife",
+      title: "Nature & Wildlife",
+    },
+    {
+      value: "indoor-sports",
+      title: "Indoor Sports",
+    },
+    {
+      value: "water-sports",
+      title: "Water Sports",
+    },
+    {
+      value: "boat",
+      title: "Boat",
+    },
+    {
+      value: "fishing-charters",
+      title: "Fishing Charters",
+    },
+    {
+      value: "cycling",
+      title: "Cycling",
+    },
+    {
+      value: "walking",
+      title: "Walking",
     },
     {
       value: "history-culture",
       title: "History & culture",
     },
     {
+      value: "car-hire-driving",
+      title: "Car Hire Driving",
+    },
+    {
+      value: "golf",
+      title: "Golf",
+    },
+  ];
+  export const IndoretypesData = [
+    {
+      value: "spa-health",
+      title: "Spa & Health",
+    },
+    {
+      value: "fitness-leisure",
+      title: "Fitness & Leisure",
+    },
+    {
+      value: "food-drink",
+      title: "Food & Drink",
+    },
+    {
+      value: "history-culture",
+      title: "History & Culture",
+    },
+    {
       value: "family",
       title: "Family",
     },
     {
-      value: "indoor-sports",
-      title: "indoor-sports",
+      value: "outdoor-sports",
+      title: "Outdoor Sports",
     },
     {
       value: "swimming",
       title: "Swimming",
     },
-    {
-      value: "outdoor-sports",
-      title: "Outdoor sports",
-    },
   ];
+
+
+
 
 
 

@@ -20,6 +20,7 @@ import {
   IndoretypesData,
   keyfacilityData,
   locationData,
+  OutdooreSubType,
   ParishData,
   SeasonalityData,
   TypeActivityData,
@@ -344,7 +345,7 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
   const subTypeActivity =
     selectedActivity?.label == "Outdoor activities"
-      ? typesData
+      ? OutdooreSubType
       : IndoretypesData;
 
   const subTypeAct =
