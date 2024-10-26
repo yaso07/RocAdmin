@@ -22,7 +22,7 @@ export const countryCodes = [
     { code: "+33", country: "France" },
     { code: "+49", country: "Germany" },
     // Add more country codes as needed
-  ];
+];
 
 export const ParishData = [
     { label: "St. Helier", value: "st-helier" },
@@ -159,6 +159,12 @@ export const locationData = [
     { title: "Coastal", value: "coastal" },
     { title: "Town", value: "town" },
     { title: "Countryside", value: "countryside" },
+];
+export const locationDataActivities = [
+    { title: "Coastal", value: "coastal" },
+    { title: "Town", value: "town" },
+    { title: "Countryside", value: "countryside" },
+    { title: "Island Wide", value: "island wide" },
 ];
 
 
@@ -398,6 +404,229 @@ export const OutdooreSubType = [
   ];
   export const IndoretypesData = [
     {
+        value: "spa-health",
+        title: "Spa & health",
+    },
+    {
+        value: "fitness-leisure",
+        title: "Fitness & leisure",
+    },
+    {
+        value: "food-drink",
+        title: "Food & drink",
+    },
+    {
+        value: "history-culture",
+        title: "History & culture",
+    },
+    {
+        value: "family",
+        title: "Family",
+    },
+    {
+        value: "indoor-sports",
+        title: "indoor-sports",
+    },
+    {
+        value: "swimming",
+        title: "Swimming",
+    },
+    {
+        value: "outdoor-sports",
+        title: "Outdoor sports",
+    },
+];
+
+
+
+
+
+
+export const TypeActivityData = [
+    { label: "Outdoor activities", value: "outdoor-activities" },
+    { label: "Indoor activities", value: "indoor-activities" },
+];
+
+export const opnintHoursData: any = {
+    Monday: {
+        closes: '', opens: '', is_open: "0"
+    },
+    Tuesday: {
+        closes: '', opens: '', is_open: "0"
+    },
+    Wednesday: {
+        closes: '', opens: '', is_open: "0"
+    },
+    Thursday: {
+        closes: '', opens: '', is_open: "0"
+    },
+    Friday: {
+        closes: '', opens: '', is_open: "0"
+    },
+    Saturday: {
+        closes: '', opens: '', is_open: "0"
+    },
+    Sunday: {
+        closes: '', opens: '', is_open: "0"
+    },
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   export const outdooreSubType = [
+//     {
+//         value: "equipment-hire",
+//         title: "Equipment-Hire"
+//     },
+//     {
+//         value: "active-adrenaline",
+//         title: "Active-adrenaline"
+//     },
+//     {
+//         value: "beaches",
+//         title: "Beaches"
+//     },
+//     {
+//         value: "nature-wildlife",
+//         title: "Nature-wildlife"
+//     },
+//     {
+//         value: "indoor-sports",
+//         title: "Indoor-Sports"
+//     },
+//     {
+//         value: "water-sports",
+//         title: "Water-Sports"
+//     },
+//     {
+//         value: "boat",
+//         title: "Boat"
+//     },
+//     {
+//         value: "fishing-charters",
+//         title: "Fishing-Charters"
+//     },
+//     {
+//         value: "cycling",
+//         title: "Cycling"
+//     },
+//     {
+//         value: "walking",
+//         title: "Walking"
+//     },
+//     {
+//         value: "history-culture",
+//         title: "History & culture"
+//     },
+//     {
+//         value: "car-hire-driving",
+//         title: "Car-hire-driving"
+//     },
+//     {
+//         value: "golf",
+//         title: "Golf"
+//     }
+// ]
+//    export const indoorSubType = [
+//     {
+//         value: "spa-health",
+//         title: "Spa & health"
+//     },
+//     {
+//         value: "fitness-leisure",
+//         title: "Fitness & leisure"
+//     },
+//     {
+//         value: "food-drink",
+//         title: "Food & drink"
+//     },
+//     {
+//         value: "history-culture",
+//         title: "History & culture"
+//     },
+//     {
+//         value: "family",
+//         title: "Family"
+//     },
+//     {
+//         value: "outdoor-sports",
+//         title: "Outdoor sports"
+//     },
+//     {
+//         value: "swimming",
+//         title: "Swimming"
+//     },
+// ]
+
+
+
+
+export const outdooreSubType = [
+    {
+      value: "equipment-hire",
+      title: "Equipment Hire",
+    },
+    {
+      value: "active-adrenaline",
+      title: "Active & Adrenaline",
+    },
+    {
+      value: "beaches",
+      title: "Beaches",
+    },
+    {
+      value: "nature-wildlife",
+      title: "Nature & Wildlife",
+    },
+    {
+      value: "indoor-sports",
+      title: "Indoor Sports",
+    },
+    {
+      value: "water-sports",
+      title: "Water Sports",
+    },
+    {
+      value: "boat",
+      title: "Boat",
+    },
+    {
+      value: "fishing-charters",
+      title: "Fishing Charters",
+    },
+    {
+      value: "cycling",
+      title: "Cycling",
+    },
+    {
+      value: "walking",
+      title: "Walking",
+    },
+    {
+      value: "history-culture",
+      title: "History & culture",
+    },
+    {
+      value: "car-hire-driving",
+      title: "Car Hire Driving",
+    },
+    {
+      value: "golf",
+      title: "Golf",
+    },
+  ];
+  export const indoorSubType = [
+    {
       value: "spa-health",
       title: "Spa & Health",
     },
@@ -432,34 +661,16 @@ export const OutdooreSubType = [
 
 
 
-  export const TypeActivityData = [
-    { label: "Outdoor activities", value: "outdoor-activities" },
-    { label: "Indoor activities", value: "indoor-activities" },
-  ];
 
-export const opnintHoursData: any = {
-    Monday: {
-      closes: '', opens: '', is_open: "0"
-    },
-    Tuesday: {
-      closes: '', opens: '', is_open: "0"
-    },
-    Wednesday: {
-      closes: '', opens: '', is_open: "0"
-    },
-    Thursday: {
-      closes: '', opens: '', is_open: "0"
-    },
-    Friday: {
-      closes: '', opens: '', is_open: "0"
-    },
-    Saturday: {
-      closes: '', opens: '', is_open: "0"
-    },
-    Sunday: {
-      closes: '', opens: '', is_open: "0"
-    },
-  }
+
+
+
+
+
+
+
+
+
 
 // const BusRoutesData = [
 //   {
