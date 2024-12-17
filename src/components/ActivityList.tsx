@@ -130,6 +130,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
             </div>
           </ContainerCSV>
         </FileUploadComponent>
+        
         <div className="overflow-y-auto max-h-[calc(100dvh-200px)] hide-scrollbar">
           {
             eventList.map((item: any, index: number) => {
