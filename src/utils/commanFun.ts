@@ -225,3 +225,20 @@ export const eventDateValidation = (selectOption: any, DateData: any, setIsDateV
 }
 
 
+export const checkFields = (dataArray: any[]) => {
+const emptyFields: any[] = [];
+
+dataArray.forEach((item, index) => {
+  const fieldsToCheck = ['title', 'short_description', 'types', 'header_image_url'];
+
+  fieldsToCheck.forEach(field => {
+      // Check if the field is empty or undefined
+      if (!item[field] || (Array.isArray(item[field]) && item[field].length === 0)) {
+          emptyFields.push(`Row ${index + 1}: '${field}' is required`);
+      }
+  });
+});
+
+
+return {result: emptyFields.length ? false : true, error: emptyFields.length > 0 ? emptyFields : ["All required fields are filled."]};
+};

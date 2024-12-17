@@ -441,3 +441,119 @@ export const eventsSchema = Yup.object().shape({
 //     "Please enter valid URL"),
 //   file: Yup.string().required("Please select image"),
 // });
+
+
+
+export const placeSchema = Yup.object().shape({
+  introDescription: Yup.string().required('Please enter short description'),
+  WeekDays: Yup.array(),
+
+  DisplayName: Yup.string().required('Please enter name'),
+  EmailAddress: Yup.string().trim()
+    .matches(/^(([^<>()\[\]\\.,;:\s@"]+(.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|([a-zA-Z-0-9]+(\.[a-zA-Z]{2,})+))$/, "Invalid email address")
+    .email('Please enter valid email').required("Please enter email"),
+  Prefix: Yup.number()
+    .positive('The number must be positive')
+    .integer('The number must be an integer')
+    .max(9999, 'The number can have a maximum of 4 digits'),
+  Telephone: Yup.number().nullable()
+    .positive('The number must be positive')
+    .integer('The number must be an integer'),
+  Website: Yup.string().matches(
+    /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
+    "Please enter valid URL"),
+  PlaceName: Yup.string(),
+  AddressLine: Yup.string(),
+  AddressLineOptional: Yup.string(),
+  Parish: Yup.string(),
+  latitude: Yup.string(),
+  longitude: Yup.string(),
+  Postcode: Yup.string(),
+  // imageUrl: Yup.array()
+  // .of(
+  //   Yup.string().matches(
+  //     /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
+  //     "Please enter valid URL")).required('At least one URL is required'),
+  // tags: Yup.array().of(
+  //   Yup.string().min(1, 'Tag must be at least 1 character')).required('At least one tag is required'),
+  imageUrl: Yup.array()
+  .of(
+    Yup.string()
+      .matches(
+        /(https?:\/\/[^\s]+)/,
+        "Please enter a valid URL"
+      )
+      .required("URL is required") // Ensure each URL is non-empty
+  )
+  .min(1, "At least one URL is required"), // Ensure the array has at least one URL
+tags: Yup.array()
+  .of(
+    Yup.string()
+      .min(1, "Tag must be at least 1 character") // Validate each tag
+      .required("Tag is required") // Ensure each tag is non-empty
+  )
+  .min(1, "At least one tag is required"), // Ensure the array has at least one tag
+  // file: Yup.array()
+  //     .min(1, 'At least one image is required.')
+  //     .max(8, 'You can upload a maximum of 8 images.'),
+});
+
+
+
+
+
+
+export const ActivityInitialFormValues = {
+  DescriptionTitle: "",
+  introDescription: "",
+  moreInformation: "",
+  priceFrom: 0,
+  priceTo: 0,
+  DisplayName: "",
+  EmailAddress: "",
+  Prefix: "",
+  areaCode: "+1",
+  Telephone: "",
+  Website: "",
+  PlaceName: "",
+  AddressLine: "",
+  AddressLineOptional: "",
+  Postcode: "",
+  Facebook: "",
+  Instagram: "",
+  Twitter: "",
+  AdditionalInfo: "",
+  AccessibilityURL: "",
+  file: "",
+  activityType: "indoor-activities",
+  subTypeActivity: [],
+  Location: [],
+  KeyFacilities: [],
+  Seasonality: [],
+  BusRoutes: [],
+  Booking: [],
+  Accessibility: [],
+  WeekDays: [],
+  Parish: "",
+  latitude: "",
+  longitude: "",
+}
+export const PlaceInitialFormValues = {
+  introDescription: "",
+  DisplayName: "",
+  EmailAddress: "",
+  Prefix: "",
+  areaCode: "+1",
+  Telephone: "",
+  Website: "",
+  PlaceName: "",
+  AddressLine: "",
+  AddressLineOptional: "",
+  Postcode: "",
+  WeekDays: [],
+  Parish: "",
+  latitude: "",
+  longitude: "",
+  tags: [],
+  imageUrl: [],
+}

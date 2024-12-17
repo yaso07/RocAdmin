@@ -30,8 +30,8 @@ const ConfirmationComponent: React.FC<propsData> = ({ data, setSelectedList }) =
 
     return (
         <Popconfirm
-            title="Delete the event"
-            description="Are you sure to delete this event?"
+            title="Delete"
+            description="Are you sure to delete this?"
             onConfirm={(e) => confirm(e, data)}
             onCancel={cancel}
             okText="Yes"
@@ -48,6 +48,8 @@ const DeleteBtn = styled.button`
     padding: 0px 12px;
     border: 1px solid gray;
     margin: 4px;
+    width:100px;
+    height: 45px;
     border-radius: 5px;
     cursor: pointer;
     background: rgb(127 29 29);

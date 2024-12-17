@@ -1,38 +1,43 @@
 import React from 'react';
 import type { PopconfirmProps } from 'antd';
-import {  Popconfirm } from 'antd';
+import { Popconfirm } from 'antd';
 import styled from 'styled-components';
-import { deleteActivity, getActivityList } from '../api/EventSlice/eventThunk';
+import { deleteActivity } from '../api/EventSlice/eventThunk';
 import { useDispatch } from 'react-redux';
+import { CREATE_ACTIVITY, CREATE_PLACE } from '../api/constant';
 
 
 
 interface propsData {
     data?: any;
+    showType?: any;
     setSelectedList?: any;
+    selectedList?: number;
 }
 
-const ConfirmationComponent: React.FC<propsData> = ({ data, setSelectedList }) => {
+const ConfirmationComponent: React.FC<propsData> = ({ data, showType, setSelectedList, selectedList }) => {
 
     const dispatch = useDispatch()
 
-    const confirm = (e: any, data: any) => {
-            console.log(e)
-        dispatch(deleteActivity(data) as any)
-        dispatch(getActivityList() as any)
-        setSelectedList(0)
-        // message.success('Event deleted succefully');
+    const confirm = async (e: any, data: any) => {
+        console.log(e)
+        const param = { api: showType === 'place' ? CREATE_PLACE : CREATE_ACTIVITY, id: data }
+        const res = await dispatch(deleteActivity(param) as any)
+        
+        if(res.type === "activity/delete/fulfilled" && selectedList){
+            setSelectedList(selectedList > 0 ? selectedList - 1 : selectedList)
+        }
+        // showType === 'place' ? dispatch(getPlaceList() as any) : dispatch(getActivityList() as any);
     };
 
     const cancel: PopconfirmProps['onCancel'] = (e: any) => {
         console.log(e);
-        // message.error('Click on No');
     };
 
     return (
         <Popconfirm
-            title="Delete the event"
-            description="Are you sure to delete this Activity?"
+            title="Delete"
+            description="Are you sure to delete this?"
             onConfirm={(e) => confirm(e, data)}
             onCancel={cancel}
             okText="Yes"

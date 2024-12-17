@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchEventById } from "../api/EventSlice/eventThunk";
 import ConfirmationComponent from "./ActivityDelete";
 import Loading from "./Loading";
-import { GET_ACTIVITY_LIST } from "../api/constant";
+import { CREATE_PLACE } from "../api/constant";
 import { CalenderIcon, ClockIcon, CurrencyIcon, LocationIcon, MailIcon, WebsiteIcon } from "../utils/images";
 
 interface ModalProps {
@@ -16,6 +16,8 @@ interface ModalProps {
   setIsDrawerOpen?: any;
   setDrawerType?: any;
   setSelectedList?: any;
+  showType?: string;
+  selectedList?: number;
 }
 
 const SingleActivitytData: React.FC<ModalProps> = ({
@@ -24,6 +26,8 @@ const SingleActivitytData: React.FC<ModalProps> = ({
   setIsDrawerOpen,
   setDrawerType,
   setSelectedList,
+  showType,
+  selectedList,
 }) => {
   const dispatch = useDispatch();
   const currentEvent = useSelector((state: any) => state.event.currentEvent);
@@ -32,7 +36,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
 
   const toggleDrawer = (id: any) => {
     setIsDrawerOpen(true);
-    const data = { id: id, api: GET_ACTIVITY_LIST };
+    const data = { id: id, api: CREATE_PLACE };
     dispatch(fetchEventById(data) as any);
     setDrawerType("Edit");
   };
@@ -183,7 +187,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
               </EditBtn>
               <ConfirmationComponent
                 data={data?._id}
-                {...{ setSelectedList }}
+                {...{ setSelectedList, showType, selectedList }}
               />
             </div>
           </Title>
@@ -258,7 +262,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
                                 </>
                             )} */}
 
-          {data?.acf?.key_facilities != "" && (
+          {data?.acf?.key_facilities && (
             <>
               <AlsoSeeText>Key Features</AlsoSeeText>
               <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -269,7 +273,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
             </>
           )}
 
-          {data?.acf?.accessibility != "" && (
+          {data?.acf?.accessibility && (
             <>
               <AlsoSeeText>Accessibility</AlsoSeeText>
               <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -280,7 +284,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
             </>
           )}
 
-          {data?.acf?.bus_routes != "" && (
+          {data?.acf?.bus_routes && (
             <>
               <AlsoSeeText>Bus Route</AlsoSeeText>
               <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -299,8 +303,10 @@ const SingleActivitytData: React.FC<ModalProps> = ({
               </BulletPointWrapper>
             </>
           )}
-
-          <AlsoSeeText>Seasonality</AlsoSeeText>
+          {
+            data?.acf?.seasonality &&
+            <AlsoSeeText>Seasonality</AlsoSeeText>
+          }
           <BulletPointWrapper>
             <OpningDatesContainer>
               <DatesWrapperText>
@@ -324,7 +330,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
                     <WeekTimeArrange key={index}>
                       <p>{item}:</p>
                       <p>
-                        {daysOfWeekTiming[index].opens} -{" "}
+                        {daysOfWeekTiming[index].opens} - {" "}
                         {daysOfWeekTiming[index].closes}
                       </p>
                     </WeekTimeArrange>

@@ -58,7 +58,7 @@ function EventDetails({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawe
         <button
           onClick={() => toggleDrawer("add")}
           className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md transform transition-transform duration-150 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 active:bg-blue-700 active:scale-95">
-          {isDrawerOpen ? "Close" : "Add"} Drawer
+          {isDrawerOpen ? "CLOSE" : "ADD"} EVENT
         </button>
 
         <div className="overflow-y-auto max-h-[calc(100dvh-200px)] hide-scrollbar">
