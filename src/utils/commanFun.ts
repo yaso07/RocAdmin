@@ -242,3 +242,13 @@ dataArray.forEach((item, index) => {
 
 return {result: emptyFields.length ? false : true, error: emptyFields.length > 0 ? emptyFields : ["All required fields are filled."]};
 };
+
+export const getInitials = (fullName: string | any) => {
+  // Split the name into words
+  const words = fullName.split(' ');
+
+  // Take the first letter of each word, limiting to 2 words
+  const initials = words.slice(0, 2).map((word: any) => word.charAt(0).toUpperCase()).join('');
+
+  return initials;
+};

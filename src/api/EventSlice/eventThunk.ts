@@ -187,7 +187,6 @@ export const getPlaceList = createAsyncThunk(
 
 // ======================================== GET EVENT BY ID ===========================================
 export const fetchEventById = createAsyncThunk('event/fetchById', async (data: any) => {
-  console.log("ddddddd", data)
   const token = JSON.parse(getUser()).token;
   if( data?.api === 'manual-activity'){
     try {

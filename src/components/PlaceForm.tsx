@@ -73,12 +73,12 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
 
 
     useEffect(() => {
-        console.log(dataById)
+        console.log("d------", dataById)
         if (drawerType === "Edit") {
             if (JSON.stringify(dataById)) {
                 setFieldValue("introDescription", dataById?.acf?.short_description);
                 setFieldValue("DisplayName", dataById?.acf?.title); // not getting key from backend
-                setFieldValue("EmailAddress", dataById?.acf?.email_address);
+                setFieldValue("EmailAddress", dataById?.acf?.email_address ?? "");
                 setFieldValue("Prefix", dataById?.acf?.telephone_number?.prefix);
                 setFieldValue("areaCode", dataById?.acf?.telephone_number?.area_code);
                 setFieldValue("Telephone", dataById?.acf?.telephone_number?.number);

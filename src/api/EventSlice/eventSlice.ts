@@ -169,7 +169,7 @@ export const eventSlice = createSlice({
         });
         // UPDATE PLACE LIST DATA BY ID
         builder.addCase(updatePlace.fulfilled, (state, action) => {
-            state.currentActivity = action.payload
+            state.currentActivity = action.payload.message
             state.error = ''
             state.isLoading = false
         })

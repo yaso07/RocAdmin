@@ -10,8 +10,9 @@ import FileUploadComponent from "./FileUploadComponent";
 import styled from "styled-components";
 import FileIcon from '../assets/upload.gif'
 import { createBulk } from "../api/EventSlice/eventThunk";
-import { checkFields } from "../utils/commanFun";
+import { checkFields, getInitials } from "../utils/commanFun";
 import { toast } from "react-toastify";
+import { ImageWithFallback } from "./Image";
 
 
 interface Props {
@@ -36,7 +37,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
   const [uploadedFileName, setUploadedFileNames] = useState<string | null>('')
 
 
-
+console.log("dddddd", currectActivity)
   useEffect(() => {
     const mappedData: any = mappedArray(eventDataValue)
     setEventList(mappedData)
@@ -53,17 +54,6 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
   };
   function handleCsvDataUpload(csvData: any[]) {
 
-    // const isValidData = (Data: any[]) => {
-    //   return Data.every(item =>
-    //     item.title &&
-    //     item.short_description &&
-    //     item.types &&
-    //     item.header_image_url
-    //   );
-    // };
-
-    // const result = isValidData([...csvData]);
-    // console.log("csvvvvv", result)
     const { result, error } = checkFields(csvData)
 
     if (result) {
@@ -75,7 +65,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
               types: item.types ? item.types.split(",") : [],
               telephone_number: { area_code: item?.area_code, prefix: item?.prefix, number: item?.number },
               header_image_data: JSON.stringify(item?.header_image_url.split(",").map((val: any) => (
-                `url:${val}`
+                { url: val }
               )))
             }
           }
@@ -130,10 +120,11 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
             </div>
           </ContainerCSV>
         </FileUploadComponent>
-        
+
         <div className="overflow-y-auto max-h-[calc(100dvh-200px)] hide-scrollbar">
           {
             eventList.map((item: any, index: number) => {
+
               return (
                 <div
                   className={`
@@ -142,11 +133,15 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
                   onClick={() => handleEventData(index, item?.image?.url)}
                 >
                   <div style={{ width: "80px", height: "80px" }}>
-                    <img
-                      className="w-full h-full rounded-md object-fit-cover"
-                      src={item?.image?.url}
-                      loading="lazy"
-                    />
+       
+                        
+                        <ImageWithFallback
+                          className="w-full h-full rounded-md object-fit-cover"
+                          src={item?.image?.url}
+                          alt={`<p> "bharat"</p>`}
+                          name = {getInitials(item?.title)}
+                        />
+                    
                   </div>
                   <div className="flex flex-col gap-y-1">
                     <p>{item?.title}</p>
