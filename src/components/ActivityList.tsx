@@ -2,7 +2,7 @@
 
 
 // import Drawer from "./Drawer";
-import { memo, SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import ActivityDataList from "./ActivityDataList";
 import { mappedArray } from "../utils/dataMapping";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +30,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
   const [eventList, setEventList] = useState([]);
   const data = useSelector((state: any) => { return state.event })
   const currectActivity = data.currentActivity
+  const isLoading = data.isLoading
   const dispatch = useDispatch()
 
   // const elaString = localStorage.getItem('ela');
@@ -37,11 +38,10 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
   const [uploadedFileName, setUploadedFileNames] = useState<string | null>('')
 
 
-console.log("dddddd", currectActivity)
   useEffect(() => {
     const mappedData: any = mappedArray(eventDataValue)
     setEventList(mappedData)
-  }, [currectActivity])
+  }, [currectActivity, isLoading])
 
   useEffect(() => {
     const mappedData: any = mappedArray(eventDataValue)
@@ -60,6 +60,7 @@ console.log("dddddd", currectActivity)
       const bulkData = csvData.map(item => {
         return (
           {
+            id: item?.id ?? "",
             acf: {
               ...item,
               types: item.types ? item.types.split(",") : [],
@@ -97,29 +98,32 @@ console.log("dddddd", currectActivity)
           className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md transform transition-transform duration-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 active:bg-blue-700 active:scale-95">
           {isDrawerOpen ? "CLOSE" : "ADD"} {showType?.toLocaleUpperCase()}
         </button>
-        <FileUploadComponent
-          onCsvDataUpload={handleCsvDataUpload}
-          setUploadedFileName={setUploadedFileName}
-        >
-          <ContainerCSV>
-            <img src={FileIcon} alt="" width={"30px"} height={"25px"} />
-            <div className="w-full">
+        {
+          showType === "place" &&
+          <FileUploadComponent
+            onCsvDataUpload={handleCsvDataUpload}
+            setUploadedFileName={setUploadedFileName}
+          >
+            <ContainerCSV>
+              <img src={FileIcon} alt="" width={"30px"} height={"25px"} />
+              <div className="w-full">
 
-              {uploadedFileName ? (
-                <>
-                  <p>File Processed!</p>
-                  <span className="text-green-500">{uploadedFileName}</span>
-                </>
-              ) : (
-                <>
-                  {" "}
-                  <p>Select a CSV file to import</p>
-                  <span>or drag and drop it here</span>
-                </>
-              )}
-            </div>
-          </ContainerCSV>
-        </FileUploadComponent>
+                {uploadedFileName ? (
+                  <>
+                    <p>File Processed!</p>
+                    <span className="text-green-500">{uploadedFileName}</span>
+                  </>
+                ) : (
+                  <>
+                    {" "}
+                    <p>Select a CSV file to import</p>
+                    <span>or drag and drop it here</span>
+                  </>
+                )}
+              </div>
+            </ContainerCSV>
+          </FileUploadComponent>
+        }
 
         <div className="overflow-y-auto max-h-[calc(100dvh-200px)] hide-scrollbar">
           {
@@ -133,15 +137,15 @@ console.log("dddddd", currectActivity)
                   onClick={() => handleEventData(index, item?.image?.url)}
                 >
                   <div style={{ width: "80px", height: "80px" }}>
-       
-                        
-                        <ImageWithFallback
-                          className="w-full h-full rounded-md object-fit-cover"
-                          src={item?.image?.url}
-                          alt={`<p> "bharat"</p>`}
-                          name = {getInitials(item?.title)}
-                        />
-                    
+
+
+                    <ImageWithFallback
+                      className="w-full h-full rounded-md object-fit-cover"
+                      src={item?.image?.url}
+                      alt={`<p> "bharat"</p>`}
+                      name={getInitials(item?.title)}
+                    />
+
                   </div>
                   <div className="flex flex-col gap-y-1">
                     <p>{item?.title}</p>
@@ -159,7 +163,7 @@ console.log("dddddd", currectActivity)
 }
 
 
-export default memo(ActivityLeftData)
+export default ActivityLeftData
 
 
 
