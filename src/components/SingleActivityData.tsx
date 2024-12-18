@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchEventById } from "../api/EventSlice/eventThunk";
 import ConfirmationComponent from "./ActivityDelete";
 import Loading from "./Loading";
-import { CREATE_ACTIVITY, CREATE_PLACE, GET_ACTIVITY_LIST } from "../api/constant";
+import { CREATE_PLACE, GET_ACTIVITY_LIST } from "../api/constant";
 import { CalenderIcon, ClockIcon, CurrencyIcon, LocationIcon, MailIcon, WebsiteIcon } from "../utils/images";
 
 interface ModalProps {

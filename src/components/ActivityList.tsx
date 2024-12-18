@@ -13,6 +13,8 @@ import { createBulk } from "../api/EventSlice/eventThunk";
 import { checkFields, getInitials } from "../utils/commanFun";
 import { toast } from "react-toastify";
 import { ImageWithFallback } from "./Image";
+// import { downloadExcel, formatExcel } from "./Export";
+// import DownloadProducts from "./ExportCSV";
 
 
 interface Props {
@@ -63,8 +65,55 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
             id: item?.id ?? "",
             acf: {
               ...item,
+              map_location: { lat: parseFloat(item?.lat) ?? "", lng: parseFloat(item?.lng) ?? "" },
+              email_address: item?.email_address ?? "",
+              website: item?.website ?? "",
+              address: {
+                place_name: item?.place_name ?? "",
+                address_line_1: item?.address_line_1 ?? "",
+                address_line_2: item?.address_line_2 ?? "",
+                postcode: item?.postcode ?? "",
+              },
+              parish: { label: item?.parish ? item?.parish.replace("-", ". ") : "", value: item?.parish ?? "" },
+              opening_hours: {
+                Monday: {
+                  closes: "",
+                  opens: "",
+                  is_open: "0"
+                },
+                Tuesday: {
+                  closes: "",
+                  opens: "",
+                  is_open: "0"
+                },
+                Wednesday: {
+                  closes: "",
+                  opens: "",
+                  is_open: "0"
+                },
+                Thursday: {
+                  closes: "",
+                  opens: "",
+                  is_open: "0"
+                },
+                Friday: {
+                  closes: "",
+                  opens: "",
+                  is_open: "0"
+                },
+                Saturday: {
+                  closes: "",
+                  opens: "",
+                  is_open: "0"
+                },
+                Sunday: {
+                  closes: "",
+                  opens: "",
+                  is_open: "0"
+                }
+              },
               types: item.types ? item.types.split(",") : [],
-              telephone_number: { area_code: item?.area_code, prefix: item?.prefix, number: item?.number },
+              telephone_number: { area_code: item?.area_code ?? "", prefix: item?.prefix ?? "", number: item?.number ? +item?.number : "" },
               header_image_data: JSON.stringify(item?.header_image_url.split(",").map((val: any) => (
                 { url: val }
               )))
@@ -90,6 +139,11 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
   }
 
 
+  // function exportExcel() {
+  //   downloadExcel(formatExcel)
+  //   throw new Error("Function not implemented.");
+  // }
+
   return (
     <>
       <div className="p-2 flex flex-col gap-y-3 border-r border-gray-300">
@@ -98,6 +152,12 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
           className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md transform transition-transform duration-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 active:bg-blue-700 active:scale-95">
           {isDrawerOpen ? "CLOSE" : "ADD"} {showType?.toLocaleUpperCase()}
         </button>
+        {/* <button
+          onClick={ exportExcel}
+          className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md transform transition-transform duration-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 active:bg-blue-700 active:scale-95">
+          downloadExcel
+        </button>
+        <DownloadProducts /> */}
         {
           showType === "place" &&
           <FileUploadComponent
