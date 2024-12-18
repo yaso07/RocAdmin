@@ -365,10 +365,9 @@ const EditBtn = styled.button`
     cursor: pointer;
     background: #1e2832;
     color: white;
-    &:hover{
-    
-    background: red;
-    transaction: .3s
+    transition: background 1s ease-in-out;
+    &:hover {
+        background: red;
     }
 
 `;

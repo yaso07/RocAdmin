@@ -182,7 +182,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
             </h1>
             <div className="">
               <EditBtn
-                className="font-semibold text-lg capitalize mr-4"
+                className="font-semibold text-lg capitalize mr-4 "
                 onClick={() => toggleDrawer(data?._id)}>
                 Edit
               </EditBtn>
@@ -377,9 +377,9 @@ const EditBtn = styled.button`
   cursor: pointer;
   background: #1e2832;
   color: white;
+  transition: background 1s ease-in-out;
   &:hover {
     background: red;
-    transaction: 0.3s;
   }
 `;
 

@@ -54,14 +54,16 @@ const DeleteBtn = styled.button`
     padding: 0px 12px;
     border: 1px solid gray;
     margin: 4px;
+    width:100px;
+    height: 30px;
     border-radius: 5px;
     cursor: pointer;
     background: rgb(127 29 29);
     color: white;
-    &:hover{
+    transition: background 1s ease-in-out;
     
-    background: rgb(239 68 68);
-    transaction: .3s
+    &:hover{
+    background:rgb(12, 53, 130);
     }
 
 `;

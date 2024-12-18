@@ -191,7 +191,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
 
               return (
                 <div
-                  className={`
+                  className={`rainbow
                     flex items-center gap-x-5 border-b border-gray-300 p-2 cursor-pointer ${selectedList === index && "bg-indigo-300"}`}
                   key={index}
                   onClick={() => handleEventData(index, item?.image?.url)}

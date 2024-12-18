@@ -34,61 +34,61 @@ const dummyData = [
     }
 ];
 
-const newData = {
-    id:  "",
-    acf: {
-      map_location: { lat: "", lng: "" },
-      email_address: "",
-      website: "",
-      address: {
-        place_name:  "",
-        address_line_1:  "",
-        address_line_2:  "",
-        postcode:  "",
-      },
-      parish: { label:  "", value:  "" },
-      opening_hours: {
-        Monday: {
-          closes: "",
-          opens: "",
-          is_open: "0"
-        },
-        Tuesday: {
-          closes: "",
-          opens: "",
-          is_open: "0"
-        },
-        Wednesday: {
-          closes: "",
-          opens: "",
-          is_open: "0"
-        },
-        Thursday: {
-          closes: "",
-          opens: "",
-          is_open: "0"
-        },
-        Friday: {
-          closes: "",
-          opens: "",
-          is_open: "0"
-        },
-        Saturday: {
-          closes: "",
-          opens: "",
-          is_open: "0"
-        },
-        Sunday: {
-          closes: "",
-          opens: "",
-          is_open: "0"
-        }
-      },
-      types: "",
-      telephone_number: { area_code: "", prefix: "", number:  "" },
-      header_image_data: ""
-    }
-  }
+// const newData = {
+//     id:  "",
+//     acf: {
+//       map_location: { lat: "", lng: "" },
+//       email_address: "",
+//       website: "",
+//       address: {
+//         place_name:  "",
+//         address_line_1:  "",
+//         address_line_2:  "",
+//         postcode:  "",
+//       },
+//       parish: { label:  "", value:  "" },
+//       opening_hours: {
+//         Monday: {
+//           closes: "",
+//           opens: "",
+//           is_open: "0"
+//         },
+//         Tuesday: {
+//           closes: "",
+//           opens: "",
+//           is_open: "0"
+//         },
+//         Wednesday: {
+//           closes: "",
+//           opens: "",
+//           is_open: "0"
+//         },
+//         Thursday: {
+//           closes: "",
+//           opens: "",
+//           is_open: "0"
+//         },
+//         Friday: {
+//           closes: "",
+//           opens: "",
+//           is_open: "0"
+//         },
+//         Saturday: {
+//           closes: "",
+//           opens: "",
+//           is_open: "0"
+//         },
+//         Sunday: {
+//           closes: "",
+//           opens: "",
+//           is_open: "0"
+//         }
+//       },
+//       types: "",
+//       telephone_number: { area_code: "", prefix: "", number:  "" },
+//       header_image_data: ""
+//     }
+//   }
 
 
 
