@@ -1,6 +1,6 @@
 import Accordion from "../components/Accordion/Accordion";
 import { useState, useEffect } from "react";
-import {  createPlace, updatePlace } from "../api/EventSlice/eventThunk";
+import { createPlace, updatePlace } from "../api/EventSlice/eventThunk";
 import { useDispatch, useSelector } from "react-redux";
 // import axios from "axios";
 import ReusableInput from "./InputBox/ReusableInput";
@@ -16,7 +16,7 @@ import {
     ParishData,
     WeeklyDaysData,
 } from "../utils/data";
-import { updateOpenHours } from "../utils/commanFun";
+import { convertHours, updateOpenHours } from "../utils/commanFun";
 import { FinalObject, Props, SelectedHours, TimeState } from "../utils/interface";
 import { useFormik } from "formik";
 import { PlaceInitialFormValues, placeSchema } from "../utils/validation";
@@ -45,7 +45,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
     // const [loading, setLoading] = useState(false)
     // const [file, setFile] = useState<File[]>([]);
 
-    const [selectedCode, setSelectedCode] = useState("");
+    // const [selectedCode, setSelectedCode] = useState("+1");
 
     const [selectedOption, setSelectedOption] = useState({
         label: "",
@@ -73,46 +73,49 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
 
 
     useEffect(() => {
-        console.log("d------", dataById)
         if (drawerType === "Edit") {
+            console.log("dddddddddddddddddd", dataById)
             if (JSON.stringify(dataById)) {
-                setFieldValue("introDescription", dataById?.acf?.short_description);
-                setFieldValue("DisplayName", dataById?.acf?.title); // not getting key from backend
-                setFieldValue("EmailAddress", dataById?.acf?.email_address ?? "");
-                setFieldValue("Prefix", dataById?.acf?.telephone_number?.prefix);
-                setFieldValue("areaCode", dataById?.acf?.telephone_number?.area_code);
-                setFieldValue("Telephone", dataById?.acf?.telephone_number?.number);
-                setFieldValue("Website", dataById?.acf?.website);
-                setFieldValue("PlaceName", dataById?.acf?.address?.place_name);
-                setFieldValue("AddressLine", dataById?.acf?.address?.address_line_1);
-                setFieldValue("AddressLineOptional", dataById?.acf?.address?.address_line_2);
-                setFieldValue("Postcode", dataById?.acf?.address?.postcode);
-                const weekDay: any = []
-                for (const key in dataById?.acf?.opening_hours) {
-                    if (dataById?.acf?.opening_hours.hasOwnProperty(key)) {
-                        if (dataById?.acf?.opening_hours[key].is_open == 1) {
-                            weekDay.push({ value: key })
-                        }
-                    }
+                setFieldValue("introDescription", dataById?.editorial_summary?.overview);
+                setFieldValue("DisplayName", dataById?.name);
+                setFieldValue("EmailAddress", dataById?.email ?? "");
+                // setFieldValue("Prefix", dataById?.acf?.telephone_number?.prefix);
+                // setFieldValue("areaCode", dataById?.acf?.telephone_number?.area_code);
+                // setFieldValue("Telephone", dataById?.acf?.telephone_number?.number);
+                setFieldValue("areaCode", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[0] : "");
+                setFieldValue("Prefix", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[1] : "");
+                setFieldValue("Telephone", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[2] : "");
+                console.log("------",  dataById?.international_phone_number.split(" ")[0])
+                setFieldValue("Website", dataById?.website ?? "");
+                setFieldValue("PlaceName", dataById?.address?.place_name);
+                setFieldValue("AddressLine", dataById?.address?.address_line_1);
+                setFieldValue("AddressLineOptional", dataById?.address?.address_line_2);
+                setFieldValue("Postcode", dataById?.address?.postcode);
+                if (dataById?.current_opening_hours?.weekday_text) {
+                    const openDays = dataById?.current_opening_hours?.weekday_text
+                    .filter((day: any) => !day.includes("Closed")) // Filter out closed days
+                    .map((day: any) => ({value: day.split(": ")[0]}))
+                    
+                    setFieldValue("WeekDays", openDays)
+                    setSelectedItems({
+                        ...selectedItems,
+                        WeekDays: openDays,
+                    })
+
+                    setTimeState({...convertHours(dataById?.current_opening_hours?.weekday_text) })
                 }
-                setFieldValue("WeekDays", weekDay)
-                setSelectedItems({
-                    ...selectedItems,
-                    WeekDays: weekDay,
-                })
-                location.latitude = dataById?.acf?.map_location?.lat,
-                    location.longitude = dataById?.acf?.map_location?.lng
+                location.latitude = dataById?.geometry?.location.lat,
+                    location.longitude = dataById?.geometry?.location.lng
                 setLocation({ ...location })
-                setFieldValue("latitude", dataById?.acf?.map_location?.lat)
-                setFieldValue("longitude", dataById?.acf?.map_location?.lng)
-                setTimeState({ ...dataById?.acf?.opening_hours })
-                setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
-                setFieldValue("Parish", dataById?.acf?.parish?.value)
+                setFieldValue("latitude", dataById?.geometry?.location.lat)
+                setFieldValue("longitude", dataById?.geometry?.location.lng)
+                setFieldValue("tags", dataById?.types)
+                setSelectedOption({ label: dataById?.parish, value: dataById?.parish });
+                setFieldValue("Parish", dataById?.parish)
                 const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
-                const imageURL = image.map((val: { url: any; }) => val?.url)
+                const imageURL = dataById?.photoUrl ? dataById?.photoUrl : image.map((val: { url: any; }) => val?.url)
                 setFieldValue("imageUrl", imageURL)
-                setImageInput( imageURL)
-                setFieldValue("tags", dataById?.acf?.types)
+                setImageInput(imageURL)
             }
         } else {
             resetForm()
@@ -120,7 +123,6 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 WeekDays: [],
             });
             setTimeState({});
-            setSelectedCode("");
             // setSelectedActivity({ label: "", value: "" });
             setLocation({
                 latitude: "",
@@ -177,7 +179,6 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
 
 
 
-
     const onchangelocation = (e: any) => {
         const { name, value } = e.target;
         setLocation((prevData: any) => ({
@@ -190,7 +191,6 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
 
 
     const handleChangeCode = (event: any) => {
-        setSelectedCode(event.target.value);
         setFieldValue("areaCode", event.target.value)
     };
 
@@ -282,7 +282,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 email_address: values.EmailAddress,
                 map_location: { lat: +location.latitude, lng: +location.longitude },
                 telephone_number: {
-                    area_code: selectedCode,
+                    area_code: values.areaCode,
                     prefix: values.Prefix,
                     number: values.Telephone,
                 },
@@ -300,7 +300,8 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
             // type: "Place",
             // manual: true,
         };
-
+        // console.log("timesss-----", finalObject)
+        // return
         if (drawerType === "Edit") {
             const obj = { finalObject, setIsDrawerOpen, id: dataById?._id };
 
@@ -311,13 +312,12 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 WeekDays: [],
             });
             setTimeState({});
-            setSelectedCode("");
             setLocation({
                 latitude: "",
                 longitude: "",
             });
             setSelectedOption({ label: "", value: "" });
-            
+
             setImageInput([""])
         } else {
             const obj = { finalObject, setIsDrawerOpen };
@@ -328,7 +328,6 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 WeekDays: [],
             });
             setTimeState({});
-            setSelectedCode("");
             setLocation({
                 latitude: "",
                 longitude: "",
@@ -380,11 +379,12 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                                         Area Code
                                     </h6>
                                     <Select
-                                        id="country-code"
+                                        id="areaCode"
                                         name="areaCode"
-                                        value={values.areaCode}
+                                        value={`+${values.areaCode}`}
                                         onChange={handleChangeCode}
                                     >
+                                       
                                         {countryCodes.map((item, index) => (
                                             <option key={index} value={item?.code}>
                                                 {item?.code}

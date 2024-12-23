@@ -66,7 +66,7 @@ function EventDetails({ handleEventData, setDrawerType, isDrawerOpen, setIsDrawe
             eventList.map((item: any, index: number) => {
               return (
                 <div
-                  className={`flex items-center gap-x-5 border-b border-gray-300 p-2 cursor-pointer ${selectedList === index && "bg-indigo-300"}`}
+                  className={`rainbow flex items-center gap-x-5 border-b border-gray-300 p-2 cursor-pointer ${selectedList === index && "bg-indigo-300"}`}
                   key={index}
                   onClick={() => handleEventData(index, item?.image?.url)}
                 >

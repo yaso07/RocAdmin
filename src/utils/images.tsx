@@ -4,6 +4,7 @@ import MailImg from '../assets/modalIcons/envelope.svg';
 import CurrencyImg from '../assets/modalIcons/gbp.svg';
 import WebsiteImg from '../assets/modalIcons/globe.svg';
 import LocationImg from '../assets/modalIcons/location-dot.svg';
+import Phone from '../assets/modalIcons/phone.svg';
 
 
 
@@ -18,6 +19,7 @@ export const MailIcon = MailImg;
 export const CurrencyIcon = CurrencyImg;
 export const WebsiteIcon = WebsiteImg;
 export const LocationIcon = LocationImg;
+export const phoneBlack = Phone;
 
 
 

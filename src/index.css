@@ -168,12 +168,16 @@
   0% {
     /* background-position:1rem; */
     background-color: #313191;
-    transform: translateY(4px);
+    transform: translateY(1px);
 
   }
 
   100% {
     background-color: #693e88;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
+}
+
+.hover-color:hover{
+  color: white !important
 }

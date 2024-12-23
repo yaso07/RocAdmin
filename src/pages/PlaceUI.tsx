@@ -39,7 +39,7 @@ const PlaceUI = () => {
     if (eventDataValue !== undefined) {
       const imageData = eventDataValue[selectedList]?.acf?.header_image_data ? JSON.parse(eventDataValue[selectedList]?.acf?.header_image_data) : [{ url: "" }]
       setEventData(eventDataValue[selectedList])
-      setDataImage(imageData[0].url)
+      setDataImage(eventDataValue[selectedList]?.photoUrl[0] ? eventDataValue[selectedList]?.photoUrl[0] : imageData[0].url)
     }
   }, [eventDataValue])
 
@@ -64,7 +64,6 @@ const PlaceUI = () => {
   //   // dispatch(fetchEventById(data) as any);
   //   setDrawerType("Edit");
   // };
-
 
 
 

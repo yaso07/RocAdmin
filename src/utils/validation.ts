@@ -196,7 +196,7 @@ export const activitySchema = Yup.object().shape({
   AccessibilityURL: Yup.string().matches(
     /(https?:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])(:?\d*)\/?([a-z_\/0-9\-#.]*)\??([a-z_\/0-9\-#=&]*)/g,
     "Please enter valid URL"),
-  file: Yup.string().required("Please select image"),
+  // file: Yup.string().required("Please select image"),
 });
 
 

@@ -144,6 +144,14 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
   //   throw new Error("Function not implemented.");
   // }
 
+
+
+
+
+  // console.log("eventListeventListeventListeventList", eventList)
+
+  //   return <><div className="">dkflsdkflsd</div></>
+
   return (
     <>
       <div className="p-2 flex flex-col gap-y-3 border-r border-gray-300">
@@ -188,7 +196,6 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
         <div className="overflow-y-auto max-h-[calc(100dvh-200px)] hide-scrollbar">
           {
             eventList.map((item: any, index: number) => {
-
               return (
                 <div
                   className={`rainbow
