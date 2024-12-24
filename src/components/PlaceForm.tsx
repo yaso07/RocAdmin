@@ -74,7 +74,6 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
 
     useEffect(() => {
         if (drawerType === "Edit") {
-            console.log("dddddddddddddddddd", dataById)
             if (JSON.stringify(dataById)) {
                 setFieldValue("introDescription", dataById?.editorial_summary?.overview);
                 setFieldValue("DisplayName", dataById?.name);
@@ -85,7 +84,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 setFieldValue("areaCode", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[0] : "");
                 setFieldValue("Prefix", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[1] : "");
                 setFieldValue("Telephone", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[2] : "");
-                console.log("------",  dataById?.international_phone_number.split(" ")[0])
+                console.log("------", dataById?.international_phone_number.split(" ")[0])
                 setFieldValue("Website", dataById?.website ?? "");
                 setFieldValue("PlaceName", dataById?.address?.place_name);
                 setFieldValue("AddressLine", dataById?.address?.address_line_1);
@@ -93,16 +92,16 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 setFieldValue("Postcode", dataById?.address?.postcode);
                 if (dataById?.current_opening_hours?.weekday_text) {
                     const openDays = dataById?.current_opening_hours?.weekday_text
-                    .filter((day: any) => !day.includes("Closed")) // Filter out closed days
-                    .map((day: any) => ({value: day.split(": ")[0]}))
-                    
+                        .filter((day: any) => !day.includes("Closed")) // Filter out closed days
+                        .map((day: any) => ({ value: day.split(": ")[0] }))
+
                     setFieldValue("WeekDays", openDays)
                     setSelectedItems({
                         ...selectedItems,
                         WeekDays: openDays,
                     })
 
-                    setTimeState({...convertHours(dataById?.current_opening_hours?.weekday_text) })
+                    setTimeState({ ...convertHours(dataById?.current_opening_hours?.weekday_text) })
                 }
                 location.latitude = dataById?.geometry?.location.lat,
                     location.longitude = dataById?.geometry?.location.lng
@@ -158,8 +157,8 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 ...prevState,
                 [value]: {
                     is_open: checked ? "1" : "0",
-                    opens: currentTime,
-                    closes: newTime
+                    opens: checked ? currentTime : "",
+                    closes: checked ? newTime : ""
                 },
             };
         });
@@ -268,7 +267,6 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
 
 
     const finalActivitySubmition = () => {
-
         const imageURL = values.imageUrl.map(item => ({ url: item }))
 
         const finalObject: FinalObject = {
@@ -384,7 +382,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                                         value={`+${values.areaCode}`}
                                         onChange={handleChangeCode}
                                     >
-                                       
+
                                         {countryCodes.map((item, index) => (
                                             <option key={index} value={item?.code}>
                                                 {item?.code}
@@ -548,14 +546,14 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                                         <div key={index}>
                                             <input
                                                 type="radio"
-                                                id={item?.value}
+                                                id={item?.value.toLowerCase()}
                                                 name="location"
                                                 value={item?.value}
                                                 onChange={handleChangeRadio}
                                                 checked={selectedOption?.value === item?.value}
                                                 style={{ marginRight: 10 }}
                                             />
-                                            <label>{item?.label}</label>
+                                            <label htmlFor={item?.value.toLowerCase()}>{item?.label}</label>
                                         </div>
                                     );
                                 })}

@@ -10,6 +10,7 @@ import { CREATE_PLACE, GET_ACTIVITY_LIST } from "../api/constant";
 import { CalenderIcon, ClockIcon, CurrencyIcon, LocationIcon, MailIcon, phoneBlack, WebsiteIcon } from "../utils/images";
 import { Tooltip } from "antd";
 import { toast } from "react-toastify";
+import Slider from "./slider";
 
 interface ModalProps {
   dataImage?: any;
@@ -83,7 +84,17 @@ const SingleActivitytData: React.FC<ModalProps> = ({
       nameValue: data?.acf?.price_to ? true : false,
     },
     {
-      name: <span>{data?.email ? data.email : data?.acf?.email_address}</span>,
+      name: (
+        <Tooltip title={data?.email ? data.email : data?.acf?.email_address}>
+          <span onClick={() => copylink(data?.email ? data.email : data?.acf?.email_address)}>
+            <a href={`mailto: ${data?.email ? data.email : data?.acf?.email_address}`}>
+              {" "}
+              {data?.email ? data.email : data?.acf?.email_address}{" "}
+            </a>
+          </span>
+        </Tooltip>
+      ),
+      // name: <span>{data?.email ? data.email : data?.acf?.email_address}</span>,
       image: MailIcon,
       width: 16,
       height: 24,
@@ -231,17 +242,23 @@ const SingleActivitytData: React.FC<ModalProps> = ({
             </ResturatWrapper>
           </ResturatContainer>
           <ItemImageContainer>
-            <img
-              src={
-                dataImage
-                  ? dataImage
-                  : "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FNo_Image_Available.jpg?alt=media&token=90cbe8cc-39f6-45f9-8c4b-59e9be631a07"
-              }
-              alt="Logo"
-              width={200}
-              height={80}
-              style={{ borderRadius: 4, maxWidth: "100%", objectFit: "cover" }}
-            />
+            {
+              (showType === "place" && dataImage) ?
+                <Slider slides={dataImage} />
+                :
+
+                <img
+                  src={
+                    dataImage
+                      ? dataImage
+                      : "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FNo_Image_Available.jpg?alt=media&token=90cbe8cc-39f6-45f9-8c4b-59e9be631a07"
+                  }
+                  alt="Logo"
+                  width={200}
+                  // height={150}
+                  style={{ borderRadius: 4, maxWidth: "100%", objectFit: "cover" }}
+                />
+            }
           </ItemImageContainer>
           <ResturantDetailsContainer>
             {EventListData.map((item: any, index: number) => {
@@ -540,6 +557,7 @@ const RestDetailTitleWebsite = styled.a`
 
 const ItemImageContainer = styled.div`
   padding: 0px 24px;
+  height: 150px;
 `;
 
 // const ImageWrraper = styled(Image)`

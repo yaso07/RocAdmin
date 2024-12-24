@@ -22,7 +22,7 @@ const PlaceUI = () => {
   const currectActivity = data.currentActivity
 
   const [eventdata, setEventData] = useState({})
-  const [dataImage, setDataImage] = useState('')
+  const [dataImage, setDataImage] = useState<string[] | string | any>('')
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedList, setSelectedList] = useState(0)
   const [drawerType, setDrawerType] = useState<string>('')
@@ -39,11 +39,11 @@ const PlaceUI = () => {
     if (eventDataValue !== undefined) {
       const imageData = eventDataValue[selectedList]?.acf?.header_image_data ? JSON.parse(eventDataValue[selectedList]?.acf?.header_image_data) : [{ url: "" }]
       setEventData(eventDataValue[selectedList])
-      setDataImage(eventDataValue[selectedList]?.photoUrl[0] ? eventDataValue[selectedList]?.photoUrl[0] : imageData[0].url)
+      setDataImage(eventDataValue[selectedList]?.photoUrl[0] ? eventDataValue[selectedList]?.photoUrl : imageData[0].url)
     }
   }, [eventDataValue])
 
-  const handleEventData = (index: any, image: string) => {
+  const handleEventData = (index: any, image: string[] | string) => {
     setSelectedList(index)
     setEventData(eventDataValue[index])
     setDataImage(image)

@@ -75,43 +75,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
                 postcode: item?.postcode ?? "",
               },
               parish: { label: item?.parish ? item?.parish.replace("-", ". ") : "", value: item?.parish ?? "" },
-              opening_hours: {
-                Monday: {
-                  closes: "",
-                  opens: "",
-                  is_open: "0"
-                },
-                Tuesday: {
-                  closes: "",
-                  opens: "",
-                  is_open: "0"
-                },
-                Wednesday: {
-                  closes: "",
-                  opens: "",
-                  is_open: "0"
-                },
-                Thursday: {
-                  closes: "",
-                  opens: "",
-                  is_open: "0"
-                },
-                Friday: {
-                  closes: "",
-                  opens: "",
-                  is_open: "0"
-                },
-                Saturday: {
-                  closes: "",
-                  opens: "",
-                  is_open: "0"
-                },
-                Sunday: {
-                  closes: "",
-                  opens: "",
-                  is_open: "0"
-                }
-              },
+              opening_hours: {},
               types: item.types ? item.types.split(",") : [],
               telephone_number: { area_code: item?.area_code ?? "", prefix: item?.prefix ?? "", number: item?.number ? +item?.number : "" },
               header_image_data: JSON.stringify(item?.header_image_url.split(",").map((val: any) => (
@@ -208,7 +172,7 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
 
                     <ImageWithFallback
                       className="w-full h-full rounded-md object-fit-cover"
-                      src={item?.image?.url}
+                      src={ showType === "place" ? item?.image?.url[0] : item?.image?.url}
                       alt={`<p> "bharat"</p>`}
                       name={getInitials(item?.title)}
                     />

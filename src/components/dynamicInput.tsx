@@ -43,7 +43,7 @@ const DynamicInput: React.FC<Props> = ({ imageInput, setImageInput, setFieldValu
                         type="text"
                         name="imageUrl"
                         value={value}
-                        onChange={(e) => handleImageInput(index, e.target.value)}
+                        onChange={(e) => handleImageInput(index, e.target.value.replace(" ", "%20"))}
                         placeholder={`Image URL ${index + 1}`}
                         style={styles.input}
                     />

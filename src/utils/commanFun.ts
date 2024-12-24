@@ -120,15 +120,17 @@ export const getImgeUrl = (arr: any) => {
 
 
 export function updateOpenHours(newObj: any) {
+  let count = 0
   for (const day in newObj) {
     if (opnintHoursData.hasOwnProperty(day)) {
       opnintHoursData[day] = {
         ...opnintHoursData[day],
         ...newObj[day]
       };
+      if(newObj[day].is_open === "0") count += 1
     }
   }
-  return opnintHoursData;
+  return count === 7 ? {} : opnintHoursData;
 }
 
 
@@ -190,7 +192,7 @@ export const eventDateValidation = (selectOption: any, DateData: any, setIsDateV
     }
   } else if (selectOption === "option3") {
     if (DateData.length && date?.startDateMonth && date?.endDateMonth && time?.startTimeMonth && time?.endTimeMonth) {
-      
+
       setIsDateValid(false)
     } else {
       setIsDateValid(true)
@@ -234,6 +236,7 @@ export const checkFields = (dataArray: any[]) => {
 
 export const getInitials = (fullName: string | any) => {
   // Split the name into words
+  if(!fullName) return "";
   const words = fullName.split(' ');
 
   // Take the first letter of each word, limiting to 2 words
@@ -262,7 +265,7 @@ export function convertHours(arr: any[]) {
     const dayEntry = {
       closes: "",
       opens: "",
-      is_open: "0"  
+      is_open: "0"
     };
 
     if (hours !== "Closed") {
@@ -275,7 +278,7 @@ export function convertHours(arr: any[]) {
     openingHours[day] = dayEntry;
   });
 
-  return  openingHours;
+  return openingHours;
 }
 
 function convertTo24HourFormat(time: any) {

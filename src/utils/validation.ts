@@ -476,7 +476,8 @@ export const placeSchema = Yup.object().shape({
       Yup.string()
         .matches(
           // /(https?:\/\/[^\s]+)/,
-          /^(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif))$/i,
+          /^(https?:\/\/[^\s/]+\.[^\s/]+(?:\/[^?\s]*?(?:%20| )?[^?\s]*)*\.(jpg|jpeg|png|gif))$/i,
+          // /^(https?:\/\/[^\s/]+\.[^\s/]+(?:\/[^\s]*%20[^\s]*)*\.(jpg|jpeg|png|gif))$/i,
           "Please enter a valid URL"
         )
         .required("URL is required") // Ensure each URL is non-empty
