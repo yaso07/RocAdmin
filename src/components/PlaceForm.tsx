@@ -356,7 +356,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                             />
                             <div style={{ margin: "20px 0px" }}>
                                 <ReusableInput
-                                    title="Email address *"
+                                    title="Email address"
                                     showCouter={false}
                                     name="EmailAddress"
                                     DescriptionTitle={values.EmailAddress}

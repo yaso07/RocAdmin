@@ -451,7 +451,7 @@ export const placeSchema = Yup.object().shape({
   DisplayName: Yup.string().required('Please enter name'),
   EmailAddress: Yup.string().trim()
     .matches(/^(([^<>()\[\]\\.,;:\s@"]+(.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|([a-zA-Z-0-9]+(\.[a-zA-Z]{2,})+))$/, "Invalid email address")
-    .email('Please enter valid email').required("Please enter email"),
+    .email('Please enter valid email'),
   // Prefix: Yup.number(),
   // Telephone: Yup.number(),
   Website: Yup.string().matches(
