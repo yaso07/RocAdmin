@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 interface Props {
     src?: string | any;
@@ -7,8 +7,11 @@ interface Props {
     className?: string | any;
 }
 
-export const ImageWithFallback = ({ src, alt, name, className }: Props) => {
+const ImageWithFallback = ({ src, alt, name, className }: Props) => {
     const [hasError, setHasError] = useState(false);
+    useEffect(() => {
+        setHasError(false);
+    }, [src]);
 
     return (
         <div className='flex justify-center items-center h-full rounded-md uppercase bg-[#cd6060]'>
@@ -17,7 +20,6 @@ export const ImageWithFallback = ({ src, alt, name, className }: Props) => {
                     src={src}
                     className={className}
                     alt={alt}
-                    loading="lazy"
                     onError={() => setHasError(true)}
                 // style={{ width: '300px', height: '200px' }} 
                 />
@@ -28,17 +30,6 @@ export const ImageWithFallback = ({ src, alt, name, className }: Props) => {
     );
 };
 
-// Usage
-// const App = () => {
-//     return (
-//         <div>
-//             <ImageWithFallback
-//                 src="https://example.com/non-existent-image.jpg"
-//                 alt="Example"
-//                 name="Image Not Found"
-//             />
-//         </div>
-//     );
-// };
+export default memo(ImageWithFallback)
 
-// export default App;
+

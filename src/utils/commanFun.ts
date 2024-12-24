@@ -102,7 +102,6 @@ export const convertToDate = (dateStr: any) => {
   const day = dateStr.toString().substring(6, 8);
   const date = new Date(`${year}/${month}/${day}`);
   // const date = new Date(`${year}/${month}/${day}`);
-  console.log("data", date)
   return date;
 };
 
@@ -121,14 +120,14 @@ export const getImgeUrl = (arr: any) => {
 
 export function updateOpenHours(newObj: any) {
   let count = 0
-  for (const day in newObj) {
-    if (opnintHoursData.hasOwnProperty(day)) {
-      opnintHoursData[day] = {
-        ...opnintHoursData[day],
-        ...newObj[day]
-      };
-      if(newObj[day].is_open === "0") count += 1
+  for (const day in opnintHoursData) {
+    if (newObj.hasOwnProperty(day)) {
+      opnintHoursData[day] = { ...opnintHoursData[day], ...newObj[day] }
+    } else {
+      // Reset other days to default values
+      opnintHoursData[day] = { closes: '', opens: '', is_open: "0" };
     }
+    if (opnintHoursData[day].is_open === "0") count += 1
   }
   return count === 7 ? {} : opnintHoursData;
 }
@@ -236,7 +235,7 @@ export const checkFields = (dataArray: any[]) => {
 
 export const getInitials = (fullName: string | any) => {
   // Split the name into words
-  if(!fullName) return "";
+  if (!fullName) return "";
   const words = fullName.split(' ');
 
   // Take the first letter of each word, limiting to 2 words

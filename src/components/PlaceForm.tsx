@@ -84,7 +84,6 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 setFieldValue("areaCode", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[0] : "");
                 setFieldValue("Prefix", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[1] : "");
                 setFieldValue("Telephone", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[2] : "");
-                console.log("------", dataById?.international_phone_number.split(" ")[0])
                 setFieldValue("Website", dataById?.website ?? "");
                 setFieldValue("PlaceName", dataById?.address?.place_name);
                 setFieldValue("AddressLine", dataById?.address?.address_line_1);
@@ -111,24 +110,18 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 setFieldValue("tags", dataById?.types)
                 setSelectedOption({ label: dataById?.parish, value: dataById?.parish });
                 setFieldValue("Parish", dataById?.parish)
-                const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
-                const imageURL = dataById?.photoUrl ? dataById?.photoUrl : image.map((val: { url: any; }) => val?.url)
+                const imageURL = dataById?.photoUrl ? dataById?.photoUrl :[]
                 setFieldValue("imageUrl", imageURL)
                 setImageInput(imageURL)
             }
-        } else {
-            resetForm()
-            setSelectedItems({
-                WeekDays: [],
-            });
+        } else if (drawerType === "add" || drawerType === "close") {
             setTimeState({});
-            // setSelectedActivity({ label: "", value: "" });
-            setLocation({
-                latitude: "",
-                longitude: "",
-            });
+            selectedItems.WeekDays = []
+            setSelectedItems({ ...selectedItems });
+            setLocation({ latitude: "", longitude: "" });
             setSelectedOption({ label: "", value: "" });
             setImageInput([""])
+            resetForm()
         }
 
     }, [JSON.stringify(dataById), drawerType])
@@ -136,11 +129,8 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
 
 
 
-    const handleCheckboxChange = (
-        category: string,
-        value: string,
-        checked: boolean
-    ) => {
+
+    const handleCheckboxChange = (category: string, value: string, checked: boolean) => {
         setSelectedItems((prevState: any) => {
             const newWeekDays = checked
                 ? [...prevState.WeekDays, { value }]
@@ -165,8 +155,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
     };
 
     const handleTimeChangehour = (day: string, type: "opens" | "closes") => (time: string) => {
-        setTimeState((prevState) => ({
-            ...prevState,
+        setTimeState((prevState) => ({...prevState,
             [day]: {
                 ...prevState[day],
                 [type]: time,
@@ -280,8 +269,8 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 email_address: values.EmailAddress,
                 map_location: { lat: +location.latitude, lng: +location.longitude },
                 telephone_number: {
-                    area_code: values.areaCode,
-                    prefix: values.Prefix,
+                    area_code: values.Telephone ? values.areaCode : "",
+                    prefix: values.Telephone ? values.Prefix : "",
                     number: values.Telephone,
                 },
                 website: values.Website,
@@ -292,44 +281,30 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                     postcode: values.Postcode,
                 },
                 parish: selectedOption,
-                opening_hours: updateOpenHours(timeState),
+                opening_hours: values.WeekDays.length ? updateOpenHours(timeState) : {},
             },
             // data_type: "jersey",
             // type: "Place",
             // manual: true,
         };
-        // console.log("timesss-----", finalObject)
+        // console.log("timesss-----", finalObject, timeState)
         // return
         if (drawerType === "Edit") {
             const obj = { finalObject, setIsDrawerOpen, id: dataById?._id };
-
             dispatch(updatePlace(obj) as any);
-            // dispatch(getPlaceList() as any)
             resetForm()
-            setSelectedItems({
-                WeekDays: [],
-            });
+            setSelectedItems({ WeekDays: [] });
             setTimeState({});
-            setLocation({
-                latitude: "",
-                longitude: "",
-            });
+            setLocation({ latitude: "", longitude: "" });
             setSelectedOption({ label: "", value: "" });
-
             setImageInput([""])
         } else {
             const obj = { finalObject, setIsDrawerOpen };
             dispatch(createPlace(obj) as any);
-            // dispatch(getPlaceList() as any)
             resetForm()
-            setSelectedItems({
-                WeekDays: [],
-            });
+            setSelectedItems({ WeekDays: [] });
             setTimeState({});
-            setLocation({
-                latitude: "",
-                longitude: "",
-            });
+            setLocation({ latitude: "", longitude: "" });
             setSelectedOption({ label: "", value: "" });
             setImageInput([""])
         }
@@ -605,28 +580,17 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                                 If you are open all day, please leave the startend date blank
                             </TitleTextMain>
                             {WeeklyDaysData.map((item, index) => {
-                                const isChecked = selectedItems?.WeekDays.some(
-                                    (weekday) => weekday?.value === item?.value
-                                );
+                                const isChecked = selectedItems?.WeekDays.some((weekday) => weekday?.value === item?.value );
                                 return (
-
                                     <div
-                                        style={{
-                                            marginBottom: 10,
-                                            display: "grid",
-                                            alignItems: "center",
-                                            gap: 20,
-                                            gridTemplateColumns: "1fr 3fr",
-                                        }}
+                                        style={{ marginBottom: 10, display: "grid", alignItems: "center", gap: 20, gridTemplateColumns: "1fr 3fr" }}
                                         key={index}
                                     >
                                         <Checkbox
                                             title={item?.title}
                                             value={item?.value}
                                             isChecked={isChecked}
-                                            onCheckboxChange={(value, checked) =>
-                                                handleCheckboxChange("WeekDays", value, checked)
-                                            }
+                                            onCheckboxChange={(value, checked) => handleCheckboxChange("WeekDays", value, checked) }
                                         />
                                         {isChecked && (
                                             <div

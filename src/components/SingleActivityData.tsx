@@ -50,6 +50,11 @@ const SingleActivitytData: React.FC<ModalProps> = ({
     toast.success("copy");
   };
 
+  const showInMapClicked = () => {
+    window.open(`https://www.google.com/maps/search/?api=1&query=${data?.geometry?.location?.lat},${data?.geometry?.location?.lng}` );
+    // window.open("https://maps.google.com?q="+your_lat+","+your_lng );
+  };
+
   const EventListData = [
     {
       name: data?.acf?.event_dates ? (
@@ -114,14 +119,19 @@ const SingleActivitytData: React.FC<ModalProps> = ({
       nameValue: data?.website ? data.website : data?.acf?.website ? true : false,
     },
     {
+      // https://www.google.com/maps/search/?api=1&query=35.028028,-106.536655
       name: (
-        <span>{data?.formatted_address ? data?.formatted_address :
-          `
+        <Tooltip title={"Open Location on Google Map"}>
+          <span
+          onClick={showInMapClicked}
+          >{data?.formatted_address ? data?.formatted_address :
+            `
           ${data?.acf?.address?.place_name}, 
           ${data?.acf?.address?.address_line_1}, 
           ${data?.acf?.address?.address_line_2},
           `}
-        </span>
+          </span >
+        </Tooltip>
       ),
       image: LocationIcon,
       width: 12,
@@ -502,6 +512,7 @@ const RestDetailTitle = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: 24px; /* 150% */
+  cursor: default;
 `;
 
 const RestDetailText = styled.p`

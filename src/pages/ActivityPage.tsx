@@ -18,7 +18,6 @@ const EventsPage = () => {
 
     const [drawerType, setDrawerType] = useState<string>('')
     const dispatch = useDispatch()
-console.log("ddsdds activity" , eventDataValue)
     useEffect(() => {
         dispatch(getActivityList() as any)
     }, [data.currentActivity, data.updateActivity])

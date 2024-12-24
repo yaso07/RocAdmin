@@ -12,7 +12,7 @@ import FileIcon from '../assets/upload.gif'
 import { createBulk } from "../api/EventSlice/eventThunk";
 import { checkFields, getInitials } from "../utils/commanFun";
 import { toast } from "react-toastify";
-import { ImageWithFallback } from "./Image";
+import  ImageWithFallback  from "./Image";
 // import { downloadExcel, formatExcel } from "./Export";
 // import DownloadProducts from "./ExportCSV";
 
@@ -40,15 +40,15 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
   const [uploadedFileName, setUploadedFileNames] = useState<string | null>('')
 
 
-  useEffect(() => {
-    const mappedData: any = mappedArray(eventDataValue)
-    setEventList(mappedData)
-  }, [currectActivity, isLoading])
+  // useEffect(() => {
+  //   const mappedData: any = mappedArray(eventDataValue)
+  //   setEventList(mappedData)
+  // }, [currectActivity, isLoading])
 
   useEffect(() => {
     const mappedData: any = mappedArray(eventDataValue)
     setEventList(mappedData)
-  }, [eventDataValue.length, isDrawerOpen])
+  }, [eventDataValue.length, isDrawerOpen, currectActivity, isLoading])
 
   const toggleDrawer = (name: string) => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -172,8 +172,8 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
 
                     <ImageWithFallback
                       className="w-full h-full rounded-md object-fit-cover"
-                      src={ showType === "place" ? item?.image?.url[0] : item?.image?.url}
-                      alt={`<p> "bharat"</p>`}
+                      src={showType === "place" ? item?.image?.url[0] : item?.image?.url}
+                      alt={`place`}
                       name={getInitials(item?.title)}
                     />
 

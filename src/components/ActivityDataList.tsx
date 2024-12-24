@@ -47,7 +47,6 @@ const Drawer = ({
 
   const toggleDrawer = (name: string) => {
     setIsDrawerOpen(false);
-
     setDrawerType(name);
 
     // Reset the input field
