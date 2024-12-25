@@ -19,6 +19,7 @@ export interface SingleCategory {
   name: string;
   rating: number;
   photoUrl: string;
+  data_type: string;
   opening_hours?: {
     open_now: boolean
   };

@@ -1,33 +1,35 @@
 
 import { fetchCategoryById, updateStatus } from '../api/Category/CategoryThunk';
-import {  useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { AppDispatch, appSelector } from '../api/store';
 import { SingleCategory } from '../types/CategoryList';
 import Loading from './Loading';
 import { toast } from 'react-toastify';
+import ImageWithFallback from './Image.tsx'
 
 import Error from './Error';
+import { getInitials } from '../utils/commanFun.ts';
 
 
- 
+
 const SingleDetail = () => {
-           const {currentCategoryLoading,currentCategory,currentId,categoryStatus,currentCategoryError}= appSelector((state) => {
-             return state.category;
-           })
-          
-           
-        const dispatch: AppDispatch = useDispatch(); 
+  const { currentCategoryLoading, currentCategory, currentId, categoryStatus, currentCategoryError } = appSelector((state) => {
+    return state.category;
+  })
+
+
+  const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchCategoryById(currentId));
   }, [dispatch, currentId]);
-  
-  const [currentStatus,setCurrentStatus]=useState<string>();
-  const handleCategoryStatus=async(value:string)=>{
-        setCurrentStatus(value)
-        const status={id:currentId,status:value}
-        dispatch(updateStatus(status))
-        toast.success('updated successfully')
+
+  const [currentStatus, setCurrentStatus] = useState<string>();
+  const handleCategoryStatus = async (value: string) => {
+    setCurrentStatus(value)
+    const status = { id: currentId, status: value }
+    dispatch(updateStatus(status))
+    toast.success('updated successfully')
   }
   return (
     <>
@@ -38,8 +40,8 @@ const SingleDetail = () => {
         <Error error={currentCategoryError.toString()}></Error>
       )}
 
-      
-      { !currentCategoryLoading && !currentCategoryError && (
+
+      {!currentCategoryLoading && !currentCategoryError && (
         <div className="grid grid-cols-3">
           {currentCategory && (
             <div className="col-span-1 box-border p-5  flex flex-col gap-5">
@@ -84,26 +86,28 @@ const SingleDetail = () => {
               (category: SingleCategory, index) => {
                 return (
                   <>
-                    <div
-                      className="flex items-center gap-x-5 border-b border-gray-300 p-2"
-                      key={index}
-                    >
+                    <div className="flex items-center gap-x-5 border-b border-gray-300 p-2" key={index}>
                       <div style={{ width: "90px", height: "90px" }}>
-                        <img
+                        {/* <img
                           className="w-full h-full rounded-md"
-                          src={category.photoUrl}
-                        ></img>
+                          src={category?.data_type === "google" ? category?.photoUrl : category?.photoUrl[0]}
+                        ></img> */}
+                        <ImageWithFallback
+                          src={category?.data_type === "google" ? category?.photoUrl : category?.photoUrl[0]}
+                          alt={category?.data_type === "google" ? category?.photoUrl : category?.photoUrl[0]}
+                          name={getInitials(category.name)}
+                          className={"w-full h-full rounded-md"}
+                        />
                       </div>
                       <div className="flex flex-col gap-y-1">
                         <p>{category.name}</p>
                         <p className="text-orange-500">{category.rating}</p>
                         {category.opening_hours && (
                           <p
-                            className={`${
-                              category.opening_hours?.open_now
+                            className={`${category.opening_hours?.open_now
                                 ? "text-green-900"
                                 : "text-red-800"
-                            }`}
+                              }`}
                           >
                             {category.opening_hours?.open_now
                               ? "Open"
@@ -123,5 +127,5 @@ const SingleDetail = () => {
   );
 }
 
- 
+
 export default SingleDetail
