@@ -40,7 +40,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
   const toggleDrawer = (id: any) => {
     setIsDrawerOpen(true);
 
-    const data = { id: id, api: showType === "place" ? CREATE_PLACE : GET_ACTIVITY_LIST };
+    const data = { id:  showType === "place" ? `${id}?type=global` : id, api: showType === "place" ? CREATE_PLACE : GET_ACTIVITY_LIST };
     dispatch(fetchEventById(data) as any);
     setDrawerType("Edit");
   };

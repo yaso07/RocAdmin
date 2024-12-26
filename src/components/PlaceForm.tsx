@@ -78,12 +78,12 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 setFieldValue("introDescription", dataById?.editorial_summary?.overview);
                 setFieldValue("DisplayName", dataById?.name);
                 setFieldValue("EmailAddress", dataById?.email ?? "");
-                // setFieldValue("Prefix", dataById?.acf?.telephone_number?.prefix);
-                // setFieldValue("areaCode", dataById?.acf?.telephone_number?.area_code);
-                // setFieldValue("Telephone", dataById?.acf?.telephone_number?.number);
-                setFieldValue("areaCode", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[0] : "");
-                setFieldValue("Prefix", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[1] : "");
-                setFieldValue("Telephone", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[2] : "");
+                setFieldValue("Prefix", dataById?.telephone_number?.prefix);
+                setFieldValue("areaCode", dataById?.telephone_number?.area_code);
+                setFieldValue("Telephone", dataById?.telephone_number?.number);
+                // setFieldValue("areaCode", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[0] : "");
+                // setFieldValue("Prefix", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[1] : "");
+                // setFieldValue("Telephone", dataById?.international_phone_number ? +dataById?.international_phone_number.split(" ")[2] : "");
                 setFieldValue("Website", dataById?.website ?? "");
                 setFieldValue("PlaceName", dataById?.address?.place_name);
                 setFieldValue("AddressLine", dataById?.address?.address_line_1);
@@ -287,8 +287,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
             // type: "Place",
             // manual: true,
         };
-        // console.log("timesss-----", finalObject, timeState)
-        // return
+
         if (drawerType === "Edit") {
             const obj = { finalObject, setIsDrawerOpen, id: dataById?._id };
             dispatch(updatePlace(obj) as any);
@@ -354,7 +353,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                                     <Select
                                         id="areaCode"
                                         name="areaCode"
-                                        value={`+${values.areaCode}`}
+                                        value={`${values.areaCode}`}
                                         onChange={handleChangeCode}
                                     >
 

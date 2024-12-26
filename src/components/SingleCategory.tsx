@@ -102,7 +102,7 @@ const SingleDetail = () => {
                       <div className="flex flex-col gap-y-1">
                         <p>{category.name}</p>
                         <p className="text-orange-500">{category.rating}</p>
-                        {category.opening_hours && (
+                        {/* {category.opening_hours && (
                           <p
                             className={`${category.opening_hours?.open_now
                                 ? "text-green-900"
@@ -113,7 +113,7 @@ const SingleDetail = () => {
                               ? "Open"
                               : "Close"}
                           </p>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </>
