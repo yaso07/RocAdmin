@@ -66,10 +66,10 @@ const PlaceUI = () => {
   // };
 
 
-
   return (
     <>
-      <div className="h-lvh w-full gap-x-4 grid grid-cols-[400px_minmax(350px,_1fr)] fixed">
+      <div className={`h-lvh w-full gap-x-4 grid grid-cols-[400px_minmax(350px,_1fr)] fixed ${(currectActivity == undefined || currectActivity) ? "" : "pointer-events-none"}`}>
+      {/* <div className={`h-lvh w-full gap-x-4 grid grid-cols-[400px_minmax(350px,_1fr)] fixed ${isLoading ? "pointer-events-none" : ""}`}> */}
         <ActivityLeftData {...{ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, drawerType, selectedList, eventDataValue }} showType="place" />
         <div className="">
           {/* <div className="flex gap-2 justify-end max-h-[60px]">

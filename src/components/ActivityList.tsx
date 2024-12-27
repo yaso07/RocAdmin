@@ -12,7 +12,7 @@ import FileIcon from '../assets/upload.gif'
 import { createBulk } from "../api/EventSlice/eventThunk";
 import { checkFields, getInitials } from "../utils/commanFun";
 import { toast } from "react-toastify";
-import  ImageWithFallback  from "./Image";
+import ImageWithFallback from "./Image";
 // import { downloadExcel, formatExcel } from "./Export";
 // import DownloadProducts from "./ExportCSV";
 
@@ -57,9 +57,9 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
   function handleCsvDataUpload(csvData: any[]) {
 
     const { result, error } = checkFields(csvData)
-
     if (result) {
       const bulkData = csvData.map(item => {
+
         return (
           {
             id: item?.id ?? "",
@@ -75,9 +75,9 @@ function ActivityLeftData({ handleEventData, setDrawerType, isDrawerOpen, setIsD
                 postcode: item?.postcode ?? "",
               },
               parish: { label: item?.parish ? item?.parish.replace("-", ". ") : "", value: item?.parish ?? "" },
-              opening_hours: {},
+              opening_hours: item.opening_hours ? JSON.parse(item.opening_hours.replace(/'/g, '"')) : {},
               types: item.types ? item.types.split(",") : [],
-              telephone_number: { area_code: item?.area_code ?? "", prefix: item?.prefix ?? "", number: item?.number ? +item?.number : "" },
+              telephone_number: { area_code: item?.area_code ? `+${item?.area_code}` : "", prefix: item?.prefix ?? "", number: item?.number ? +item?.number : "" },
               header_image_data: JSON.stringify(item?.header_image_url.split(",").map((val: any) => (
                 { url: val }
               )))

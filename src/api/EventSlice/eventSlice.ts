@@ -6,7 +6,7 @@ interface initialState {
     isLoading: boolean,
     error: string,
     currentEvent: any,
-    currentActivity: any,
+    currentActivity: any | string,
     updateEvent: any,
     updateActivity: any,
     eventList: string[],

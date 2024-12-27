@@ -12,7 +12,6 @@ const ImageWithFallback = ({ src, alt, name, className }: Props) => {
     useEffect(() => {
         setHasError(false);
     }, [src]);
-console.log("Dddddd", name, hasError, src)
     return (
         <div className='flex justify-center items-center h-full rounded-md uppercase bg-[#cd6060]'>
             {!hasError  && src ? (

@@ -27,12 +27,13 @@ const FileUploadComponent: React.FC<FileUploadComponentProps> = ({
         const reader = new FileReader();
         reader.onload = (e: any) => {
           const data = e.target.result;
+          
           try {
             const workbook = read(data, { type: "array" });
             const sheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[sheetName];
             const json = utils.sheet_to_json(worksheet, { raw: false });
-            
+
             if (json.length === 0) {
               setUploadedFileName("")
               return toast.error("File is empty.");
@@ -40,7 +41,7 @@ const FileUploadComponent: React.FC<FileUploadComponentProps> = ({
               onCsvDataUpload(json)
               setUploadedFileName(file.name);
             }
-            
+
           } catch (error) {
             setUploadedFileName("")
             toast.error("Error parsing CSV data.")

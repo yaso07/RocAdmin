@@ -188,7 +188,7 @@ export const getPlaceList = createAsyncThunk(
 // ======================================== GET EVENT BY ID ===========================================
 export const fetchEventById = createAsyncThunk('event/fetchById', async (data: any) => {
   const token = JSON.parse(getUser()).token;
-  if( data?.api === 'manual-activity'){
+  if (data?.api === 'manual-activity') {
     try {
       const res = await axios.get(
         import.meta.env.VITE_REACT_APP_API_BASE_URL + GET_ACTIVITY_LIST + '/' + data?.id,
@@ -202,7 +202,7 @@ export const fetchEventById = createAsyncThunk('event/fetchById', async (data: a
     } catch (error) {
       return error
     }
-  } else if(data?.api === 'manual-place/') {
+  } else if (data?.api === 'manual-place/') {
     try {
       const res = await axios.get(
         import.meta.env.VITE_REACT_APP_API_BASE_URL + data?.api + data?.id,
@@ -251,7 +251,7 @@ export const updateEvent = createAsyncThunk('updateEventStatus',
     return status?.id
   })
 
-  
+
 // ================================ UPDATE ACTIVITY DATA ====================================================
 export const updateActivity = createAsyncThunk('updateActivityStatus',
   async (obj: any) => {
@@ -315,7 +315,7 @@ export const deleteEvent = createAsyncThunk('event/delete',
 // ================================ DELETE EVENT DATA ====================================================
 export const deleteActivity = createAsyncThunk('activity/delete',
   async (param: any) => {
-  
+
     const token = JSON.parse(getUser()).token;
     const res = await axios.delete(
       import.meta.env.VITE_REACT_APP_API_BASE_URL + param?.api + param?.id,
