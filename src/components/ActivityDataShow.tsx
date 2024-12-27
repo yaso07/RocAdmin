@@ -122,6 +122,8 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
 
   useEffect(() => {
     if (drawerType === "Edit") {
+      console.log("ddddddsdssds", dataById)
+
       if (JSON.stringify(dataById)) {
         setFieldValue("introDescription", dataById?.acf?.short_description);
         setFieldValue("moreInformation", dataById?.acf?.long_description);
@@ -150,9 +152,11 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
           if (dataById?.acf?.opening_hours.hasOwnProperty(key)) {
             if (dataById?.acf?.opening_hours[key].is_open == 1) {
               weekDay.push({ value: key })
+              console.log("5555", key)
             }
           }
         }
+        console.log(weekDay)
         setFieldValue("WeekDays", weekDay)
         setSelectedItems({
           ...selectedItems,
@@ -228,9 +232,9 @@ const ActivityDataCreate = ({ setIsDrawerOpen, drawerType }: Props) => {
         setTimeState({ ...dataById?.acf?.opening_hours })
         setSelectedOption({ label: dataById?.acf?.parish?.label, value: dataById?.acf?.parish?.value });
         setFieldValue("Parish", dataById?.acf?.parish?.value)
-        const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
-        setFile(image[0].url)
-        setFieldValue("file", image[0]?.url)
+        // const image = dataById?.acf?.header_image_data !== undefined ? JSON.parse(dataById?.acf?.header_image_data) : ""
+        // setFile(image[0].url)
+        // setFieldValue("file", image[0]?.url)
       }
     } else {
       resetForm()

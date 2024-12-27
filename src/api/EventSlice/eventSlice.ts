@@ -1,16 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createActivity, createEvent, deleteActivity, deleteEvent, fetchEventById, getActivityList, getEventList, updateActivity, updateEvent } from "./eventThunk";
+import { createActivity, createBulk, createEvent, createPlace, deleteActivity, deleteEvent, fetchEventById, getActivityList, getEventList, getPlaceList, updateActivity, updateEvent, updatePlace } from "./eventThunk";
 
 
 interface initialState {
     isLoading: boolean,
     error: string,
     currentEvent: any,
-    currentActivity: any,
+    currentActivity: any | string,
     updateEvent: any,
     updateActivity: any,
     eventList: string[],
     activitiesList: string[],
+    placeList: string[],
     singleEventData: {},
 }
 
@@ -52,6 +53,38 @@ export const eventSlice = createSlice({
             state.error = action.error.message ? action.error.message : ''
         });
 
+        // CREATE PLACE LIST DATA
+        builder.addCase(createPlace.fulfilled, (state, action) => {
+            state.currentActivity = action.payload.message
+            state.error = ''
+            state.isLoading = false
+        })
+        builder.addCase(createPlace.pending, (state) => {
+            state.isLoading = true
+            state.error = ''
+            state.currentActivity = ""
+        });
+        builder.addCase(createPlace.rejected, (state, action) => {
+            state.isLoading = false
+            state.error = action.error.message ? action.error.message : ''
+        });
+
+        // CREATE PLACE LIST IN BULK DATA
+        builder.addCase(createBulk.fulfilled, (state, action) => {
+            state.currentActivity = action.payload.message
+            state.error = ''
+            state.isLoading = false
+        })
+        builder.addCase(createBulk.pending, (state) => {
+            state.isLoading = true
+            state.error = ''
+            state.currentActivity = ""
+        });
+        builder.addCase(createBulk.rejected, (state, action) => {
+            state.isLoading = false
+            state.error = action.error.message ? action.error.message : ''
+        });
+
         // GET EVENTL LIST DATA
         builder.addCase(getEventList.fulfilled, (state, action) => {
             state.eventList = action.payload
@@ -72,6 +105,22 @@ export const eventSlice = createSlice({
             state.activitiesList = action.payload
             state.error = ''
             state.isLoading = false
+        });
+
+
+        // GET PLACE LIST DATA
+        builder.addCase(getPlaceList.fulfilled, (state, action) => {
+            state.placeList = action.payload
+            state.error = ''
+            state.isLoading = false
+        })
+        builder.addCase(getPlaceList.rejected, (state, action) => {
+            state.error = action.error.message ? action.error.message : ''
+            state.isLoading = false
+        })
+        builder.addCase(getPlaceList.pending, (state) => {
+            state.error = ''
+            state.isLoading = true
         })
 
         // GET EVENTL LIST DATA BY ID
@@ -118,6 +167,23 @@ export const eventSlice = createSlice({
             state.isLoading = false
             state.error = action.error.message ? action.error.message : ''
         });
+        // UPDATE PLACE LIST DATA BY ID
+        builder.addCase(updatePlace.fulfilled, (state, action) => {
+            state.currentActivity = action.payload.message
+            state.error = ''
+            state.isLoading = false
+        })
+        builder.addCase(updatePlace.pending, (state) => {
+            state.isLoading = true
+            state.error = ''
+            state.currentActivity = ''
+        });
+        builder.addCase(updatePlace.rejected, (state, action) => {
+            state.isLoading = false
+            state.error = action.error.message ? action.error.message : ''
+        });
+
+
 
 
         // DELETE EVENTL DATA BY ID
@@ -135,7 +201,7 @@ export const eventSlice = createSlice({
             state.error = action.error.message ? action.error.message : ''
         });
         builder.addCase(deleteActivity.fulfilled, (state, action) => {
-          state.currentActivity=action.payload;
+          state.currentActivity = action.payload;
           state.error = "";
           state.isLoading = false;
         });

@@ -1,17 +1,19 @@
 export interface Acf {
-    title: string;
+    title?: string;
     short_description: string;
-    long_description: string;
-    type: any;
-    location: { label: any; value: any }[];
-    key_facilities: { label: any; value: any }[];
-    sub_type: any;
-    price_from: number;
-    price_to: number;
-    url: any;
-    map_location: any;
-    booking_information: { label: any; value: any }[];
-    display_name: string;
+    long_description?: string;
+    header_image_data?: string;
+    type?: any;
+    types?: any;
+    location?: { label: any; value: any }[];
+    key_facilities?: { label: any; value: any }[];
+    sub_type?: any;
+    price_from?: number;
+    price_to?: number;
+    url?: any;
+    map_location?: any;
+    booking_information?: { label: any; value: any }[];
+    display_name?: string;
     email_address: string;
     telephone_number: {
       area_code: string;
@@ -26,17 +28,17 @@ export interface Acf {
       postcode: string;
     };
     parish: any;
-    seasonality: { label: any; value: any }[];
-    bus_routes: { label: any; value: any }[];
+    seasonality?: { label: any; value: any }[];
+    bus_routes?: { label: any; value: any }[];
     opening_hours: any;
-    social_media: {
-      facebook: string;
-      instagram: string;
-      twitter: string;
+    social_media?: {
+      facebook?: string;
+      instagram?: string;
+      twitter?: string;
     };
-    accessibility: { label: any; value: any }[];
-    accessibility_additional_info: string;
-    accessibility_url: string;
+    accessibility?: { label?: any; value?: any }[];
+    accessibility_additional_info?: string;
+    accessibility_url?: string;
     customDates?: any; // Optional property
     event_dates_start?: string;
     event_dates_end?: string;
@@ -46,10 +48,10 @@ export interface Acf {
   }
   
   export interface FinalObject {
-    acf: Acf;
-    data_type: string;
-    type: string;
-    manual: boolean;
+    acf?: Acf;
+    data_type?: string;
+    type?: string;
+    manual?: boolean;
   }
   
   export interface Props {
@@ -57,6 +59,7 @@ export interface Acf {
     setIsDrawerOpen?: any;
     setDrawerType?: any;
     drawerType?: string;
+    showType?: string;
   }
   
   
@@ -72,17 +75,20 @@ export interface Acf {
   }
   
   export interface SelectedItems {
+    WeekDays: { label: string; value: string }[];
     Type: { label: string; value: string }[];
     subTypeOutdoor: { label: string; value: string }[];
     subTypeIutdoor: { label: string; value: string }[];
     Location: { label: string; value: string }[];
     KeyFacilities: { label: string; value: string }[];
     Booking: { label: string; value: string }[];
-    WeekDays: { label: string; value: string }[];
     MonthDays: { label: string; value: string }[];
     Seasonality: { label: string; value: string }[];
     BusRoutes: { label: string; value: string }[];
     Accessibility: { label: string; value: string }[];
+  }
+  export interface SelectedHours {
+    WeekDays: { label: string; value: string }[];
   }
 
   

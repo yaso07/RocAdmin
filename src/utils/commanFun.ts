@@ -102,7 +102,6 @@ export const convertToDate = (dateStr: any) => {
   const day = dateStr.toString().substring(6, 8);
   const date = new Date(`${year}/${month}/${day}`);
   // const date = new Date(`${year}/${month}/${day}`);
-  console.log("data", date)
   return date;
 };
 
@@ -120,15 +119,17 @@ export const getImgeUrl = (arr: any) => {
 
 
 export function updateOpenHours(newObj: any) {
-  for (const day in newObj) {
-    if (opnintHoursData.hasOwnProperty(day)) {
-      opnintHoursData[day] = {
-        ...opnintHoursData[day],
-        ...newObj[day]
-      };
+  let count = 0
+  for (const day in opnintHoursData) {
+    if (newObj.hasOwnProperty(day)) {
+      opnintHoursData[day] = { ...opnintHoursData[day], ...newObj[day] }
+    } else {
+      // Reset other days to default values
+      opnintHoursData[day] = { closes: '', opens: '', is_open: "0" };
     }
+    if (opnintHoursData[day].is_open === "0") count += 1
   }
-  return opnintHoursData;
+  return count === 7 ? {} : opnintHoursData;
 }
 
 
@@ -180,48 +181,118 @@ export const checkEndData = (start: any, curr: any, setDateState: any, dateState
 
 
 export const eventDateValidation = (selectOption: any, DateData: any, setIsDateValid: any, date?: any, time?: any) => {
-  console.log("option start", selectOption)
+
   if (selectOption === "option4") {
-    console.log("option4 inner")
 
     if (DateData) {
-      console.log("option4", DateData)
       setIsDateValid(false)
     } else {
-      console.log("option41")
       setIsDateValid(true)
     }
   } else if (selectOption === "option3") {
-    console.log("option3 inner")
     if (DateData.length && date?.startDateMonth && date?.endDateMonth && time?.startTimeMonth && time?.endTimeMonth) {
-      console.log("option3")
+
       setIsDateValid(false)
     } else {
-      console.log("option31")
       setIsDateValid(true)
     }
   } else if (selectOption === "option2") {
-    console.log("option2 inner")
     if (DateData.length && date?.startDateWeekly && date?.endDateWeekly && time?.startTimeWeekly && time?.endTimeWeekly) {
 
-      console.log("option2")
       setIsDateValid(false)
     } else {
-      console.log("option21")
       setIsDateValid(true)
     }
   } else if (selectOption === "option1") {
-    console.log("option1 inner")
     if (DateData?.startDateDaily && DateData?.endDateDaily && date?.startTimeDaily && date?.endTimeDaily) {
       setIsDateValid(false)
     } else {
-      console.log("option11")
       setIsDateValid(true)
     }
   } else {
-    console.log("option")
     setIsDateValid(true)
   }
 }
 
+
+export const checkFields = (dataArray: any[]) => {
+  const emptyFields: any[] = [];
+
+  dataArray.forEach((item, index) => {
+    const fieldsToCheck = ['title', 'short_description', 'types', 'header_image_url'];
+
+    fieldsToCheck.forEach(field => {
+      // Check if the field is empty or undefined
+      if (!item[field] || (Array.isArray(item[field]) && item[field].length === 0)) {
+        emptyFields.push(`Row ${index + 1}: '${field}' is required`);
+      }
+    });
+  });
+
+
+  return { result: emptyFields.length ? false : true, error: emptyFields.length > 0 ? emptyFields : ["All required fields are filled."] };
+};
+
+export const getInitials = (fullName: string | any) => {
+  // Split the name into words
+  if (!fullName) return "";
+  const words = fullName.split(' ');
+
+  // Take the first letter of each word, limiting to 2 words
+  const initials = words.slice(0, 2).map((word: any) => word.charAt(0).toUpperCase()).join('');
+
+  return initials;
+};
+
+
+
+// const arr = [
+//   "Monday: Closed",
+//   "Tuesday: 6:00 PM – 8:00 PM",
+//   "Wednesday: 6:00 PM – 8:00 PM",
+//   "Thursday: Closed",
+//   "Friday: Closed",
+//   "Saturday: Closed",
+//   "Sunday: Closed"
+// ];
+
+export function convertHours(arr: any[]) {
+  const openingHours: any = {};
+
+  arr.forEach(entry => {
+    const [day, hours] = entry.split(': ').map((str: any) => str.trim());
+    const dayEntry = {
+      closes: "",
+      opens: "",
+      is_open: "0"
+    };
+
+    if (hours !== "Closed") {
+      const [openTime, closeTime] = hours.split('–').map((str: any) => str.trim());
+      dayEntry.opens = convertTo24HourFormat(openTime);
+      dayEntry.closes = convertTo24HourFormat(closeTime);
+      dayEntry.is_open = "1";
+    }
+
+    openingHours[day] = dayEntry;
+  });
+
+  return openingHours;
+}
+
+function convertTo24HourFormat(time: any) {
+  const [timePart, modifier] = time.split(' ');
+  let [hours, minutes] = timePart.split(':').map(Number);
+
+  if (modifier === 'PM' && hours < 12) {
+    hours += 12;
+  } else if (modifier === 'AM' && hours === 12) {
+    hours = 0;
+  }
+
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+}
+
+// const result = convertHours(arr);
+// console.log(result);
 

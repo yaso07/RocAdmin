@@ -434,7 +434,7 @@ const Drawer = ({
     <div
       className={`fixed inset-y-0 right-0 w-3/5 bg-white shadow-lg transform transition-transform ${
         isOpen ? "translate-x-0" : "translate-x-full"
-      } duration-1000 overflow-y-auto max-h-[100dvh] hide-scrollbar`}>
+      } duration-1000 overflow-y-auto max-h-[100dvh] hide-scrollbar z-10`}>
       <div className="p-4">
         <div className="flex gap-10 flex-wrap w-full justify-between mb-2">
           <button onClick={() => toggleDrawer("close")} className="text-black">

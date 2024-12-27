@@ -42,7 +42,7 @@ const DashBoard = () => {
         {!isEmpty && !categoryError && (
           <>
             <Details setEmpty={handleEmpty}></Details>
-            <SingleDetail></SingleDetail>
+            <SingleDetail />
           </>
         )}
       </MainContainer>

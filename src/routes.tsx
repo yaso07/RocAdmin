@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import ContactsPage from "./pages/ContactsPage";
 import EventsPage from "./pages/EventsPage";
 import ActivityPage from "./pages/ActivityPage";
+import PlaceUI from "./pages/PlaceUI";
 export const routes = createBrowserRouter([
   {
     path: "/",
@@ -38,7 +39,11 @@ export const routes = createBrowserRouter([
       {
         path: 'activity',
         element: <ActivityPage />
-      }
+      },
+      {
+        path: 'roc-places',
+        element: <PlaceUI />
+      },
     ],
   },
   {

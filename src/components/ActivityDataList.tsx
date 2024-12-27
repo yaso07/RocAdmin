@@ -3,12 +3,14 @@ import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import "../App.css";
 import ActivityDataCreate from "./ActivityDataShow";
+import PlaceForm from "./PlaceForm";
 
 interface Props {
   isOpen: any;
   setIsDrawerOpen: any;
   setDrawerType: any;
   drawerType: string;
+  showType?: string;
 }
 
 const Drawer = ({
@@ -16,6 +18,7 @@ const Drawer = ({
   setIsDrawerOpen,
   drawerType,
   setDrawerType,
+  showType,
 }: Props) => {
   const currentEvent = useSelector((state: any) => state.event.currentEvent);
   const updateEventValue = useSelector((state: any) => state.event.updateEvent);
@@ -44,7 +47,6 @@ const Drawer = ({
 
   const toggleDrawer = (name: string) => {
     setIsDrawerOpen(false);
-
     setDrawerType(name);
 
     // Reset the input field
@@ -55,9 +57,8 @@ const Drawer = ({
 
   return (
     <div
-      className={`fixed inset-y-0 right-0 w-3/5 bg-white shadow-lg transform transition-transform ${
-        isOpen ? "translate-x-0" : "translate-x-full"
-      } duration-1000 overflow-y-auto max-h-[100dvh] hide-scrollbar`}>
+      className={`fixed inset-y-0 right-0 w-3/5 bg-white shadow-lg transform transition-transform ${isOpen ? "translate-x-0" : "translate-x-full"
+        } duration-1000 overflow-y-auto max-h-[100dvh] hide-scrollbar z-20`}>
       <div className="p-4">
         <div className="flex gap-10 flex-wrap w-full justify-between mb-2">
           <button onClick={() => toggleDrawer("close")} className="text-black">
@@ -72,7 +73,12 @@ const Drawer = ({
           </button> */}
         </div>
         <hr />
-        <ActivityDataCreate {...{ setIsDrawerOpen, drawerType }} />
+        {
+          showType === "activity" ?
+            <ActivityDataCreate {...{ setIsDrawerOpen, drawerType, showType }} />
+            :
+            <PlaceForm {...{ setIsDrawerOpen, drawerType, showType }} />
+        }
       </div>
     </div>
   );

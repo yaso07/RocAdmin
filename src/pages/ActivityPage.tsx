@@ -18,7 +18,6 @@ const EventsPage = () => {
 
     const [drawerType, setDrawerType] = useState<string>('')
     const dispatch = useDispatch()
-
     useEffect(() => {
         dispatch(getActivityList() as any)
     }, [data.currentActivity, data.updateActivity])
@@ -52,7 +51,7 @@ const EventsPage = () => {
             {
                 eventDataValue ?
                     <div className="h-lvh w-full gap-x-4 grid grid-cols-[400px_minmax(350px,_1fr)] fixed">
-                        <ActivityLeftData {...{ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }} />
+                        <ActivityLeftData {...{ handleEventData, setDrawerType, isDrawerOpen, setIsDrawerOpen, eventDataValue, drawerType, selectedList }} showType ="activity" />
                         <div className="">
                             <SingleActivitytData data={eventdata} dataImage={dataImage} reservationModal={undefined} {...{ setIsDrawerOpen, setDrawerType, setSelectedList }} />
                         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { PopconfirmProps } from 'antd';
-import {  Popconfirm } from 'antd';
+import { Popconfirm } from 'antd';
 import styled from 'styled-components';
 import { deleteEvent, getEventList } from '../api/EventSlice/eventThunk';
 import { useDispatch } from 'react-redux';
@@ -16,7 +16,7 @@ const ConfirmationComponent: React.FC<propsData> = ({ data, setSelectedList }) =
     const dispatch = useDispatch()
 
     const confirm = (e: any, data: any) => {
-            console.log(e)
+        console.log(e)
         dispatch(deleteEvent(data) as any)
         dispatch(getEventList() as any)
         setSelectedList(0)
@@ -30,8 +30,8 @@ const ConfirmationComponent: React.FC<propsData> = ({ data, setSelectedList }) =
 
     return (
         <Popconfirm
-            title="Delete the event"
-            description="Are you sure to delete this event?"
+            title="Delete"
+            description="Are you sure to delete this?"
             onConfirm={(e) => confirm(e, data)}
             onCancel={cancel}
             okText="Yes"
@@ -48,14 +48,16 @@ const DeleteBtn = styled.button`
     padding: 0px 12px;
     border: 1px solid gray;
     margin: 4px;
+    width:100px;
+    height: 30px;
     border-radius: 5px;
     cursor: pointer;
     background: rgb(127 29 29);
     color: white;
-    &:hover{
+    transition: background 1s ease-in-out;
     
-    background: rgb(239 68 68);
-    transaction: .3s
+    &:hover{
+    background:rgb(12, 53, 130);
     }
 
 `;

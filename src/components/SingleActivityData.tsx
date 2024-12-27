@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { formatFullDate } from "../utils/commanFun";
 import { Link } from "react-router-dom";
@@ -6,8 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchEventById } from "../api/EventSlice/eventThunk";
 import ConfirmationComponent from "./ActivityDelete";
 import Loading from "./Loading";
-import { GET_ACTIVITY_LIST } from "../api/constant";
-import { CalenderIcon, ClockIcon, CurrencyIcon, LocationIcon, MailIcon, WebsiteIcon } from "../utils/images";
+import { CREATE_PLACE, GET_ACTIVITY_LIST } from "../api/constant";
+import { CalenderIcon, ClockIcon, CurrencyIcon, LocationIcon, MailIcon, phoneBlack, WebsiteIcon } from "../utils/images";
+import { Tooltip } from "antd";
+import { toast } from "react-toastify";
+import Slider from "./slider";
 
 interface ModalProps {
   dataImage?: any;
@@ -16,6 +19,8 @@ interface ModalProps {
   setIsDrawerOpen?: any;
   setDrawerType?: any;
   setSelectedList?: any;
+  showType?: string;
+  selectedList?: number;
 }
 
 const SingleActivitytData: React.FC<ModalProps> = ({
@@ -24,6 +29,8 @@ const SingleActivitytData: React.FC<ModalProps> = ({
   setIsDrawerOpen,
   setDrawerType,
   setSelectedList,
+  showType,
+  selectedList,
 }) => {
   const dispatch = useDispatch();
   const currentEvent = useSelector((state: any) => state.event.currentEvent);
@@ -32,9 +39,20 @@ const SingleActivitytData: React.FC<ModalProps> = ({
 
   const toggleDrawer = (id: any) => {
     setIsDrawerOpen(true);
-    const data = { id: id, api: GET_ACTIVITY_LIST };
+
+    const data = { id:  showType === "place" ? `${id}?type=global` : id, api: showType === "place" ? CREATE_PLACE : GET_ACTIVITY_LIST };
     dispatch(fetchEventById(data) as any);
     setDrawerType("Edit");
+  };
+
+  const copylink = (copy: any) => {
+    navigator.clipboard.writeText(copy);
+    toast.success("copy");
+  };
+
+  const showInMapClicked = () => {
+    window.open(`https://www.google.com/maps/search/?api=1&query=${data?.geometry?.location?.lat},${data?.geometry?.location?.lng}` );
+    // window.open("https://maps.google.com?q="+your_lat+","+your_lng );
   };
 
   const EventListData = [
@@ -44,9 +62,6 @@ const SingleActivitytData: React.FC<ModalProps> = ({
       ) : (
         "No events"
       ),
-      // name: "ssds",
-      // image:
-      //   "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fcalendar.png?alt=media&token=4dcb085b-44bc-4182-8893-27dda5f0325f",
       image: CalenderIcon,
       width: 14,
       height: 24,
@@ -58,9 +73,6 @@ const SingleActivitytData: React.FC<ModalProps> = ({
       ) : (
         "No events"
       ),
-      // name: "sdsd",
-      // image:
-      //   "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fclock.png?alt=media&token=5f80c9da-b46f-4c37-8018-db55c0cfd72e",
       image: ClockIcon,
       width: 16,
       height: 24,
@@ -71,53 +83,92 @@ const SingleActivitytData: React.FC<ModalProps> = ({
     },
     {
       name: <span>{`£ ${data?.acf?.price_to}`}</span>,
-      // image:
-      //   "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fgbp.png?alt=media&token=30f60889-d511-46d9-a8ce-30ef112929e8",
       image: CurrencyIcon,
       width: 10,
       height: 24,
       nameValue: data?.acf?.price_to ? true : false,
     },
     {
-      name: <span>{data?.acf?.email_address}</span>,
-      // image:
-      //   "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fenvelope.png?alt=media&token=08ba6331-d66b-485c-b274-4d85de7f76b0",
+      name: (
+        <Tooltip title={data?.email ? data.email : data?.acf?.email_address}>
+          <span onClick={() => copylink(data?.email ? data.email : data?.acf?.email_address)}>
+            <a href={`mailto: ${data?.email ? data.email : data?.acf?.email_address}`}>
+              {" "}
+              {data?.email ? data.email : data?.acf?.email_address}{" "}
+            </a>
+          </span>
+        </Tooltip>
+      ),
+      // name: <span>{data?.email ? data.email : data?.acf?.email_address}</span>,
       image: MailIcon,
       width: 16,
       height: 24,
-      nameValue: data?.acf?.email_address ? true : false,
+      nameValue: data?.email ? data.email : (data?.acf?.email_address ? true : false),
     },
     {
       name: (
         <WebsiteLink
-          to={data?.acf?.website ? data?.acf?.website : ""}
+          to={data?.website ? data.website : data?.acf?.website ? data?.acf?.website : ""}
           target="_blank">
-          {data?.acf?.website}
+          {data?.website ? data.website : data?.acf?.website}
         </WebsiteLink>
       ),
-      // image:
-      //   "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Fglobe.png?alt=media&token=0fa8a5a4-35c8-46ae-bb83-45c00d6d7328",
       image: WebsiteIcon,
       width: 16,
       height: 24,
-      nameValue: data?.acf?.website ? true : false,
+      nameValue: data?.website ? data.website : data?.acf?.website ? true : false,
     },
     {
+      // https://www.google.com/maps/search/?api=1&query=35.028028,-106.536655
       name: (
-        <span>
-          {data?.acf?.address?.place_name}, {data?.acf?.address?.address_line_1}
-          , {data?.acf?.address?.address_line_2},
-        </span>
+        <Tooltip title={"Open Location on Google Map"}>
+          <span
+          onClick={showInMapClicked}
+          >{data?.formatted_address ? data?.formatted_address :
+            `
+          ${data?.acf?.address?.place_name}, 
+          ${data?.acf?.address?.address_line_1}, 
+          ${data?.acf?.address?.address_line_2},
+          `}
+          </span >
+        </Tooltip>
       ),
-      // image:
-      //   "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FIcon%2FEventICON%2Flocation-dot.png?alt=media&token=d6ea3348-daab-4b8e-acb6-977148c16e1f",
       image: LocationIcon,
       width: 12,
       height: 24,
-      nameValue:
+      nameValue: data?.formatted_address ? data?.formatted_address :
         data?.acf?.address?.place_name ||
           data?.acf?.address?.address_line_1 ||
           data?.acf?.address?.address_line_2
+          ? true
+          : false,
+    },
+    {
+      name:
+
+        data?.international_phone_number ? (
+          <Tooltip title={"Copy international number"}>
+            <span
+              onClick={() =>
+                copylink(data?.international_phone_number)
+              }>
+              <Link to={`tel:${data?.international_phone_number}`}>
+                {data?.international_phone_number}
+              </Link>
+            </span>
+          </Tooltip>
+        ) : (
+          <Tooltip title={"Copy contact number"}>
+            <span
+              onClick={() => copylink(data?.acf?.telephone_number?.formatted)}>
+              {data?.acf?.telephone_number?.formatted}
+            </span>
+          </Tooltip>
+        ),
+      image: phoneBlack,
+      nameValue: data?.international_phone_number
+        ? data?.international_phone_number
+        : data?.acf?.telephone_number?.formatted
           ? true
           : false,
     },
@@ -142,7 +193,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
     ? data?.acf?.short_description
       .replace(/<p[^>]*>/g, "")
       .replace(/<\/p>/g, "")
-    : "";
+    : data?.editorial_summary?.overview;
 
   // const formatRoute = (routeText: any) => {
   //     return routeText ? routeText
@@ -165,6 +216,13 @@ const SingleActivitytData: React.FC<ModalProps> = ({
     }
   }, [currentEvent]);
 
+  const opningDate = useCallback((val: any) => {
+    return val.map((item: any) => {
+      const [day, time] = item.split(": ");
+      return { day, time };
+    });
+  }, []);
+
   return (
     <>
       {loading ? (
@@ -173,17 +231,17 @@ const SingleActivitytData: React.FC<ModalProps> = ({
         <Container className="overflow-y-auto max-h-[calc(100dvh-90px)] hide-scrollbar">
           <Title className="">
             <h1 className="font-semibold text-lg capitalize">
-              {data?.acf?.title}
+              {data?.acf?.title || data?.name}
             </h1>
             <div className="">
               <EditBtn
-                className="font-semibold text-lg capitalize mr-4"
+                className="font-semibold text-lg capitalize mr-4 "
                 onClick={() => toggleDrawer(data?._id)}>
                 Edit
               </EditBtn>
               <ConfirmationComponent
                 data={data?._id}
-                {...{ setSelectedList }}
+                {...{ setSelectedList, showType, selectedList }}
               />
             </div>
           </Title>
@@ -194,17 +252,23 @@ const SingleActivitytData: React.FC<ModalProps> = ({
             </ResturatWrapper>
           </ResturatContainer>
           <ItemImageContainer>
-            <img
-              src={
-                dataImage
-                  ? dataImage
-                  : "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FNo_Image_Available.jpg?alt=media&token=90cbe8cc-39f6-45f9-8c4b-59e9be631a07"
-              }
-              alt="Logo"
-              width={200}
-              height={80}
-              style={{ borderRadius: 4, maxWidth: "100%", objectFit: "cover" }}
-            />
+            {
+              (showType === "place" && dataImage) ?
+                <Slider slides={dataImage} />
+                :
+
+                <img
+                  src={
+                    dataImage
+                      ? dataImage
+                      : "https://firebasestorage.googleapis.com/v0/b/roc-web-app.appspot.com/o/display%2FNo_Image_Available.jpg?alt=media&token=90cbe8cc-39f6-45f9-8c4b-59e9be631a07"
+                  }
+                  alt="Logo"
+                  width={200}
+                  // height={150}
+                  style={{ borderRadius: 4, maxWidth: "100%", objectFit: "cover" }}
+                />
+            }
           </ItemImageContainer>
           <ResturantDetailsContainer>
             {EventListData.map((item: any, index: number) => {
@@ -258,7 +322,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
                                 </>
                             )} */}
 
-          {data?.acf?.key_facilities != "" && (
+          {data?.acf?.key_facilities && (
             <>
               <AlsoSeeText>Key Features</AlsoSeeText>
               <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -269,7 +333,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
             </>
           )}
 
-          {data?.acf?.accessibility != "" && (
+          {data?.acf?.accessibility && (
             <>
               <AlsoSeeText>Accessibility</AlsoSeeText>
               <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -280,7 +344,7 @@ const SingleActivitytData: React.FC<ModalProps> = ({
             </>
           )}
 
-          {data?.acf?.bus_routes != "" && (
+          {data?.acf?.bus_routes && (
             <>
               <AlsoSeeText>Bus Route</AlsoSeeText>
               <BulletPointWrapper style={{ marginLeft: 40 }}>
@@ -299,38 +363,63 @@ const SingleActivitytData: React.FC<ModalProps> = ({
               </BulletPointWrapper>
             </>
           )}
-
-          <AlsoSeeText>Seasonality</AlsoSeeText>
-          <BulletPointWrapper>
-            <OpningDatesContainer>
-              <DatesWrapperText>
-                {data?.acf?.seasonality &&
-                  data?.acf?.seasonality.map((item: any, index: any) => (
-                    <p key={index}>
-                      {item?.label}
-                      {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
-                    </p>
-                  ))}
-              </DatesWrapperText>
-            </OpningDatesContainer>
-          </BulletPointWrapper>
-
+          {
+            data?.acf?.seasonality &&
+            <AlsoSeeText>Seasonality</AlsoSeeText>
+          }
+          {
+            data?.acf?.seasonality &&
+            <BulletPointWrapper>
+              <OpningDatesContainer>
+                <DatesWrapperText>
+                  {data?.acf?.seasonality &&
+                    data?.acf?.seasonality.map((item: any, index: any) => (
+                      <p key={index}>
+                        {item?.label}
+                        {index !== data?.acf?.seasonality.length - 1 && ","}{" "}
+                      </p>
+                    ))}
+                </DatesWrapperText>
+              </OpningDatesContainer>
+            </BulletPointWrapper>
+          }
           <AlsoSeeText>Opening hours</AlsoSeeText>
           <BulletPointWrapper>
-            <OpningDatesContainer>
-              {daysOfWeek.map(
-                (item, index) =>
-                  daysOfWeekTiming[index].opens && (
-                    <WeekTimeArrange key={index}>
-                      <p>{item}:</p>
-                      <p>
-                        {daysOfWeekTiming[index].opens} -{" "}
-                        {daysOfWeekTiming[index].closes}
+            {
+              data?.current_opening_hours ?
+                <DatesWrapperTextGoogle>
+                  {data?.current_opening_hours?.weekday_text &&
+                    opningDate(
+                      data?.current_opening_hours?.weekday_text
+                    ).map((item: any, index: any) => (
+                      <p
+                        key={index}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-around",
+                        }}>
+                        <p>{item?.day}</p>
+                        <p>{item?.time}</p>
                       </p>
-                    </WeekTimeArrange>
-                  )
-              )}
-            </OpningDatesContainer>
+                    ))}
+                </DatesWrapperTextGoogle>
+                :
+
+                <OpningDatesContainer>
+                  {daysOfWeek.map(
+                    (item, index) =>
+                      daysOfWeekTiming[index].opens && (
+                        <WeekTimeArrange key={index}>
+                          <p>{item}:</p>
+                          <p>
+                            {daysOfWeekTiming[index].opens} - {" "}
+                            {daysOfWeekTiming[index].closes}
+                          </p>
+                        </WeekTimeArrange>
+                      )
+                  )}
+                </OpningDatesContainer>
+            }
           </BulletPointWrapper>
         </Container>
       ) : (
@@ -370,9 +459,9 @@ const EditBtn = styled.button`
   cursor: pointer;
   background: #1e2832;
   color: white;
+  transition: background 1s ease-in-out;
   &:hover {
     background: red;
-    transaction: 0.3s;
   }
 `;
 
@@ -423,6 +512,7 @@ const RestDetailTitle = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: 24px; /* 150% */
+  cursor: default;
 `;
 
 const RestDetailText = styled.p`
@@ -478,6 +568,7 @@ const RestDetailTitleWebsite = styled.a`
 
 const ItemImageContainer = styled.div`
   padding: 0px 24px;
+  height: 150px;
 `;
 
 // const ImageWrraper = styled(Image)`
@@ -535,3 +626,21 @@ const WebsiteLink = styled(Link)`
     color: lightblue;
   }
 `;
+
+const DatesWrapperTextGoogle = styled.div`
+  color: var(--BODY, #000);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  /* flex-wrap: wrap;
+  gap: 3px; */
+
+  p {
+    flex: 1;
+  }
+`;
+
