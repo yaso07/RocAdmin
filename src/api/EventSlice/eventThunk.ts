@@ -21,11 +21,20 @@ export const createEvent = createAsyncThunk(
           },
         }
       );
+     
       console.log("event data kya hhhh", response)
       if (response?.status == 200) {
         toast.success(response?.data?.message)
       } else {
         toast.error(response?.data?.message)
+      }
+      try
+      { 
+        await axios.post(import.meta.env.VITE_REACT_APP_API_NEXT_CONNECT+"api/webhook?type=event")
+      }
+      catch(e)
+      {
+           console.log("can't revalidate")
       }
       return response.data;
 
@@ -34,6 +43,7 @@ export const createEvent = createAsyncThunk(
       console.log(error?.response?.data?.message, "erroroooror");
 
     }
+   
   })
 
 // ==================== CREATE PLACE ===========================================================
@@ -58,6 +68,15 @@ export const createActivity = createAsyncThunk(
         toast.error(response?.data?.message)
       }
       // return [];
+      try
+      { 
+        
+        await axios.post(import.meta.env.VITE_REACT_APP_API_NEXT_CONNECT+"api/webhook?type=activity")
+      }
+      catch(e)
+      {
+           console.log("can't revalidate")
+      }
       return response.data;
 
     } catch (error: any) {
@@ -155,7 +174,7 @@ export const getActivityList = createAsyncThunk(
           },
         }
       );
-
+  
       return response?.data;
 
     } catch (error) {
@@ -248,6 +267,15 @@ export const updateEvent = createAsyncThunk('updateEventStatus',
         },
       }
     )
+    try
+    { 
+      
+      await axios.post(import.meta.env.VITE_REACT_APP_API_NEXT_CONNECT+"api/webhook?type=event")
+    }
+    catch(e)
+    {
+         console.log("can't revalidate")
+    }
     return status?.id
   })
 
@@ -269,6 +297,15 @@ export const updateActivity = createAsyncThunk('updateActivityStatus',
       toast.success(response?.data?.message)
     } else {
       toast.error(response?.data?.message)
+    }
+    try
+    { 
+      
+      await axios.post(import.meta.env.VITE_REACT_APP_API_NEXT_CONNECT+"api/webhook?type=activity")
+    }
+    catch(e)
+    {
+         console.log("can't revalidate")
     }
     console.log("response of update activity =====", response)
     return response.data
@@ -306,7 +343,15 @@ export const deleteEvent = createAsyncThunk('event/delete',
         },
       }
     )
-
+    try
+    { 
+      
+      await axios.post(import.meta.env.VITE_REACT_APP_API_NEXT_CONNECT+"api/webhook?type=event")
+    }
+    catch(e)
+    {
+         console.log("can't revalidate")
+    }
     console.log("Delete event", res)
     return id
   })
@@ -325,7 +370,15 @@ export const deleteActivity = createAsyncThunk('activity/delete',
         },
       }
     )
-
+    try
+    { 
+      
+      await axios.post(import.meta.env.VITE_REACT_APP_API_NEXT_CONNECT+"api/webhook?type=activity")
+    }
+    catch(e)
+    {
+         console.log("can't revalidate")
+    }
     console.log("Delete event", res)
     return param?.id
   })
