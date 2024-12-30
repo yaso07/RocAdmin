@@ -107,7 +107,7 @@ const FileUploadComponent: React.FC<FileUploadComponentProps> = ({
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
-      "text/xlsx": [".csv", ".xlsx"], // dont include anything else because it will only support csv , if you want to adopt more formate then adjust the code accordingly
+      "text/xlsx": [".csv", ".xlsx", ".xls"], // dont include anything else because it will only support csv , if you want to adopt more formate then adjust the code accordingly
     }, // Use an array if you need to accept multiple types
   });
 

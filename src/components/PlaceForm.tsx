@@ -41,6 +41,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
     const newTime = moment(currentTime, "HH:mm").add(2, 'hours').format("HH:mm");
     const [timeState, setTimeState] = useState<TimeState>({});
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [isPopupVisibleImage, setIsPopupVisibleImage] = useState(false);
     // const [show, setShow] = useState(false);
     // const [loading, setLoading] = useState(false)
     // const [file, setFile] = useState<File[]>([]);
@@ -110,7 +111,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 setFieldValue("tags", dataById?.types)
                 setSelectedOption({ label: dataById?.parish, value: dataById?.parish });
                 setFieldValue("Parish", dataById?.parish)
-                const imageURL = dataById?.photoUrl ? dataById?.photoUrl :[]
+                const imageURL = dataById?.photoUrl ? dataById?.photoUrl : []
                 setFieldValue("imageUrl", imageURL)
                 setImageInput(imageURL)
             }
@@ -155,7 +156,8 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
     };
 
     const handleTimeChangehour = (day: string, type: "opens" | "closes") => (time: string) => {
-        setTimeState((prevState) => ({...prevState,
+        setTimeState((prevState) => ({
+            ...prevState,
             [day]: {
                 ...prevState[day],
                 [type]: time,
@@ -579,7 +581,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                                 If you are open all day, please leave the startend date blank
                             </TitleTextMain>
                             {WeeklyDaysData.map((item, index) => {
-                                const isChecked = selectedItems?.WeekDays.some((weekday) => weekday?.value === item?.value );
+                                const isChecked = selectedItems?.WeekDays.some((weekday) => weekday?.value === item?.value);
                                 return (
                                     <div
                                         style={{ marginBottom: 10, display: "grid", alignItems: "center", gap: 20, gridTemplateColumns: "1fr 3fr" }}
@@ -589,7 +591,7 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                                             title={item?.title}
                                             value={item?.value}
                                             isChecked={isChecked}
-                                            onCheckboxChange={(value, checked) => handleCheckboxChange("WeekDays", value, checked) }
+                                            onCheckboxChange={(value, checked) => handleCheckboxChange("WeekDays", value, checked)}
                                         />
                                         {isChecked && (
                                             <div
@@ -673,7 +675,23 @@ const PlaceForm = ({ setIsDrawerOpen, drawerType }: Props) => {
                 title="Media"
                 content={
                     <>
-                        <TitleText>Image Url *</TitleText>
+
+                        <TitleText>Image Url * {" "}
+                            {/* Tags * */}
+                            <span
+                                className="cursor-pointer text-blue-600"
+                                onMouseEnter={() => setIsPopupVisibleImage(true)}
+                                onMouseLeave={() => setIsPopupVisibleImage(false)}
+                            >
+                                {/* Popup */}
+                                {isPopupVisibleImage && (
+                                    <div className="absolute z-10 mx-auto p-2 mt-1 text-sm text-white bg-gray-800 rounded shadow-lg">
+                                        https://www.example.com/images/photo.jpg
+                                    </div>
+                                )}
+                                ℹ️
+                            </span>
+                        </TitleText>
                         <DynamicInput
                             {...{ imageInput, setImageInput, setFieldValue }}
                             imageValue={values.imageUrl}
@@ -894,6 +912,7 @@ const TitleText = styled.h6`
   font-size: 1rem;
   font-weight: 700;
   color: #333;
+  position: relative;
 `;
 
 const TitleTextMain = styled.h6`
