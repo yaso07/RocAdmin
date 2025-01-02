@@ -106,6 +106,15 @@ export const createPlace = createAsyncThunk(
         toast.error(response?.data?.message)
       }
       // return [];
+      try
+      { 
+        
+        await axios.post(import.meta.env.VITE_REACT_APP_API_NEXT_CONNECT+"api/webhook?type=updatePlaces")
+      }
+      catch(e)
+      {
+           console.log("can't revalidate")
+      }
       return response.data;
 
     } catch (error: any) {
@@ -132,6 +141,15 @@ export const createBulk = createAsyncThunk(
         toast.success(response?.data?.message)
       } else {
         toast.error(response?.data?.message)
+      }
+      try
+      { 
+        
+        await axios.post(import.meta.env.VITE_REACT_APP_API_NEXT_CONNECT+"api/webhook?type=updatePlaces")
+      }
+      catch(e)
+      {
+           console.log("can't revalidate")
       }
       // return [];
       return response.data;
@@ -327,6 +345,15 @@ export const updatePlace = createAsyncThunk('updatePlaceStatus',
       toast.success(response?.data?.message)
     } else {
       toast.error(response?.data?.message)
+    }
+    try
+    { 
+      
+      await axios.post(import.meta.env.VITE_REACT_APP_API_NEXT_CONNECT+"api/webhook?type=updatePlaces")
+    }
+    catch(e)
+    {
+         console.log("can't revalidate")
     }
     console.log("response of update place =====", response)
     return response.data
